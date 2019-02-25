@@ -1,11 +1,7 @@
 <template>
   <div>
     <a-menu v-model="current" mode="horizontal" class="menu" @click="handleClick">
-      <a-menu-item key="/TestPage">
-        <router-link to = "/TestPage">
-          <div>Yummy!</div>
-        </router-link>
-      </a-menu-item>
+      <a-menu-item key="/TestPage">Yummy!</a-menu-item>
       <a-menu-item key="/Order">点单</a-menu-item>
       <a-menu-item key="/UserInfo">用户信息</a-menu-item>
     </a-menu>

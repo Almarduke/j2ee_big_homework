@@ -21,6 +21,9 @@ export default {
     return {
       theme: 'light'
     };
+  },
+  mounted () {
+    this.$router.push('/Login');
   }
 };
 </script>
