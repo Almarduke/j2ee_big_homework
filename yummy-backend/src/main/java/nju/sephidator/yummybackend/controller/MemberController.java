@@ -21,7 +21,7 @@ public class MemberController {
     private MemberService memberService;
 
     @PostMapping(value = "/signUp")
-    public ResultVO<?> signUpWorker(@RequestBody MemberVO member) {
+    public ResultVO<?> signUp(@RequestBody MemberVO member) {
         if (memberService.emailExists(member.getEmail())) {
             return ResultVOUtil.error(HttpStatus.UNAUTHORIZED.value(), "邮箱已经注册");
         } else {
@@ -30,9 +30,9 @@ public class MemberController {
         }
     }
 
-    @PostMapping(value = "/cx")
-    public String signUpWorker() {
-        return "到达了";
+    @PostMapping(value = "/sendCheckCode")
+    public ResultVO<?> sendCheckCode(@RequestBody String email) {
+        memberService.sendCheckCode(email);
+        return ResultVOUtil.success(email);
     }
-
 }

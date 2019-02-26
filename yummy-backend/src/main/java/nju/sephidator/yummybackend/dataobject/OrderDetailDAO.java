@@ -16,7 +16,7 @@ public class OrderDetailDAO {
     @GeneratedValue
     private Integer id;
 
-    private Integer orderId;
+    private String orderId;
 
     private Integer foodId;
 

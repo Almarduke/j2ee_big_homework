@@ -9,4 +9,6 @@ public interface MemberService {
     boolean emailExists(String email);
 
     void create(MemberVO memberVO);
+
+    void sendCheckCode(String email);
 }

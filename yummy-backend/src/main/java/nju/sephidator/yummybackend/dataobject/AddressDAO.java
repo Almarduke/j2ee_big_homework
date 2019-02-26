@@ -6,6 +6,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.io.Serializable;
 
 @Entity
 @Data
@@ -14,13 +15,10 @@ public class AddressDAO {
 
     @Id
     @GeneratedValue
-    private Integer Id;
-
-    private String userId;
+    private String name;
 
     private Integer coordinateX;
 
     private Integer coordinateY;
 
-    private String description;
 }

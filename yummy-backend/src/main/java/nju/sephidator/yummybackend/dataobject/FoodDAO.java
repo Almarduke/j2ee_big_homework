@@ -6,6 +6,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
@@ -17,7 +18,7 @@ public class FoodDAO {
     @GeneratedValue
     private Integer id;
 
-    private String password;
+    private String restaurantId;
 
     private String name;
 

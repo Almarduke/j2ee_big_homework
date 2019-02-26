@@ -1,10 +1,8 @@
 package nju.sephidator.yummybackend.vo;
 
 import lombok.Data;
-import nju.sephidator.yummybackend.dataobject.AddressDAO;
+import nju.sephidator.yummybackend.dataobject.AddressLinkDAO;
 import nju.sephidator.yummybackend.dataobject.MemberDAO;
-
-import java.math.BigDecimal;
 
 @Data
 public class MemberVO {
@@ -16,11 +14,7 @@ public class MemberVO {
 
     private String name;
 
-    private Integer coordinateX;
-
-    private Integer coordinateY;
-
-    private String description;
+    private String addressName;
 
     public MemberDAO getMemberDAO() {
         MemberDAO memberDAO = new MemberDAO();
@@ -33,12 +27,10 @@ public class MemberVO {
         return memberDAO;
     }
 
-    public AddressDAO getAddressDAO() {
-        AddressDAO addressDAO = new AddressDAO();
-        addressDAO.setUserId(email);
-        addressDAO.setCoordinateX(coordinateX);
-        addressDAO.setCoordinateY(coordinateY);
-        addressDAO.setDescription(description);
-        return addressDAO;
+    public AddressLinkDAO getAddressLinkDAO() {
+        AddressLinkDAO addressLinkDAO = new AddressLinkDAO();
+        addressLinkDAO.setAddressName(addressName);
+        addressLinkDAO.setUserId(email);
+        return addressLinkDAO;
     }
 }

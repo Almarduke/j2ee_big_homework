@@ -12,8 +12,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class YummyBackendApplication {
 	@Bean
 	public FilterRegistrationBean corsFilterRegistration() {
-		FilterRegistrationBean registrationBean =
-				new FilterRegistrationBean<>(new CORSFilter());
+		FilterRegistrationBean registrationBean = new FilterRegistrationBean<>(new CORSFilter());
 		registrationBean.setName("CORS Filter");
 		registrationBean.addUrlPatterns("/*");
 		registrationBean.setOrder(1);

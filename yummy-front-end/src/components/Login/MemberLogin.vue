@@ -40,7 +40,7 @@
                        [{ required: true, message: '请输入验证码' }, {validator: captchaValidator}]}]"/>
             </a-col>
             <a-col :span="6">
-              <a-button>获取验证码</a-button>
+              <a-button @click="sendCheckCode">获取验证码</a-button>
             </a-col>
           </a-row>
         </a-form-item>
@@ -107,6 +107,15 @@ export default {
     showModal () {
       this.visible = true;
     },
+    sendCheckCode () {
+      this.$http({
+        url: this.baseUrl + '/member/sendCheckCode',
+        method: 'POST',
+        data: this.registerForm['email']
+      }).then((response) => {
+        console.log(response.data);
+      });
+    },
     handleOk () {
       // this.registerForm.validateFieldsAndScroll((err, values) => {
       //   if (!err) {
@@ -114,7 +123,6 @@ export default {
       //     this.visible = false;
       //   }
       // });
-      const path = this.baseUrl + '/member/signUp';
       const data = {
         email: '2683514831@qq.com',
         password: '123456',
@@ -125,7 +133,7 @@ export default {
         description: '描述'
       };
       this.$http({
-        url: path,
+        url: this.baseUrl + '/member/signUp',
         method: 'POST',
         data: data
       }).then((response) => {
