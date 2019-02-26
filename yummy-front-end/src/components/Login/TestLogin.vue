@@ -110,7 +110,7 @@ export default {
         }
       });
     },
-    passwordValidate (rule, value, callback) {
+    passwordValidator (rule, value, callback) {
       if (value.length > 6) {
         callback('长度大于6');
       } else {

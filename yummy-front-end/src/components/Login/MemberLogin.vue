@@ -7,7 +7,7 @@
       </a-form-item>
       <a-form-item label="密码" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }">
         <a-input v-decorator="['password', {rules: [{required: true, message: '请输入密码'},
-                 {validator: passwordValidate}]}]" type="password"/>
+                 {validator: passwordValidator}]}]" type="password"/>
       </a-form-item>
       <a-form-item :wrapper-col="{ offset: 5 }">
         <a-button class="submit-button" @click="showModal">注册</a-button>
@@ -24,13 +24,20 @@
         </a-form-item>
         <a-form-item v-bind="formItemLayout" label="密码">
           <a-input v-decorator="['password', {rules: [{required: true, message: '请输入密码'},
-                   {validator: passwordValidate}]}]"/>
+                   {validator: passwordValidator}]}]"/>
+        </a-form-item>
+        <a-form-item label="手机" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }">
+          <a-input v-decorator="['phone', {rules: [{required: true, message: '请输入手机号'},
+                 {validator: phoneValidator}]}]"/>
+        </a-form-item>
+        <a-form-item label="姓名" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }">
+          <a-input v-decorator="['name', {rules: [{required: true, message: '请输入姓名'}]}]" type="password"/>
         </a-form-item>
         <a-form-item v-bind="formItemLayout" label="验证码" extra="输入验证码进行验证">
           <a-row :gutter="8">
             <a-col :span="15">
               <a-input v-decorator="['captcha', {rules:
-                       [{ required: true, message: '请输入验证码' }]}]"/>
+                       [{ required: true, message: '请输入验证码' }, {validator: captchaValidator}]}]"/>
             </a-col>
             <a-col :span="6">
               <a-button>获取验证码</a-button>
@@ -43,6 +50,9 @@
 </template>
 
 <script>
+import * as actionTypes from '@/store/action-types';
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
   name: 'MemberLogin',
   data () {
@@ -59,6 +69,9 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapGetters(['userInfo'])
+  },
   beforeCreate () {
     this.loginForm = this.$form.createForm(this);
     this.registerForm = this.$form.createForm(this);
@@ -68,17 +81,28 @@ export default {
       e.preventDefault();
       this.loginForm.validateFieldsAndScroll((err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values);
+          this[actionTypes.LOGIN]({
+            isLogin: true,
+            userId: '我是一个Id',
+            userType: '我是Type',
+            token: ''
+          });
+          // this.$router.push('/');
+          console.log(this.userInfo);
         }
       });
     },
-    passwordValidate (rule, value, callback) {
+    passwordValidator (rule, value, callback) {
       let message = '密码长度必须在6位以上';
-      if (value && value.toString().length < 6) {
-        callback(message);
-      } else {
-        callback();
-      }
+      (value && value.toString().length >= 6) ? callback() : callback(message);
+    },
+    phoneValidator (rule, value, callback) {
+      let message = '手机号必须是11位数字';
+      (value && /\d{11}/.test(value.toString())) ? callback() : callback(message);
+    },
+    captchaValidator (rule, value, callback) {
+      let message = '验证码必须是6位数字';
+      (value && /\d{6}/.test(value.toString())) ? callback() : callback(message);
     },
     showModal () {
       this.visible = true;
@@ -88,14 +112,15 @@ export default {
         if (!err) {
           console.log('Received values of form: ', values);
           this.visible = false;
-        } else {
-          alert('错了');
         }
       });
     },
     handleCancel () {
       this.visible = false;
-    }
+    },
+    ...mapActions([
+      actionTypes.LOGIN
+    ])
   }
 };
 </script>

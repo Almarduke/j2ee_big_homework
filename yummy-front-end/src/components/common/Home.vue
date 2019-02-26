@@ -23,7 +23,7 @@ export default {
     };
   },
   mounted () {
-    this.$router.push('/Login');
+    // this.$router.push('/Login');
   }
 };
 </script>
