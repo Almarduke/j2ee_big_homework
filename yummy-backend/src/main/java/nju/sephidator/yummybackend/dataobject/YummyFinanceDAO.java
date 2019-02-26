@@ -19,5 +19,5 @@ public class YummyFinanceDAO {
 
     private Integer orderId;
 
-    private BigDecimal income;
+    private Double income;
 }

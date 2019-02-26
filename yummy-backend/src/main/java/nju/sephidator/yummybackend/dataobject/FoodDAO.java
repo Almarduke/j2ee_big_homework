@@ -23,5 +23,5 @@ public class FoodDAO {
 
     private String type;
 
-    private BigDecimal price;
+    private Double price;
 }

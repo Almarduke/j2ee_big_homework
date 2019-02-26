@@ -70,7 +70,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['userInfo'])
+    ...mapGetters(['userInfo', 'baseUrl'])
   },
   beforeCreate () {
     this.loginForm = this.$form.createForm(this);
@@ -108,11 +108,28 @@ export default {
       this.visible = true;
     },
     handleOk () {
-      this.registerForm.validateFieldsAndScroll((err, values) => {
-        if (!err) {
-          console.log('Received values of form: ', values);
-          this.visible = false;
-        }
+      // this.registerForm.validateFieldsAndScroll((err, values) => {
+      //   if (!err) {
+      //     console.log('Received values of form: ', values);
+      //     this.visible = false;
+      //   }
+      // });
+      const path = this.baseUrl + '/member/signUp';
+      const data = {
+        email: '2683514831@qq.com',
+        password: '123456',
+        phone: '13218019068',
+        name: '陈骁',
+        coordinateX: 0,
+        coordinateY: 0,
+        description: '描述'
+      };
+      this.$http({
+        url: path,
+        method: 'POST',
+        data: data
+      }).then((response) => {
+        console.log(response.data);
       });
     },
     handleCancel () {

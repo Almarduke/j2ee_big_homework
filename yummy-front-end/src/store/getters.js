@@ -8,6 +8,9 @@ const getters = {
       userInfo.userType = sessionStorage.getItem('userType');
     }
     return userInfo;
+  },
+  baseUrl (state) {
+    return state.url.baseUrl;
   }
 };
 export default getters;

@@ -6,7 +6,6 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.math.BigDecimal;
 
 @Entity
 @Data
@@ -23,5 +22,5 @@ public class OrderDetailDAO {
 
     private Integer foodNum;
 
-    private BigDecimal price;
+    private Double price;
 }

@@ -5,7 +5,6 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.math.BigDecimal;
 
 @Entity
 @Data
@@ -23,5 +22,5 @@ public class MemberDAO {
 
     private Integer level;
 
-    private BigDecimal amount;
+    private Double amount;
 }
