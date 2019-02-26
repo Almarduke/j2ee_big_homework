@@ -1,0 +1,122 @@
+<template>
+  <a-form
+          :form="form"
+          @submit="handleSubmit"
+  >
+    <a-form-item
+            v-bind="formItemLayout"
+            label="E-mail"
+    >
+      <a-input
+              v-decorator="[
+          'email',
+          {
+            rules: [{
+              type: 'email', message: 'The input is not valid E-mail!',
+            }, {
+              required: true, message: 'Please input your E-mail!',
+            }]
+          }
+        ]"
+      />
+    </a-form-item>
+    <a-form-item
+            v-bind="formItemLayout"
+            label="Password"
+    >
+      <a-input
+              v-decorator="[
+          'password',
+          {
+            rules: [{
+              required: true, message: 'Please input your password!',
+            }, {
+              validator: validateToNextPassword,
+            }],
+          }
+        ]"
+              type="password"
+      />
+    </a-form-item>
+    <a-form-item
+            v-bind="formItemLayout"
+            label="Captcha"
+            extra="We must make sure that your are a human."
+    >
+      <a-row :gutter="8">
+        <a-col :span="12">
+          <a-input
+                  v-decorator="[
+              'captcha',
+              {rules: [{ required: true, message: 'Please input the captcha you got!' }]}
+            ]"
+          />
+        </a-col>
+        <a-col :span="12">
+          <a-button>Get captcha</a-button>
+        </a-col>
+      </a-row>
+    </a-form-item>
+    <a-form-item v-bind="tailFormItemLayout">
+      <a-button
+              type="primary"
+              html-type="submit"
+      >
+        Register
+      </a-button>
+    </a-form-item>
+  </a-form>
+</template>
+
+<script>
+
+export default {
+  data () {
+    return {
+      formItemLayout: {
+        labelCol: {
+          xs: { span: 24 },
+          sm: { span: 8 }
+        },
+        wrapperCol: {
+          xs: { span: 24 },
+          sm: { span: 16 }
+        }
+      },
+      tailFormItemLayout: {
+        wrapperCol: {
+          xs: {
+            span: 24,
+            offset: 0
+          },
+          sm: {
+            span: 16,
+            offset: 8
+          }
+        }
+      }
+    };
+  },
+  beforeCreate () {
+    this.form = this.$form.createForm(this);
+  },
+  methods: {
+    handleSubmit  (e) {
+      console.log("我运行了")
+      e.preventDefault();
+      this.form.validateFieldsAndScroll((err, values) => {
+        if (!err) {
+          console.log('Received values of form: ', values);
+        }
+      });
+    },
+    passwordValidate (rule, value, callback) {
+      if (value.length > 6) {
+        callback('长度大于6');
+      } else {
+        callback();
+      }
+    },
+  }
+};
+</script>
