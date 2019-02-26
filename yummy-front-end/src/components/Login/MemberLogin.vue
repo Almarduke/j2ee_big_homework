@@ -8,7 +8,7 @@
     </a-form-item>
     <a-form-item :wrapper-col="{ offset: 5 }">
       <a-button class="submit-button">注册</a-button>
-      <a-button class="submit-button">登陆</a-button>
+      <a-button type="primary" class="submit-button">登陆</a-button>
     </a-form-item>
   </a-form>
 </template>
