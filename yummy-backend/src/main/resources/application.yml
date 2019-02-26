@@ -1,0 +1,21 @@
+server:
+  port: 8086
+
+
+ # 普通QQ邮箱
+spring:
+  mail:
+    host: smtp.qq.com
+    username: 2683514831@qq.com
+    password: pcohgfcpbfqyecha
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+mail:
+  fromMail:
+    addr: 2683514831@qq.com

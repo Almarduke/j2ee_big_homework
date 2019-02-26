@@ -1,9 +1,9 @@
 <template>
   <div>
     <a-form style="margin-top: 20px" :form="loginForm" @submit="handleLogin">
-      <a-form-item label="邮箱" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }">
-        <a-input v-decorator="['email', {rules: [{type: 'email', message: '邮箱不合法'},
-                 {required: true, message: '请输入邮箱'}]}]"/>
+      <a-form-item label="识别号" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }">
+        <a-input v-decorator="['id', {rules: [{required: true, message: '请输入识别号'},
+                 {validator: idValidator}]}]"/>
       </a-form-item>
       <a-form-item label="密码" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }">
         <a-input v-decorator="['password', {rules: [{required: true, message: '请输入密码'},
@@ -15,7 +15,7 @@
       </a-form-item>
     </a-form>
 
-    <a-modal title="用户注册" :visible="visible" @ok="handleOk('registerForm')"
+    <a-modal title="餐厅注册" :visible="visible" @ok="handleOk('registerForm')"
              :confirmLoading="confirmLoading" @cancel="handleCancel">
       <a-form :form="registerForm">
         <a-form-item v-bind="formItemLayout" label="邮箱">
@@ -40,7 +40,7 @@
                        [{ required: true, message: '请输入验证码' }, {validator: captchaValidator}]}]"/>
             </a-col>
             <a-col :span="6">
-              <a-button @click="sendCheckCode">获取验证码</a-button>
+              <a-button>获取验证码</a-button>
             </a-col>
           </a-row>
         </a-form-item>
@@ -50,9 +50,6 @@
 </template>
 
 <script>
-import * as actionTypes from '@/utils/store/action-types';
-import { mapGetters, mapActions } from 'vuex';
-
 export default {
   name: 'MemberLogin',
   data () {
@@ -69,9 +66,6 @@ export default {
       }
     };
   },
-  computed: {
-    ...mapGetters(['userInfo', 'baseUrl'])
-  },
   beforeCreate () {
     this.loginForm = this.$form.createForm(this);
     this.registerForm = this.$form.createForm(this);
@@ -81,16 +75,13 @@ export default {
       e.preventDefault();
       this.loginForm.validateFieldsAndScroll((err, values) => {
         if (!err) {
-          this[actionTypes.LOGIN]({
-            isLogin: true,
-            userId: '我是一个Id',
-            userType: '我是Type',
-            token: ''
-          });
-          // this.$router.push('/');
-          console.log(this.userInfo);
+          this.$router.push('/');
         }
       });
+    },
+    idValidator (rule, value, callback) {
+      let message = '识别码是7位字母和数字';
+      (value && /[0-9a-zA-Z]{7}/) ? callback() : callback(message);
     },
     passwordValidator (rule, value, callback) {
       let message = '密码长度必须在6位以上';
@@ -107,51 +98,23 @@ export default {
     showModal () {
       this.visible = true;
     },
-    sendCheckCode () {
-      this.$http({
-        url: this.baseUrl + '/member/sendCheckCode',
-        method: 'POST',
-        data: this.registerForm['email']
-      }).then((response) => {
-        console.log(response.data);
-      });
-    },
     handleOk () {
-      // this.registerForm.validateFieldsAndScroll((err, values) => {
-      //   if (!err) {
-      //     console.log('Received values of form: ', values);
-      //     this.visible = false;
-      //   }
-      // });
-      const data = {
-        email: '2683514831@qq.com',
-        password: '123456',
-        phone: '13218019068',
-        name: '陈骁',
-        coordinateX: 0,
-        coordinateY: 0,
-        description: '描述'
-      };
-      this.$http({
-        url: this.baseUrl + '/member/signUp',
-        method: 'POST',
-        data: data
-      }).then((response) => {
-        console.log(response.data);
+      this.registerForm.validateFieldsAndScroll((err, values) => {
+        if (!err) {
+          console.log('Received values of form: ', values);
+          this.visible = false;
+        }
       });
     },
     handleCancel () {
       this.visible = false;
-    },
-    ...mapActions([
-      actionTypes.LOGIN
-    ])
+    }
   }
 };
 </script>
 
 <style scoped>
-.submit-button {
-  margin: 0 10px;
-}
+  .submit-button {
+    margin: 0 10px;
+  }
 </style>

@@ -1,7 +1,7 @@
-import Home from '@/components/common/Home';
-import TestPage from '@/components/common/TestPage';
-import Order from '@/components/common/Order';
-import Login from '@/components/Login/Login';
+import Home from '../../components/common/Home';
+import TestPage from '../../components/common/TestPage';
+import Order from '../../components/common/Order';
+import Login from '../../components/Login/Login';
 
 import Vue from 'vue';
 import VueRouter from 'vue-router';

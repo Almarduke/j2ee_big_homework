@@ -2,18 +2,18 @@
   <div class="login-page">
     <a-card class = "login-card" :tabList="tabList" :activeTabKey="activeKey" @tabChange="tabSelected">
       <MemberLogin v-if="activeKey === 'Member'"/>
-      <Order v-else/>
+      <RestaurantLogin v-else/>
     </a-card>
   </div>
 </template>
 
 <script>
 import MemberLogin from '@/components/Login/MemberLogin';
-import Order from '@/components/common/Order';
+import RestaurantLogin from '@/components/Login/RestaurantLogin';
 
 export default {
   name: 'Login',
-  components: { MemberLogin, Order },
+  components: { RestaurantLogin, MemberLogin },
   data () {
     return {
       tabList: [{
