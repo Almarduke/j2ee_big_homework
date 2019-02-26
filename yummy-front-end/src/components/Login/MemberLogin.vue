@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import * as actionTypes from '@/store/action-types';
+import * as actionTypes from '@/utils/store/action-types';
 import { mapGetters, mapActions } from 'vuex';
 
 export default {
