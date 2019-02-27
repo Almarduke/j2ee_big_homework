@@ -15,10 +15,9 @@
       </a-form-item>
     </a-form>
 
-    <a-modal title="用户注册" :visible="visible" @ok="handleOk('registerForm')"
-             :confirmLoading="confirmLoading" @cancel="handleCancel">
+    <a-modal title="用户注册" :visible="visible" @ok="handleOk('registerForm')" @cancel="handleCancel">
       <a-form :form="registerForm">
-        <a-form-item v-bind="formItemLayout" label="邮箱">
+        <a-form-item v-bind="formItemLayout" label="邮箱" ref="email">
           <a-input v-decorator="['email', {rules: [{type: 'email', message: '邮箱不合法'},
                    {required: true, message: '请输入邮箱'}]}]"/>
         </a-form-item>
@@ -31,13 +30,20 @@
                  {validator: phoneValidator}]}]"/>
         </a-form-item>
         <a-form-item label="姓名" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }">
-          <a-input v-decorator="['name', {rules: [{required: true, message: '请输入姓名'}]}]" type="password"/>
+          <a-input v-decorator="['name', {rules: [{required: true, message: '请输入姓名'}]}]"/>
+        </a-form-item>
+        <a-form-item label="地址" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }">
+          <a-select v-decorator="['address', {rules: [{required: true, message: '请输入地址'}]}]">
+            <a-select-option v-for="address in addressList" :key="address">
+              {{address}}
+            </a-select-option>
+          </a-select>
         </a-form-item>
         <a-form-item v-bind="formItemLayout" label="验证码" extra="输入验证码进行验证">
           <a-row :gutter="8">
             <a-col :span="15">
-              <a-input v-decorator="['captcha', {rules:
-                       [{ required: true, message: '请输入验证码' }, {validator: captchaValidator}]}]"/>
+              <a-input v-decorator="['checkCode', {rules:
+                       [{ required: true, message: '请输入验证码' }, {validator: checkCodeValidator}]}]"/>
             </a-col>
             <a-col :span="6">
               <a-button @click="sendCheckCode">获取验证码</a-button>
@@ -52,13 +58,14 @@
 <script>
 import * as actionTypes from '@/utils/store/action-types';
 import { mapGetters, mapActions } from 'vuex';
+import { OK } from '@/utils/htttpstatus/HttpStatus';
 
 export default {
   name: 'MemberLogin',
   data () {
     return {
       visible: false,
-      confirmLoading: false,
+      addressList: [],
       formItemLayout: {
         labelCol: {
           span: 5
@@ -76,6 +83,15 @@ export default {
     this.loginForm = this.$form.createForm(this);
     this.registerForm = this.$form.createForm(this);
   },
+  mounted () {
+    this.$http({
+      url: this.baseUrl + '/address/getAll',
+      method: 'GET'
+    }).then((response) => {
+      let object = response.data;
+      this.addressList = object.data;
+    });
+  },
   methods: {
     handleLogin (e) {
       e.preventDefault();
@@ -87,8 +103,7 @@ export default {
             userType: '我是Type',
             token: ''
           });
-          // this.$router.push('/');
-          console.log(this.userInfo);
+          this.$router.push('/');
         }
       });
     },
@@ -100,7 +115,7 @@ export default {
       let message = '手机号必须是11位数字';
       (value && /\d{11}/.test(value.toString())) ? callback() : callback(message);
     },
-    captchaValidator (rule, value, callback) {
+    checkCodeValidator (rule, value, callback) {
       let message = '验证码必须是6位数字';
       (value && /\d{6}/.test(value.toString())) ? callback() : callback(message);
     },
@@ -109,35 +124,34 @@ export default {
     },
     sendCheckCode () {
       this.$http({
-        url: this.baseUrl + '/member/sendCheckCode',
-        method: 'POST',
-        data: this.registerForm['email']
+        url: this.baseUrl + `/member/sendCheckCode/${this.registerForm.getFieldValue('email')}`,
+        method: 'POST'
       }).then((response) => {
-        console.log(response.data);
+        const code = response.data.code;
+        if (code === OK) {
+          this.$message.info(response.data.msg);
+        } else {
+          this.$message.error(response.data.msg);
+        }
       });
     },
     handleOk () {
-      // this.registerForm.validateFieldsAndScroll((err, values) => {
-      //   if (!err) {
-      //     console.log('Received values of form: ', values);
-      //     this.visible = false;
-      //   }
-      // });
-      const data = {
-        email: '2683514831@qq.com',
-        password: '123456',
-        phone: '13218019068',
-        name: '陈骁',
-        coordinateX: 0,
-        coordinateY: 0,
-        description: '描述'
-      };
-      this.$http({
-        url: this.baseUrl + '/member/signUp',
-        method: 'POST',
-        data: data
-      }).then((response) => {
-        console.log(response.data);
+      this.registerForm.validateFieldsAndScroll((err, values) => {
+        if (!err) {
+          this.$http({
+            url: this.baseUrl + '/member/signUp',
+            method: 'POST',
+            data: values
+          }).then((response) => {
+            const code = response.data.code;
+            if (code === OK) {
+              this.visible = false;
+              this.$message.success(response.data.msg);
+            } else {
+              this.$message.error(response.data.msg);
+            }
+          });
+        }
       });
     },
     handleCancel () {

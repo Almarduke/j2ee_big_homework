@@ -1,7 +1,5 @@
 package nju.sephidator.yummybackend.service;
 
-import nju.sephidator.yummybackend.dataobject.AddressDAO;
-import nju.sephidator.yummybackend.dataobject.MemberDAO;
 import nju.sephidator.yummybackend.vo.MemberVO;
 
 public interface MemberService {
@@ -10,5 +8,7 @@ public interface MemberService {
 
     void create(MemberVO memberVO);
 
-    void sendCheckCode(String email);
+    boolean sendCheckCode(String email);
+
+    boolean checkCodeError(String email, String checkCode);
 }
