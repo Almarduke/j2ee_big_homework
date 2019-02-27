@@ -39,7 +39,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void sendCheckCode(String email) {
+    public boolean sendCheckCode(String email) {
         String code;
         if (checkCodeJPA.existsById(email)) {
             code = checkCodeJPA.findById(email).get().getCode();
@@ -58,9 +58,19 @@ public class MemberServiceImpl implements MemberService {
         simpleMailMessage.setText("您的验证码是：" + code);
 
         try {
+            System.out.println("开始发送邮件验证码");
+            System.out.println("目标邮箱是：" + email);
             mailSender.send(simpleMailMessage);
+            System.out.println("邮件验证码发送结束");
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
+    }
+
+    @Override
+    public boolean checkCodeError(String email, String checkCode) {
+        return !checkCodeJPA.existsByEmailAndCode(email, checkCode);
     }
 }

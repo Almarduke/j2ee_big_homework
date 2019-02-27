@@ -5,16 +5,16 @@ import org.springframework.http.HttpStatus;
 
 public class ResultVOUtil {
 
-    public static ResultVO success(Object object) {
+    public static ResultVO success(Object object, String message) {
         ResultVO resultVO = new ResultVO();
         resultVO.setData(object);
         resultVO.setCode(HttpStatus.OK.value());
-        resultVO.setMsg("成功");
+        resultVO.setMsg(message);
         return resultVO;
     }
 
-    public static ResultVO success() {
-        return success(null);
+    public static ResultVO success(String message) {
+        return success(null, message);
     }
 
     public static ResultVO error(Integer code, String msg) {

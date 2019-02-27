@@ -6,6 +6,7 @@ import nju.sephidator.yummybackend.dataobject.MemberDAO;
 
 @Data
 public class MemberVO {
+
     private String email;
 
     private String password;
@@ -14,7 +15,9 @@ public class MemberVO {
 
     private String name;
 
-    private String addressName;
+    private String address;
+
+    private String checkCode;
 
     public MemberDAO getMemberDAO() {
         MemberDAO memberDAO = new MemberDAO();
@@ -29,7 +32,7 @@ public class MemberVO {
 
     public AddressLinkDAO getAddressLinkDAO() {
         AddressLinkDAO addressLinkDAO = new AddressLinkDAO();
-        addressLinkDAO.setAddressName(addressName);
+        addressLinkDAO.setAddressName(address);
         addressLinkDAO.setUserId(email);
         return addressLinkDAO;
     }
