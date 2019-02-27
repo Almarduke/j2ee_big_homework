@@ -1,9 +1,11 @@
 <template>
-  <div>
-    <a-layout>
+  <div style="width: 100%; height: 100%">
+    <a-layout style="width: 100%; height: 100%">
       <a-layout-header><common-header/></a-layout-header>
       <a-layout-content>
-        <router-view/>
+        <div class="main-view">
+          <router-view/>
+        </div>
       </a-layout-content>
     </a-layout>
   </div>
@@ -23,7 +25,7 @@ export default {
     };
   },
   mounted () {
-    // this.$router.push('/Login');
+    // this.$router.push('/login');
   }
 };
 </script>
@@ -35,5 +37,8 @@ export default {
   }
   .ant-layout-content {
     padding: 0;
+  }
+  .main-view {
+    margin: 20px 64px 0 64px;
   }
 </style>

@@ -1,4 +1,4 @@
 package nju.sephidator.yummybackend.service;
 
-public interface AuthorizationService {
+public interface AuthenticationService {
 }

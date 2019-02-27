@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import MemberLogin from '@/components/Login/MemberLogin';
-import RestaurantLogin from '@/components/Login/RestaurantLogin';
+import MemberLogin from '@/components/login/MemberLogin';
+import RestaurantLogin from '@/components/login/RestaurantLogin';
 
 export default {
   name: 'Login',

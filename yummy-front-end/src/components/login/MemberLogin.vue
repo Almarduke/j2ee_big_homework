@@ -157,9 +157,7 @@ export default {
     handleCancel () {
       this.visible = false;
     },
-    ...mapActions([
-      actionTypes.LOGIN
-    ])
+    ...mapActions([actionTypes.LOGIN])
   }
 };
 </script>

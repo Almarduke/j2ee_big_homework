@@ -1,19 +1,15 @@
 <template>
   <div>
-    <a-menu v-model="current" mode="horizontal" class="menu" @click="handleClick">
-      <a-menu-item key="/TestPage">Yummy!</a-menu-item>
-      <a-menu-item key="/Order">点单</a-menu-item>
+    <a-menu mode="horizontal" class="menu" @click="handleClick">
+      <a-menu-item key="/MainPage">Yummy!</a-menu-item>
+      <a-menu-item key="/Order">订单管理</a-menu-item>
       <a-menu-item key="/UserInfo">用户信息</a-menu-item>
     </a-menu>
   </div>
 </template>
+
 <script>
 export default {
-  data () {
-    return {
-      current: ['/Order']
-    };
-  },
   methods: {
     handleClick (item) {
       this.$router.push(item.key);

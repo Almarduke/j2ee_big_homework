@@ -1,7 +1,7 @@
 import Home from '../../components/common/Home';
-import TestPage from '../../components/common/TestPage';
+import MainPage from '../../components/member/MainPage';
 import Order from '../../components/common/Order';
-import Login from '../../components/Login/Login';
+import Login from '../../components/login/Login';
 
 import Vue from 'vue';
 import VueRouter from 'vue-router';
@@ -15,9 +15,9 @@ const routes = [
     name: 'Home',
     children: [
       {
-        path: '/TestPage',
-        component: TestPage,
-        name: 'TestPage'
+        path: '/MainPage',
+        component: MainPage,
+        name: 'MainPage'
       },
       {
         path: '/Order',
@@ -27,7 +27,7 @@ const routes = [
     ]
   },
   {
-    path: '/Login',
+    path: '/login',
     component: Login,
     name: 'Login'
   }
