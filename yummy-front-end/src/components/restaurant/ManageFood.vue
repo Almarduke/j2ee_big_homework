@@ -37,11 +37,11 @@
           <a-input v-decorator="['name', {rules: [{ required: true, message: '请输入名称' }], initialValue: selectedFoodInfo.name}]"/>
         </a-form-item>
         <a-form-item v-bind="formItemLayout" label="类型">
-          <a-input v-decorator="['name', {rules: [{ required: true, message: '请输入类型' }], initialValue: selectedFoodInfo.type}]"/>
+          <a-input v-decorator="['type', {rules: [{ required: true, message: '请输入类型' }], initialValue: selectedFoodInfo.type}]"/>
         </a-form-item>
         <a-form-item v-bind="formItemLayout" label="价格">
           <div>
-            <a-input-number :min="1" v-decorator="['name', {rules: [{ required: true, message: '请输入价格' }], initialValue: selectedFoodInfo.price}]"/>
+            <a-input-number :min="1" v-decorator="['price', {rules: [{ required: true, message: '请输入价格' }], initialValue: selectedFoodInfo.price}]"/>
             <span style="margin-left: 10px">元</span>
           </div>
         </a-form-item>
