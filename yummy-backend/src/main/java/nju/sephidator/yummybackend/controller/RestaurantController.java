@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/restaurant")
 public class RestaurantController {
@@ -29,20 +31,18 @@ public class RestaurantController {
         }
     }
 
-//    @PostMapping(value = "/sendCheckCode/{email}")
-//    public ResultVO<?> sendCheckCode(@PathVariable("email") String email) {
-//        boolean success = memberService.sendCheckCode(email);
-//        return success ? ResultVOUtil.success("验证码已发送") :
-//                ResultVOUtil.error(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-//                        "服务器错误，发送邮件失败");
-//    }
-//
     @PostMapping(value = "/login")
-    public ResultVO<?> signUp(@RequestParam String id, @RequestParam String password) {
+    public ResultVO<?> login(@RequestParam String id, @RequestParam String password) {
         if (restaurantService.passwordCorrect(id, password)) {
             return ResultVOUtil.success(UserType.RESTAURANT.getValue(), "登陆成功");
         } else {
             return ResultVOUtil.error(HttpStatus.UNAUTHORIZED.value(), "用户名或密码错误");
         }
+    }
+
+    @GetMapping(value = "getAll")
+    public ResultVO<?> getAll() {
+        List<RestaurantVO> resultList = restaurantService.getAll();
+        return ResultVOUtil.success(resultList, "");
     }
 }

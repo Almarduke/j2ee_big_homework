@@ -25,6 +25,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'MainPage',
   data () {
@@ -34,18 +36,17 @@ export default {
       ]
     };
   },
+  computed: {
+    ...mapGetters(['userInfo', 'baseUrl'])
+  },
   mounted () {
-    this.restaurantList = [
-      { name: '兰州拉面', address: '汉口路43号', phone: '13444322522' },
-      { name: '东吴面馆', address: '汉口路48号', phone: '13476447522' },
-      { name: '星巴克', address: '荔枝广场', phone: '134445432522' },
-      { name: '汉堡王', address: '新街口', phone: '13476443532' },
-      { name: '韩江道', address: '艾尚天地', phone: '13476347522' },
-      { name: '肯德基', address: '广州路102号', phone: '1345232522' },
-      { name: '麦当劳', address: '新街口', phone: '13476243532' },
-      { name: '汉堡王2', address: '新街口', phone: '13476443532' },
-      { name: '韩江道2', address: '艾尚天地', phone: '13476347522' }
-    ];
+    this.$http({
+      url: this.baseUrl + '/restaurant/getAll',
+      method: 'GET'
+    }).then((response) => {
+      let object = response.data;
+      this.restaurantList = object.data;
+    });
   },
   methods: {
     selectRestaurant (key) {

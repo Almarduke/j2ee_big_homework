@@ -77,7 +77,6 @@ export default {
     }).then((response) => {
       let object = response.data;
       this.addressList = object.data;
-      console.log(this.addressList);
     });
   },
   methods: {

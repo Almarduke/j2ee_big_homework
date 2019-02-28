@@ -8,6 +8,8 @@ import nju.sephidator.yummybackend.model.RestaurantDAO;
 @Data
 public class RestaurantVO {
 
+    private String id;
+
     private String password;
 
     private String phone;

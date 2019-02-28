@@ -8,6 +8,9 @@ import nju.sephidator.yummybackend.vo.RestaurantVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class RestaurantServiceImpl implements RestaurantService {
 
@@ -29,6 +32,21 @@ public class RestaurantServiceImpl implements RestaurantService {
     @Override
     public boolean passwordCorrect(String id, String password) {
         return restaurantJPA.existsByIdAndPassword(id, password);
+    }
+
+    @Override
+    public List<RestaurantVO> getAll() {
+        List<RestaurantDAO> restaurantDAOS = restaurantJPA.findAll();
+        List<RestaurantVO> result = new ArrayList<>();
+        for (RestaurantDAO restaurantDAO: restaurantDAOS) {
+            RestaurantVO restaurant = new RestaurantVO();
+            restaurant.setId(restaurantDAO.getId());
+            restaurant.setName(restaurantDAO.getName());
+            restaurant.setPhone(restaurantDAO.getPhone());
+            restaurant.setAddress(addressLinkJPA.findByUserId(restaurantDAO.getId()).get(0).getAddressName());
+            result.add(restaurant);
+        }
+        return result;
     }
 
     private String generateUniqueId() {
