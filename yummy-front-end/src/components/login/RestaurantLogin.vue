@@ -44,6 +44,7 @@
 <script>
 import * as actionTypes from '@/utils/store/action-types';
 import { mapGetters, mapActions } from 'vuex';
+import { OK } from '@/utils/htttpstatus/HttpStatus';
 
 export default {
   name: 'MemberLogin',
@@ -84,7 +85,32 @@ export default {
       e.preventDefault();
       this.loginForm.validateFieldsAndScroll((err, values) => {
         if (!err) {
-          this.$router.push('/');
+          console.log({
+            id: values.id,
+            password: values.password
+          });
+          this.$http({
+            url: this.baseUrl + '/restaurant/login',
+            method: 'POST',
+            params: {
+              id: values.id,
+              password: values.password
+            }
+          }).then((response) => {
+            const code = response.data.code;
+            if (code === OK) {
+              this.$message.success(response.data.msg);
+              this[actionTypes.LOGIN]({
+                isLogin: true,
+                userId: values.id,
+                userType: response.data.data,
+                token: ''
+              });
+              this.$router.push('/MainPage');
+            } else {
+              this.$message.error(response.data.msg);
+            }
+          });
         }
       });
     },
@@ -106,8 +132,19 @@ export default {
     handleOk () {
       this.registerForm.validateFieldsAndScroll((err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values);
-          this.visible = false;
+          this.$http({
+            url: this.baseUrl + '/restaurant/signUp',
+            method: 'POST',
+            data: values
+          }).then((response) => {
+            const code = response.data.code;
+            if (code === OK) {
+              this.visible = false;
+              this.$message.success(response.data.msg);
+            } else {
+              this.$message.error(response.data.msg);
+            }
+          });
         }
       });
     },

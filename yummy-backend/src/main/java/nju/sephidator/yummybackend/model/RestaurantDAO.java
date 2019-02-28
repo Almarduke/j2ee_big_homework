@@ -6,7 +6,6 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.math.BigDecimal;
 
 @Entity
 @Data
@@ -14,8 +13,7 @@ import java.math.BigDecimal;
 public class RestaurantDAO {
 
     @Id
-    @GeneratedValue
-    private Integer id = 1000000;
+    private String id;
 
     private String password;
 
@@ -23,5 +21,5 @@ public class RestaurantDAO {
 
     private String name;
 
-    private BigDecimal amount;
+    private Double amount;
 }
