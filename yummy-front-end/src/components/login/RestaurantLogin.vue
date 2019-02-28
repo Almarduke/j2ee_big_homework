@@ -105,7 +105,7 @@ export default {
                 userType: response.data.data,
                 token: ''
               });
-              this.$router.push('/MainPage');
+              this.$router.push('/RestaurantOrder');
             } else {
               this.$message.error(response.data.msg);
             }
