@@ -102,7 +102,6 @@ export default {
   },
   methods: {
     handleSubmit  (e) {
-      console.log("我运行了")
       e.preventDefault();
       this.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
@@ -111,12 +110,9 @@ export default {
       });
     },
     passwordValidator (rule, value, callback) {
-      if (value.length > 6) {
-        callback('长度大于6');
-      } else {
-        callback();
-      }
-    },
+      let message = '长度大于6';
+      value.length > 6 ? callback(message) : callback();
+    }
   }
 };
 </script>

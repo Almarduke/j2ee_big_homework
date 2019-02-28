@@ -12,4 +12,6 @@ public interface RestaurantService {
     boolean passwordCorrect(String id, String password);
 
     List<RestaurantVO> getAll();
+
+    RestaurantVO getById(String id);
 }

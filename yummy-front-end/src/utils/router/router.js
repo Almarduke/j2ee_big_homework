@@ -6,6 +6,7 @@ import MemberOrder from '@/components/member/MemberOrder';
 import ShoppingCart from '@/components/member/ShoppingCart';
 import MemberInfo from '@/components/member/MemberInfo';
 
+import ManageFood from '@/components/restaurant/ManageFood';
 import RestaurantOrder from '@/components/restaurant/RestaurantOrder';
 
 import Vue from 'vue';
@@ -40,6 +41,11 @@ const routes = [
         name: 'MemberInfo'
       },
 
+      {
+        path: '/ManageFood',
+        component: ManageFood,
+        name: 'ManageFood'
+      },
       {
         path: '/RestaurantOrder',
         component: RestaurantOrder,

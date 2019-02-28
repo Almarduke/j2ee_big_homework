@@ -1,11 +1,11 @@
 <template>
   <div>
     <a-form style="margin-top: 20px" :form="loginForm" @submit="handleLogin">
-      <a-form-item label="邮箱" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }">
+      <a-form-item v-bind="formItemLayout" label="邮箱" >
         <a-input v-decorator="['email', {rules: [{type: 'email', message: '邮箱不合法'},
                  {required: true, message: '请输入邮箱'}]}]"/>
       </a-form-item>
-      <a-form-item label="密码" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }">
+      <a-form-item v-bind="formItemLayout" label="密码" >
         <a-input v-decorator="['password', {rules: [{required: true, message: '请输入密码'},
                  {validator: passwordValidator}]}]" type="password"/>
       </a-form-item>
@@ -15,7 +15,7 @@
       </a-form-item>
     </a-form>
 
-    <a-modal title="用户注册" :visible="visible" @ok="handleOk('registerForm')" @cancel="handleCancel">
+    <a-modal title="用户注册" :visible="visible" @ok="handleOk" @cancel="handleCancel">
       <a-form :form="registerForm">
         <a-form-item v-bind="formItemLayout" label="邮箱">
           <a-input v-decorator="['email', {rules: [{type: 'email', message: '邮箱不合法'},
@@ -25,14 +25,14 @@
           <a-input v-decorator="['password', {rules: [{required: true, message: '请输入密码'},
                    {validator: passwordValidator}]}]"/>
         </a-form-item>
-        <a-form-item label="手机" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }">
+        <a-form-item v-bind="formItemLayout" label="手机" >
           <a-input v-decorator="['phone', {rules: [{required: true, message: '请输入手机号'},
                  {validator: phoneValidator}]}]"/>
         </a-form-item>
-        <a-form-item label="姓名" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }">
+        <a-form-item v-bind="formItemLayout" label="姓名" >
           <a-input v-decorator="['name', {rules: [{required: true, message: '请输入姓名'}]}]"/>
         </a-form-item>
-        <a-form-item label="地址" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }">
+        <a-form-item v-bind="formItemLayout" label="地址" >
           <a-select v-decorator="['address', {rules: [{required: true, message: '请输入地址'}]}]">
             <a-select-option v-for="address in addressList" :key="address">
               {{address}}
@@ -115,7 +115,6 @@ export default {
                 token: ''
               });
               this.$router.push('/MainPage');
-              console.log(this.userInfo);
             } else {
               this.$message.error(response.data.msg);
             }

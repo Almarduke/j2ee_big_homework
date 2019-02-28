@@ -34,7 +34,7 @@ public class RestaurantController {
     @PostMapping(value = "/login")
     public ResultVO<?> login(@RequestParam String id, @RequestParam String password) {
         if (restaurantService.passwordCorrect(id, password)) {
-            return ResultVOUtil.success(UserType.RESTAURANT.getValue(), "登陆成功");
+            return ResultVOUtil.success(restaurantService.getById(id), "登陆成功");
         } else {
             return ResultVOUtil.error(HttpStatus.UNAUTHORIZED.value(), "用户名或密码错误");
         }

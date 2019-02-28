@@ -24,7 +24,7 @@
             <a-list itemLayout="horizontal" :bordered="true">
               <a-list-item v-for="food in foodList" :key="food.id">
                 <a slot="actions" @click="addFoodToCart(food)">添加</a>
-                <a-list-item-meta :description="food.description">
+                <a-list-item-meta :description="food.type">
                   <a slot="title" >{{food.name}}</a>
                 </a-list-item-meta>
                 <div>{{food.price}}元</div>
@@ -34,14 +34,14 @@
           <a-tab-pane tab="购物车" key="2">
             <a-list itemLayout="horizontal" :bordered="true">
               <a-list-item v-for="(food, index) in foodInCart" :key="food.id">
-                <a-list-item-meta :description="food.description">
+                <a-list-item-meta :description="food.type">
                   <a slot="title" >{{food.name}}</a>
                 </a-list-item-meta>
                 <div style="margin-right: 20px">{{food.price}}元</div>
                 <div>
-                  <a slot="actions" @click="minus(food)" class="number-input">-</a>
+                  <a slot="actions" @click="minus(index)" class="number-input">-</a>
                   <a slot="description" class="number-input">{{foodNumberList[index]}}份</a>
-                  <a slot="actions" @click="plus(food)" class="number-input">+</a>
+                  <a slot="actions" @click="plus(index)" class="number-input">+</a>
                 </div>
               </a-list-item>
             </a-list>
@@ -62,8 +62,8 @@ export default {
   data () {
     return {
       foodList: [
-        { id: 0, name: '蛋炒饭', price: 3, description: '我觉得可以' },
-        { id: 1, name: '土豆', price: 76, description: '我觉得不行' }
+        { id: 0, name: '蛋炒饭', price: 3, type: '我觉得可以' },
+        { id: 1, name: '土豆', price: 76, type: '我觉得不行' }
       ],
       foodInCart: [],
       foodNumberList: []
@@ -90,8 +90,7 @@ export default {
         this.foodNumberList.splice(index, 1, newNumber);
       }
     },
-    minus (food) {
-      const index = this.foodInCart.indexOf(food);
+    minus (index) {
       if (this.foodNumberList[index] === 1) {
         this.foodInCart.splice(index, 1);
         this.foodNumberList.splice(index, 1);
@@ -100,8 +99,7 @@ export default {
         this.foodNumberList.splice(index, 1, newNumber);
       }
     },
-    plus (food) {
-      const index = this.foodInCart.indexOf(food);
+    plus (index) {
       const newNumber = this.foodNumberList[index] += 1;
       this.foodNumberList.splice(index, 1, newNumber);
     }
