@@ -11,4 +11,6 @@ public interface MemberService {
     boolean sendCheckCode(String email);
 
     boolean checkCodeError(String email, String checkCode);
+
+    boolean passwordCorrect(String email, String password);
 }

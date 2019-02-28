@@ -21,5 +21,4 @@ public class AddressController {
         List<String> resultList = addressService.getAll();
         return ResultVOUtil.success(resultList, "");
     }
-
 }

@@ -5,8 +5,6 @@ const state = {
     userType: '',
     token: ''
   },
-  url: {
-    baseUrl: 'http://localhost:8086'
-  }
+  baseUrl: 'http://localhost:8086'
 };
 export default state;

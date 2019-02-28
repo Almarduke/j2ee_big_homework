@@ -10,7 +10,7 @@ const getters = {
     return userInfo;
   },
   baseUrl (state) {
-    return state.url.baseUrl;
+    return state.baseUrl;
   }
 };
 export default getters;

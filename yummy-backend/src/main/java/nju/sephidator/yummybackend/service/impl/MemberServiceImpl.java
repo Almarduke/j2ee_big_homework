@@ -1,6 +1,6 @@
 package nju.sephidator.yummybackend.service.impl;
 
-import nju.sephidator.yummybackend.dataobject.CheckCodeDAO;
+import nju.sephidator.yummybackend.model.CheckCodeDAO;
 import nju.sephidator.yummybackend.repository.AddressLinkJPA;
 import nju.sephidator.yummybackend.repository.CheckCodeJPA;
 import nju.sephidator.yummybackend.repository.MemberJPA;
@@ -72,5 +72,10 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public boolean checkCodeError(String email, String checkCode) {
         return !checkCodeJPA.existsByEmailAndCode(email, checkCode);
+    }
+
+    @Override
+    public boolean passwordCorrect(String email, String password) {
+        return memberJPA.existsByEmailAndPassword(email, password);
     }
 }

@@ -17,7 +17,7 @@
 
     <a-modal title="用户注册" :visible="visible" @ok="handleOk('registerForm')" @cancel="handleCancel">
       <a-form :form="registerForm">
-        <a-form-item v-bind="formItemLayout" label="邮箱" ref="email">
+        <a-form-item v-bind="formItemLayout" label="邮箱">
           <a-input v-decorator="['email', {rules: [{type: 'email', message: '邮箱不合法'},
                    {required: true, message: '请输入邮箱'}]}]"/>
         </a-form-item>
@@ -97,13 +97,29 @@ export default {
       e.preventDefault();
       this.loginForm.validateFieldsAndScroll((err, values) => {
         if (!err) {
-          this[actionTypes.LOGIN]({
-            isLogin: true,
-            userId: '我是一个Id',
-            userType: '我是Type',
-            token: ''
+          this.$http({
+            url: this.baseUrl + '/member/login',
+            method: 'POST',
+            params: {
+              email: values.email,
+              password: values.password
+            }
+          }).then((response) => {
+            const code = response.data.code;
+            if (code === OK) {
+              this.$message.success(response.data.msg);
+              this[actionTypes.LOGIN]({
+                isLogin: true,
+                userId: values.email,
+                userType: response.data.data,
+                token: ''
+              });
+              this.$router.push('/MainPage');
+              console.log(this.userInfo);
+            } else {
+              this.$message.error(response.data.msg);
+            }
           });
-          this.$router.push('/');
         }
       });
     },
@@ -157,9 +173,7 @@ export default {
     handleCancel () {
       this.visible = false;
     },
-    ...mapActions([
-      actionTypes.LOGIN
-    ])
+    ...mapActions([actionTypes.LOGIN])
   }
 };
 </script>

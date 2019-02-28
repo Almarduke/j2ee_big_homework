@@ -1,7 +1,8 @@
-import Home from '../../components/common/Home';
-import TestPage from '../../components/common/TestPage';
-import Order from '../../components/common/Order';
-import Login from '../../components/Login/Login';
+import Home from '@/components/common/Home';
+import MainPage from '@/components/member/MainPage';
+import Order from '@/components/member/Order';
+import Login from '@/components/login/Login';
+import ShoppingCart from '@/components/member/ShoppingCart';
 
 import Vue from 'vue';
 import VueRouter from 'vue-router';
@@ -15,9 +16,14 @@ const routes = [
     name: 'Home',
     children: [
       {
-        path: '/TestPage',
-        component: TestPage,
-        name: 'TestPage'
+        path: '/MainPage',
+        component: MainPage,
+        name: 'MainPage'
+      },
+      {
+        path: '/ShoppingCart',
+        component: ShoppingCart,
+        name: 'ShoppingCart'
       },
       {
         path: '/Order',
@@ -27,7 +33,7 @@ const routes = [
     ]
   },
   {
-    path: '/Login',
+    path: '/login',
     component: Login,
     name: 'Login'
   }

@@ -1,4 +1,4 @@
-package nju.sephidator.yummybackend.dataobject;
+package nju.sephidator.yummybackend.model;
 
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;

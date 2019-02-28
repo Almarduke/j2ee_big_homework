@@ -18,10 +18,6 @@
     <a-modal title="餐厅注册" :visible="visible" @ok="handleOk('registerForm')"
              :confirmLoading="confirmLoading" @cancel="handleCancel">
       <a-form :form="registerForm">
-        <a-form-item v-bind="formItemLayout" label="邮箱">
-          <a-input v-decorator="['email', {rules: [{type: 'email', message: '邮箱不合法'},
-                   {required: true, message: '请输入邮箱'}]}]"/>
-        </a-form-item>
         <a-form-item v-bind="formItemLayout" label="密码">
           <a-input v-decorator="['password', {rules: [{required: true, message: '请输入密码'},
                    {validator: passwordValidator}]}]"/>
@@ -30,19 +26,15 @@
           <a-input v-decorator="['phone', {rules: [{required: true, message: '请输入手机号'},
                  {validator: phoneValidator}]}]"/>
         </a-form-item>
-        <a-form-item label="姓名" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }">
-          <a-input v-decorator="['name', {rules: [{required: true, message: '请输入姓名'}]}]" type="password"/>
+        <a-form-item label="饭店名" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }">
+          <a-input v-decorator="['name', {rules: [{required: true, message: '请输入饭店名'}]}]"/>
         </a-form-item>
-        <a-form-item v-bind="formItemLayout" label="验证码" extra="输入验证码进行验证">
-          <a-row :gutter="8">
-            <a-col :span="15">
-              <a-input v-decorator="['captcha', {rules:
-                       [{ required: true, message: '请输入验证码' }, {validator: captchaValidator}]}]"/>
-            </a-col>
-            <a-col :span="6">
-              <a-button>获取验证码</a-button>
-            </a-col>
-          </a-row>
+        <a-form-item label="地址" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }">
+          <a-select v-decorator="['address', {rules: [{required: true, message: '请输入地址'}]}]">
+            <a-select-option v-for="address in addressList" :key="address">
+              {{address}}
+            </a-select-option>
+          </a-select>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -50,11 +42,16 @@
 </template>
 
 <script>
+import * as actionTypes from '@/utils/store/action-types';
+import { mapGetters, mapActions } from 'vuex';
+import { OK } from '@/utils/htttpstatus/HttpStatus';
+
 export default {
   name: 'MemberLogin',
   data () {
     return {
       visible: false,
+      addressList: [],
       confirmLoading: false,
       formItemLayout: {
         labelCol: {
@@ -66,16 +63,53 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapGetters(['userInfo', 'baseUrl'])
+  },
   beforeCreate () {
     this.loginForm = this.$form.createForm(this);
     this.registerForm = this.$form.createForm(this);
+  },
+  mounted () {
+    this.$http({
+      url: this.baseUrl + '/address/getAll',
+      method: 'GET'
+    }).then((response) => {
+      let object = response.data;
+      this.addressList = object.data;
+    });
   },
   methods: {
     handleLogin (e) {
       e.preventDefault();
       this.loginForm.validateFieldsAndScroll((err, values) => {
         if (!err) {
-          this.$router.push('/');
+          console.log({
+            id: values.id,
+            password: values.password
+          });
+          this.$http({
+            url: this.baseUrl + '/restaurant/login',
+            method: 'POST',
+            params: {
+              id: values.id,
+              password: values.password
+            }
+          }).then((response) => {
+            const code = response.data.code;
+            if (code === OK) {
+              this.$message.success(response.data.msg);
+              this[actionTypes.LOGIN]({
+                isLogin: true,
+                userId: values.id,
+                userType: response.data.data,
+                token: ''
+              });
+              this.$router.push('/MainPage');
+            } else {
+              this.$message.error(response.data.msg);
+            }
+          });
         }
       });
     },
@@ -91,24 +125,32 @@ export default {
       let message = '手机号必须是11位数字';
       (value && /\d{11}/.test(value.toString())) ? callback() : callback(message);
     },
-    captchaValidator (rule, value, callback) {
-      let message = '验证码必须是6位数字';
-      (value && /\d{6}/.test(value.toString())) ? callback() : callback(message);
-    },
     showModal () {
       this.visible = true;
     },
     handleOk () {
       this.registerForm.validateFieldsAndScroll((err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values);
-          this.visible = false;
+          this.$http({
+            url: this.baseUrl + '/restaurant/signUp',
+            method: 'POST',
+            data: values
+          }).then((response) => {
+            const code = response.data.code;
+            if (code === OK) {
+              this.visible = false;
+              this.$message.success(response.data.msg);
+            } else {
+              this.$message.error(response.data.msg);
+            }
+          });
         }
       });
     },
     handleCancel () {
       this.visible = false;
-    }
+    },
+    ...mapActions([actionTypes.LOGIN])
   }
 };
 </script>

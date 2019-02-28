@@ -1,27 +1,25 @@
-package nju.sephidator.yummybackend.dataobject;
+package nju.sephidator.yummybackend.model;
 
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.io.Serializable;
 
 @Entity
 @Data
 @DynamicUpdate
-public class MemberDAO {
+public class RestaurantDAO {
 
     @Id
-    private String email;
+    private String id;
 
     private String password;
 
     private String phone;
 
     private String name;
-
-    private Integer level;
 
     private Double amount;
 }

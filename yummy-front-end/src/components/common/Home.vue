@@ -1,9 +1,11 @@
 <template>
-  <div>
-    <a-layout>
+  <div style="width: 100%; height: 100%">
+    <a-layout style="width: 100%; height: 100%">
       <a-layout-header><common-header/></a-layout-header>
       <a-layout-content>
-        <router-view/>
+        <div class="main-view">
+          <router-view/>
+        </div>
       </a-layout-content>
     </a-layout>
   </div>
@@ -11,11 +13,15 @@
 
 <script>
 import CommonHeader from './CommonHeader';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'home',
   components: {
     CommonHeader
+  },
+  computed: {
+    ...mapGetters(['userInfo'])
   },
   data () {
     return {
@@ -23,7 +29,11 @@ export default {
     };
   },
   mounted () {
-    // this.$router.push('/Login');
+    if (!this.userInfo.isLogin) {
+      this.$router.push('/login');
+    } else if (this.userInfo.userType === 'MEMBER') {
+      this.$router.push('/MainPage');
+    }
   }
 };
 </script>
@@ -35,5 +45,8 @@ export default {
   }
   .ant-layout-content {
     padding: 0;
+  }
+  .main-view {
+    margin: 20px 64px;
   }
 </style>
