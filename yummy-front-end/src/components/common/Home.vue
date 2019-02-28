@@ -31,6 +31,8 @@ export default {
   mounted () {
     if (!this.userInfo.isLogin) {
       this.$router.push('/login');
+    } else if (this.userInfo.userType === 'MEMBER') {
+      this.$router.push('/MainPage');
     }
   }
 };

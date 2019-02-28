@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 800px; background-color: white">
+  <div style="height: 700px; background-color: white">
     <a-card title="商家列表">
       <a-card-grid class="info-card" v-for="restaurantInfo in restaurantList"
                    :key="restaurantInfo.name" @click="selectRestaurant(restaurantInfo)">

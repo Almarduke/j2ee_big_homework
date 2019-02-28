@@ -1,6 +1,6 @@
 import Home from '@/components/common/Home';
 import MainPage from '@/components/member/MainPage';
-import Order from '@/components/common/Order';
+import Order from '@/components/member/Order';
 import Login from '@/components/login/Login';
 import ShoppingCart from '@/components/member/ShoppingCart';
 
