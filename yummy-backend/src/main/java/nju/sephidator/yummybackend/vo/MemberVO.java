@@ -1,8 +1,8 @@
 package nju.sephidator.yummybackend.vo;
 
 import lombok.Data;
-import nju.sephidator.yummybackend.dataobject.AddressLinkDAO;
-import nju.sephidator.yummybackend.dataobject.MemberDAO;
+import nju.sephidator.yummybackend.model.AddressLinkDAO;
+import nju.sephidator.yummybackend.model.MemberDAO;
 
 @Data
 public class MemberVO {

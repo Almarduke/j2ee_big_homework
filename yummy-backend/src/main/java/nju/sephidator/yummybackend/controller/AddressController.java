@@ -22,4 +22,8 @@ public class AddressController {
         return ResultVOUtil.success(resultList, "");
     }
 
+    @GetMapping(value = "/test")
+    public String getTest() {
+        return "连接成功";
+    }
 }

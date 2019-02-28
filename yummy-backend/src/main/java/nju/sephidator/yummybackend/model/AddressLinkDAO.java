@@ -1,4 +1,4 @@
-package nju.sephidator.yummybackend.dataobject;
+package nju.sephidator.yummybackend.model;
 
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
@@ -7,22 +7,18 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 @Entity
 @Data
 @DynamicUpdate
-public class FoodDAO {
+public class AddressLinkDAO implements Serializable {
 
     @Id
     @GeneratedValue
     private Integer id;
 
-    private String restaurantId;
+    private String userId;
 
-    private String name;
+    private String addressName;
 
-    private String type;
-
-    private Double price;
 }

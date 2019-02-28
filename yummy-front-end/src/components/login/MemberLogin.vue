@@ -97,13 +97,29 @@ export default {
       e.preventDefault();
       this.loginForm.validateFieldsAndScroll((err, values) => {
         if (!err) {
-          this[actionTypes.LOGIN]({
-            isLogin: true,
-            userId: '我是一个Id',
-            userType: '我是Type',
-            token: ''
+          this.$http({
+            url: this.baseUrl + '/member/login',
+            method: 'POST',
+            params: {
+              email: values.email,
+              password: values.password
+            }
+          }).then((response) => {
+            const code = response.data.code;
+            if (code === OK) {
+              this.$message.success(response.data.msg);
+              this[actionTypes.LOGIN]({
+                isLogin: true,
+                userId: values.email,
+                userType: response.data.data,
+                token: ''
+              });
+              this.$router.push('/MainPage');
+              console.log(this.userInfo);
+            } else {
+              this.$message.error(response.data.msg);
+            }
           });
-          this.$router.push('/');
         }
       });
     },

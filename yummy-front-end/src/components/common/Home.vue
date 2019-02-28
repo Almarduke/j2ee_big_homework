@@ -13,11 +13,15 @@
 
 <script>
 import CommonHeader from './CommonHeader';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'home',
   components: {
     CommonHeader
+  },
+  computed: {
+    ...mapGetters(['userInfo'])
   },
   data () {
     return {
@@ -25,7 +29,9 @@ export default {
     };
   },
   mounted () {
-    // this.$router.push('/login');
+    if (!this.userInfo.isLogin) {
+      this.$router.push('/login');
+    }
   }
 };
 </script>

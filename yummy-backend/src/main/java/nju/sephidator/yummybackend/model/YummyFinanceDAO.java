@@ -1,4 +1,4 @@
-package nju.sephidator.yummybackend.dataobject;
+package nju.sephidator.yummybackend.model;
 
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
@@ -6,8 +6,6 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.io.Serializable;
-import java.math.BigDecimal;
 
 @Entity
 @Data
