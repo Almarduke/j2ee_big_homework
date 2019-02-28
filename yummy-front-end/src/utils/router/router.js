@@ -1,7 +1,8 @@
-import Home from '../../components/common/Home';
-import MainPage from '../../components/member/MainPage';
-import Order from '../../components/common/Order';
-import Login from '../../components/login/Login';
+import Home from '@/components/common/Home';
+import MainPage from '@/components/member/MainPage';
+import Order from '@/components/common/Order';
+import Login from '@/components/login/Login';
+import ShoppingCart from '@/components/member/ShoppingCart';
 
 import Vue from 'vue';
 import VueRouter from 'vue-router';
@@ -18,6 +19,11 @@ const routes = [
         path: '/MainPage',
         component: MainPage,
         name: 'MainPage'
+      },
+      {
+        path: '/ShoppingCart',
+        component: ShoppingCart,
+        name: 'ShoppingCart'
       },
       {
         path: '/Order',

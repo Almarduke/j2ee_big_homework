@@ -45,6 +45,6 @@ export default {
     padding: 0;
   }
   .main-view {
-    margin: 20px 64px 0 64px;
+    margin: 20px 64px;
   }
 </style>

@@ -23,4 +23,6 @@ public class FoodDAO {
     private String type;
 
     private Double price;
+
+    private boolean available;
 }

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height: 800px; background-color: white">
     <a-card title="商家列表">
       <a-card-grid class="info-card" v-for="restaurantInfo in restaurantList"
                    :key="restaurantInfo.name" @click="selectRestaurant(restaurantInfo)">
@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     selectRestaurant (key) {
-      console.log(key);
+      this.$router.push('/ShoppingCart');
     }
   }
 };
