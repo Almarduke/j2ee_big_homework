@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/member")
-public class MemberController {
+public class RestaurantController {
 
     @Autowired
     private MemberService memberService;

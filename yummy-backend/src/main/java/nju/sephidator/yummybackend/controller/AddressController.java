@@ -21,9 +21,4 @@ public class AddressController {
         List<String> resultList = addressService.getAll();
         return ResultVOUtil.success(resultList, "");
     }
-
-    @GetMapping(value = "/test")
-    public String getTest() {
-        return "连接成功";
-    }
 }

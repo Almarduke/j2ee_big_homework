@@ -4,6 +4,7 @@ import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.math.BigDecimal;
 
@@ -13,7 +14,8 @@ import java.math.BigDecimal;
 public class RestaurantDAO {
 
     @Id
-    private String id;
+    @GeneratedValue
+    private Integer id = 1000000;
 
     private String password;
 

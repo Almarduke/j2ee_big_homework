@@ -17,7 +17,7 @@
 
     <a-modal title="用户注册" :visible="visible" @ok="handleOk('registerForm')" @cancel="handleCancel">
       <a-form :form="registerForm">
-        <a-form-item v-bind="formItemLayout" label="邮箱" ref="email">
+        <a-form-item v-bind="formItemLayout" label="邮箱">
           <a-input v-decorator="['email', {rules: [{type: 'email', message: '邮箱不合法'},
                    {required: true, message: '请输入邮箱'}]}]"/>
         </a-form-item>
