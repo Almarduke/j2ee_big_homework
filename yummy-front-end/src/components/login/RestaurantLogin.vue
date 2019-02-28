@@ -1,11 +1,11 @@
 <template>
   <div>
     <a-form style="margin-top: 20px" :form="loginForm" @submit="handleLogin">
-      <a-form-item label="识别号" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }">
+      <a-form-item v-bind="formItemLayout" label="识别号">
         <a-input v-decorator="['id', {rules: [{required: true, message: '请输入识别号'},
                  {validator: idValidator}]}]"/>
       </a-form-item>
-      <a-form-item label="密码" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }">
+      <a-form-item v-bind="formItemLayout" label="密码">
         <a-input v-decorator="['password', {rules: [{required: true, message: '请输入密码'},
                  {validator: passwordValidator}]}]" type="password"/>
       </a-form-item>
@@ -15,21 +15,21 @@
       </a-form-item>
     </a-form>
 
-    <a-modal title="餐厅注册" :visible="visible" @ok="handleOk('registerForm')"
+    <a-modal title="餐厅注册" :visible="visible" @ok="handleOk"
              :confirmLoading="confirmLoading" @cancel="handleCancel">
       <a-form :form="registerForm">
         <a-form-item v-bind="formItemLayout" label="密码">
           <a-input v-decorator="['password', {rules: [{required: true, message: '请输入密码'},
                    {validator: passwordValidator}]}]"/>
         </a-form-item>
-        <a-form-item label="手机" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }">
+        <a-form-item v-bind="formItemLayout" label="手机">
           <a-input v-decorator="['phone', {rules: [{required: true, message: '请输入手机号'},
                  {validator: phoneValidator}]}]"/>
         </a-form-item>
-        <a-form-item label="饭店名" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }">
+        <a-form-item v-bind="formItemLayout" label="饭店名" >
           <a-input v-decorator="['name', {rules: [{required: true, message: '请输入饭店名'}]}]"/>
         </a-form-item>
-        <a-form-item label="地址" :label-col="{ span: 5 }" :wrapper-col="{ span: 15 }">
+        <a-form-item v-bind="formItemLayout" label="地址">
           <a-select v-decorator="['address', {rules: [{required: true, message: '请输入地址'}]}]">
             <a-select-option v-for="address in addressList" :key="address">
               {{address}}
@@ -64,7 +64,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['userInfo', 'baseUrl'])
+    ...mapGetters(['restaurantInfo', 'baseUrl'])
   },
   beforeCreate () {
     this.loginForm = this.$form.createForm(this);
@@ -84,10 +84,6 @@ export default {
       e.preventDefault();
       this.loginForm.validateFieldsAndScroll((err, values) => {
         if (!err) {
-          console.log({
-            id: values.id,
-            password: values.password
-          });
           this.$http({
             url: this.baseUrl + '/restaurant/login',
             method: 'POST',
@@ -102,10 +98,11 @@ export default {
               this[actionTypes.LOGIN]({
                 isLogin: true,
                 userId: values.id,
-                userType: response.data.data,
+                userType: 'RESTAURANT',
                 token: ''
               });
-              this.$router.push('/MainPage');
+              this[actionTypes.SET_RESTAURANT_INFO](response.data.data);
+              this.$router.push('/ManageFood');
             } else {
               this.$message.error(response.data.msg);
             }
@@ -150,7 +147,7 @@ export default {
     handleCancel () {
       this.visible = false;
     },
-    ...mapActions([actionTypes.LOGIN])
+    ...mapActions([actionTypes.LOGIN, actionTypes.SET_RESTAURANT_INFO])
   }
 };
 </script>

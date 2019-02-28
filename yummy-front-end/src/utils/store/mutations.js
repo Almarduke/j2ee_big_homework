@@ -22,6 +22,17 @@ const mutations = {
     stateUserInfo.token = '';
     stateUserInfo.userType = '';
     stateUserInfo.isLogin = false;
+  },
+  [types.SET_RESTAURANT_INFO] (state, restaurantInfo) {
+    let stateRestaurantInfo = state.restaurantInfo;
+    sessionStorage.setItem('restaurantId', restaurantInfo.id);
+    sessionStorage.setItem('restaurantName', restaurantInfo.name);
+    sessionStorage.setItem('restaurantPhone', restaurantInfo.phone);
+    sessionStorage.setItem('restaurantAddress', restaurantInfo.address);
+    stateRestaurantInfo.id = restaurantInfo.id;
+    stateRestaurantInfo.name = restaurantInfo.name;
+    stateRestaurantInfo.phone = restaurantInfo.phone;
+    stateRestaurantInfo.address = restaurantInfo.address;
   }
 };
 export default mutations;

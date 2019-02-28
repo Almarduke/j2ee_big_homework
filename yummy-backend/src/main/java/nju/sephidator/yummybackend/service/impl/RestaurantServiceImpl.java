@@ -39,14 +39,24 @@ public class RestaurantServiceImpl implements RestaurantService {
         List<RestaurantDAO> restaurantDAOS = restaurantJPA.findAll();
         List<RestaurantVO> result = new ArrayList<>();
         for (RestaurantDAO restaurantDAO: restaurantDAOS) {
-            RestaurantVO restaurant = new RestaurantVO();
-            restaurant.setId(restaurantDAO.getId());
-            restaurant.setName(restaurantDAO.getName());
-            restaurant.setPhone(restaurantDAO.getPhone());
-            restaurant.setAddress(addressLinkJPA.findByUserId(restaurantDAO.getId()).get(0).getAddressName());
-            result.add(restaurant);
+            result.add(generateRestaurantVO(restaurantDAO));
         }
         return result;
+    }
+
+    @Override
+    public RestaurantVO getById(String id) {
+        RestaurantDAO restaurantDAO = restaurantJPA.getOne(id);
+        return generateRestaurantVO(restaurantDAO);
+    }
+
+    private RestaurantVO generateRestaurantVO(RestaurantDAO restaurantDAO) {
+        RestaurantVO restaurant = new RestaurantVO();
+        restaurant.setId(restaurantDAO.getId());
+        restaurant.setName(restaurantDAO.getName());
+        restaurant.setPhone(restaurantDAO.getPhone());
+        restaurant.setAddress(addressLinkJPA.findByUserId(restaurantDAO.getId()).get(0).getAddressName());
+        return restaurant;
     }
 
     private String generateUniqueId() {

@@ -1,9 +1,14 @@
 <template>
   <div>
     <a-menu mode="horizontal" class="menu" @click="handleClick">
-      <a-menu-item key="/MainPage">Yummy!</a-menu-item>
-      <a-menu-item key="/Order">订单管理</a-menu-item>
-      <a-menu-item key="/UserInfo">用户信息</a-menu-item>
+      <a-menu-item key="/MainPage" v-if="userInfo.userType === 'MEMBER'">Yummy!</a-menu-item>
+      <a-menu-item key="/MemberOrder" v-if="userInfo.userType === 'MEMBER'">订单管理</a-menu-item>
+      <a-menu-item key="/MemberInfo" v-if="userInfo.userType === 'MEMBER'">用户信息</a-menu-item>
+
+      <a-menu-item key="/ManageFood" v-if="userInfo.userType === 'RESTAURANT'">菜品管理</a-menu-item>
+      <a-menu-item key="/RestaurantOrder" v-if="userInfo.userType === 'RESTAURANT'">订单管理</a-menu-item>
+      <a-menu-item key="/RestaurantInfo" v-if="userInfo.userType === 'RESTAURANT'">饭店信息</a-menu-item>
+
       <a-menu-item key="/Login" class="logout-icon-menu-item" @click="logout">登出</a-menu-item>
     </a-menu>
   </div>

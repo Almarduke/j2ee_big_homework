@@ -11,6 +11,16 @@ const getters = {
   },
   baseUrl (state) {
     return state.baseUrl;
+  },
+  restaurantInfo (state) {
+    let restaurantInfo = state.restaurantInfo;
+    if (restaurantInfo.id === '') {
+      restaurantInfo.id = sessionStorage.getItem('restaurantId');
+      restaurantInfo.name = sessionStorage.getItem('restaurantName');
+      restaurantInfo.phone = sessionStorage.getItem('restaurantPhone');
+      restaurantInfo.address = sessionStorage.getItem('restaurantAddress');
+    }
+    return restaurantInfo;
   }
 };
 export default getters;
