@@ -12,5 +12,9 @@ public interface OrderService {
 
     List<OrderVO> findMemberOrders(String email, Integer orderStatus);
 
+    List<OrderVO> findRestaurantOrders(String restaurantId, Integer orderStatus);
+
     OrderInfoVO getOrderInfo(String id);
+
+    List<OrderVO> updateOrder(String id, boolean isMemberEditing);
 }
