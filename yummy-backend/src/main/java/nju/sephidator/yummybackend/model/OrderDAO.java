@@ -31,4 +31,10 @@ public class OrderDAO {
     private Date createTime;
 
     private Date updateTime;
+
+    public void updateStatus() {
+        if (orderStatus < OrderStatus.FINISHED.getCode()) {
+            orderStatus ++;
+        }
+    }
 }

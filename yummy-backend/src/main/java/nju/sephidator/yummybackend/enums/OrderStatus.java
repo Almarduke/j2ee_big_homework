@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum OrderStatus {
-    SUBMITTED(0, "已提交"),
+    TOPAY(0, "未支付"),
     PAYED(1, "已支付"),
     DISTRIBUTING(2, "配送中"),
     FINISHED(3, "已完结"),
@@ -23,7 +23,7 @@ public enum OrderStatus {
     public static String getDescription(Integer code) {
         switch (code) {
             case 0:
-                return SUBMITTED.description;
+                return TOPAY.description;
             case 1:
                 return PAYED.description;
             case 2:

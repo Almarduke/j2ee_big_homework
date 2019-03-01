@@ -4,9 +4,7 @@ import nju.sephidator.yummybackend.enums.AddressStatus;
 import nju.sephidator.yummybackend.enums.OrderStatus;
 import nju.sephidator.yummybackend.model.OrderDAO;
 import nju.sephidator.yummybackend.model.OrderDetailDAO;
-import nju.sephidator.yummybackend.model.RestaurantDAO;
 import nju.sephidator.yummybackend.repository.*;
-import nju.sephidator.yummybackend.service.MemberService;
 import nju.sephidator.yummybackend.service.OrderService;
 import nju.sephidator.yummybackend.utils.KeyUtil;
 import nju.sephidator.yummybackend.utils.TimeUtil;
@@ -51,7 +49,7 @@ public class OrderServiceImpl implements OrderService {
                         .get(0).getAddressName());
         orderDAO.setRestaurantId(restaurantId);
         orderDAO.setAmount(totalAmount);
-        orderDAO.setOrderStatus(OrderStatus.SUBMITTED.getCode());
+        orderDAO.setOrderStatus(OrderStatus.TOPAY.getCode());
         orderDAO.setCreateTime(new Date());
         orderDAO.setUpdateTime(new Date());
         orderJPA.save(orderDAO);
@@ -68,18 +66,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderVO> findMemberOrders(String email, Integer orderStatus) {
-        List<OrderDAO> orderDAOList = orderJPA.findByMemberEmailAndOrderStatus(email, orderStatus);
-        List<OrderVO> result = new ArrayList<>();
-        for (OrderDAO orderDAO: orderDAOList) {
-            OrderVO orderVO = new OrderVO();
-            orderVO.setId(orderDAO.getId());
-            orderVO.setRestaurantName(restaurantJPA.getOne(orderDAO.getRestaurantId()).getName());
-            orderVO.setTime(TimeUtil.timeFormat(orderDAO.getCreateTime()));
-            orderVO.setAmount(orderDAO.getAmount());
-            orderVO.setStatus(OrderStatus.getDescription(orderDAO.getOrderStatus()));
-            result.add(orderVO);
-        }
-        return result;
+        return generateVOFromOrderDAO(orderJPA
+                .findByMemberEmailAndOrderStatus(email, orderStatus));
+    }
+
+    @Override
+    public List<OrderVO> findRestaurantOrders(String restaurantId, Integer orderStatus) {
+        return generateVOFromOrderDAO(orderJPA
+                .findByRestaurantIdAndOrderStatus(restaurantId, orderStatus));
     }
 
     @Override
@@ -107,5 +101,28 @@ public class OrderServiceImpl implements OrderService {
         orderInfo.setOrderDetails(orderDetails);
 
         return orderInfo;
+    }
+
+    @Override
+    public List<OrderVO> updateOrder(String id, boolean isMemberEditing) {
+        OrderDAO orderDAO = orderJPA.getOne(id);
+        Integer oldStatus = orderDAO.getOrderStatus();
+        orderDAO.updateStatus();
+        orderJPA.save(orderDAO);
+        return isMemberEditing ? findMemberOrders(id, oldStatus) : findRestaurantOrders(id, oldStatus);
+    }
+
+    private List<OrderVO> generateVOFromOrderDAO(List<OrderDAO> orderDAOList) {
+        List<OrderVO> result = new ArrayList<>();
+        for (OrderDAO orderDAO: orderDAOList) {
+            OrderVO orderVO = new OrderVO();
+            orderVO.setId(orderDAO.getId());
+            orderVO.setRestaurantName(restaurantJPA.getOne(orderDAO.getRestaurantId()).getName());
+            orderVO.setTime(TimeUtil.timeFormat(orderDAO.getCreateTime()));
+            orderVO.setAmount(orderDAO.getAmount());
+            orderVO.setStatus(OrderStatus.getDescription(orderDAO.getOrderStatus()));
+            result.add(orderVO);
+        }
+        return result;
     }
 }

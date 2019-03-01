@@ -1,46 +1,102 @@
 <template>
-  <a-layout style="height: 700px; padding: 24px; background-color: white">
-    <a-layout-sider width="200" style="background: #fff">
-      <a-menu
-              mode="inline"
-              :defaultSelectedKeys="['1']"
-              :defaultOpenKeys="['sub1']"
-              style="height: 100%"
-      >
-        <a-menu-item key="1" @click="test">option1</a-menu-item>
-        <a-menu-item key="2">option2</a-menu-item>
-      </a-menu>
-    </a-layout-sider>
-    <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-      <a-list itemLayout="horizontal" :bordered="true">
-        <a-list-item v-for="order in ongoingOrders" :key="order.id">
-          <a-list-item-meta description="2019.8.13 元和饭店">
-            <a slot="title" >{{13423494334}}</a>
-          </a-list-item-meta>
-          <div style="margin-right: 20px">234元</div>
-          <div>
-            <a slot="actions" class="plain-text">详情</a>
-            <a slot="actions" class="plain-text">结算</a>
-          </div>
-        </a-list-item>
-      </a-list>
-    </a-layout-content>
-  </a-layout>
+  <div>
+    <a-layout style="height: 700px; padding: 24px; background-color: white">
+      <a-layout-sider width="200" style="background: #fff">
+        <a-menu mode="inline" :defaultSelectedKeys="[PAYED]" style="height: 100%" @click="handleClick">
+          <a-menu-item :key="PAYED">待处理</a-menu-item>
+          <a-menu-item :key="DISTRIBUTING">派送中</a-menu-item>
+          <a-menu-item :key="FINISHED">已完成</a-menu-item>
+        </a-menu>
+      </a-layout-sider>
+      <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
+        <a-list itemLayout="horizontal" :bordered="true">
+          <a-list-item v-for="(order, index) in orderList" :key="order.id">
+            <a-list-item-meta :description="`${order.time} ${order.restaurantName}`">
+              <a slot="title" >{{order.id}}</a>
+            </a-list-item-meta>
+            <div style="margin-right: 20px">{{order.amount}}元</div>
+            <div>
+              <a slot="actions" class="plain-text" @click="showOrderInfo(order.id, index)">详情</a>
+              <a slot="actions" class="plain-text" v-if="finishButtonVisible" @click="updateOrder(order.id, index)">接单</a>
+            </div>
+          </a-list-item>
+        </a-list>
+      </a-layout-content>
+    </a-layout>
+
+    <a-modal title="订单详情" :visible="visible" @ok="visible=false" @cancel="visible=false">
+      <order-info-page :order-id="selectedOrderId" v-if="visible"></order-info-page>
+    </a-modal>
+  </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import { TOPAY, PAYED, DISTRIBUTING, FINISHED } from '@/utils/status/PayStatus';
+import OrderInfoPage from '@/components/common/OrderInfoPage';
+import { OK } from '@/utils/status/HttpStatus';
+
 export default {
   name: 'Order',
+  components: { OrderInfoPage },
   data () {
     return {
-      ongoingOrders: [1, 3, 43],
-      canceledOrders: [],
-      finishedOrders: []
+      TOPAY: TOPAY,
+      PAYED: PAYED,
+      DISTRIBUTING: DISTRIBUTING,
+      FINISHED: FINISHED,
+      orderList: [],
+      finishButtonVisible: false,
+      visible: false,
+      selectedOrderId: ''
     };
   },
+  computed: {
+    ...mapGetters(['userInfo', 'baseUrl'])
+  },
+  mounted () {
+    this.loadOrders(PAYED);
+  },
   methods: {
-    test () {
-      alert('来了');
+    loadOrders (orderStatus) {
+      this.finishButtonVisible = (orderStatus === PAYED);
+      this.$http({
+        url: this.baseUrl + '/order/getRestaurantOrders',
+        method: 'GET',
+        params: {
+          restaurantId: this.userInfo.userId,
+          orderStatus: orderStatus
+        }
+      }).then((response) => {
+        console.log(response);
+        if (response.data.code === OK) {
+          this.orderList = response.data.data;
+        }
+      });
+    },
+    handleClick (item) {
+      this.loadOrders(item.key);
+    },
+    showOrderInfo (orderId) {
+      this.selectedOrderId = orderId;
+      this.visible = true;
+    },
+    updateOrder (id, index) {
+      this.$http({
+        url: this.baseUrl + '/order/updateOrder',
+        method: 'POST',
+        params: {
+          id: id,
+          isMemberEditing: false
+        }
+      }).then((response) => {
+        if (response.data.code === OK) {
+          this.orderList.splice(index, 1);
+          this.$message.success(response.data.msg);
+        } else {
+          this.$message.error(response.data.msg);
+        }
+      });
     }
   }
 };

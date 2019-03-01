@@ -41,12 +41,31 @@ public class OrderController {
         }
     }
 
+    @GetMapping(value = "/getRestaurantOrders")
+    public ResultVO<?> getRestaurantOrders(@RequestParam String restaurantId,
+                                       @RequestParam Integer orderStatus) {
+        try {
+            return ResultVOUtil.success(orderService.findRestaurantOrders(restaurantId, orderStatus), "");
+        } catch (Exception e) {
+            return ResultVOUtil.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器错误，查找订单失败");
+        }
+    }
+
     @GetMapping(value = "/getOrderInfo/{id}")
     public ResultVO<?> getOrderInfo(@PathVariable String id) {
         try {
             return ResultVOUtil.success(orderService.getOrderInfo(id), "");
         } catch (Exception e) {
             return ResultVOUtil.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器错误，查找订单详情失败");
+        }
+    }
+
+    @PostMapping(value = "/updateOrder")
+    public ResultVO<?> getOrderInfo(@RequestParam String id, @RequestParam boolean isMemberEditing) {
+        try {
+            return ResultVOUtil.success(orderService.updateOrder(id, isMemberEditing), "更新订单成功");
+        } catch (Exception e) {
+            return ResultVOUtil.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器错误，更新订单失败");
         }
     }
 }
