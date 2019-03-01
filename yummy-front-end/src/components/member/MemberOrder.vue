@@ -1,46 +1,82 @@
 <template>
-  <a-layout style="height: 700px; padding: 24px; background-color: white">
-    <a-layout-sider width="200" style="background: #fff">
-      <a-menu
-              mode="inline"
-              :defaultSelectedKeys="['1']"
-              :defaultOpenKeys="['sub1']"
-              style="height: 100%"
-      >
-        <a-menu-item key="1" @click="test">option1</a-menu-item>
-        <a-menu-item key="2">option2</a-menu-item>
-      </a-menu>
-    </a-layout-sider>
-    <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-      <a-list itemLayout="horizontal" :bordered="true">
-        <a-list-item v-for="order in ongoingOrders" :key="order.id">
-          <a-list-item-meta description="2019.8.13 元和饭店">
-            <a slot="title" >{{13423494334}}</a>
-          </a-list-item-meta>
-          <div style="margin-right: 20px">234元</div>
-          <div>
-            <a slot="actions" class="plain-text">详情</a>
-            <a slot="actions" class="plain-text">结算</a>
-          </div>
-        </a-list-item>
-      </a-list>
-    </a-layout-content>
-  </a-layout>
+  <div>
+    <a-layout style="height: 700px; padding: 24px; background-color: white">
+      <a-layout-sider width="200" style="background: #fff">
+        <a-menu mode="inline" :defaultSelectedKeys="[SUBMITTED]" style="height: 100%" @click="handleClick">
+          <a-menu-item :key="SUBMITTED" >已提交</a-menu-item>
+          <a-menu-item :key="PAYED">已支付</a-menu-item>
+          <a-menu-item :key="DISTRIBUTING">派送中</a-menu-item>
+          <a-menu-item :key="FINISHED">已完成</a-menu-item>
+        </a-menu>
+      </a-layout-sider>
+      <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
+        <a-list itemLayout="horizontal" :bordered="true">
+          <a-list-item v-for="order in orderList" :key="order.id">
+            <a-list-item-meta :description="`${order.time} ${order.restaurantName}`">
+              <a slot="title" >{{order.id}}</a>
+            </a-list-item-meta>
+            <div style="margin-right: 20px">{{order.amount}}元</div>
+            <div>
+              <a slot="actions" class="plain-text" @click="showOrderInfo(order.id)">详情</a>
+              <a slot="actions" class="plain-text" v-if="payButtonVisible">结算</a>
+            </div>
+          </a-list-item>
+        </a-list>
+      </a-layout-content>
+    </a-layout>
+
+    <a-modal title="订单详情" :visible="visible" @ok="visible=false" @cancel="visible=false">
+      <order-info-page :order-id="selectedOrderId" v-if="visible"></order-info-page>
+    </a-modal>
+  </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import { SUBMITTED, PAYED, DISTRIBUTING, FINISHED } from '@/utils/status/PayStatus';
+import OrderInfoPage from '@/components/common/OrderInfoPage';
+
 export default {
   name: 'Order',
+  components: { OrderInfoPage },
   data () {
     return {
-      ongoingOrders: [1, 3, 43],
-      canceledOrders: [],
-      finishedOrders: []
+      SUBMITTED: SUBMITTED,
+      PAYED: PAYED,
+      DISTRIBUTING: DISTRIBUTING,
+      FINISHED: FINISHED,
+      orderList: [],
+      payButtonVisible: false,
+      visible: false,
+      selectedOrderId: ''
     };
   },
+  computed: {
+    ...mapGetters(['userInfo', 'baseUrl'])
+  },
+  mounted () {
+    this.loadOrders(SUBMITTED);
+  },
   methods: {
-    test () {
-      alert('来了');
+    loadOrders (orderStatus) {
+      this.payButtonVisible = (orderStatus === SUBMITTED);
+      this.$http({
+        url: this.baseUrl + '/order/getMemberOrders',
+        method: 'GET',
+        params: {
+          email: this.userInfo.userId,
+          orderStatus: orderStatus
+        }
+      }).then((response) => {
+        this.orderList = response.data.data;
+      });
+    },
+    handleClick (item) {
+      this.loadOrders(item.key);
+    },
+    showOrderInfo (orderId) {
+      this.selectedOrderId = orderId;
+      this.visible = true;
     }
   }
 };

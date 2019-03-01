@@ -11,4 +11,8 @@ public class KeyUtil {
         }
         return result.toString();
     }
+
+    public static synchronized String generateUniqueKey() {
+        return System.currentTimeMillis() + randomCheckCode();
+    }
 }

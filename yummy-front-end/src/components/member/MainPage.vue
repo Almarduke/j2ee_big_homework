@@ -25,7 +25,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import * as actionTypes from '@/utils/store/action-types';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'MainPage',
@@ -49,9 +50,11 @@ export default {
     });
   },
   methods: {
-    selectRestaurant (key) {
+    selectRestaurant (restaurantInfo) {
+      this[actionTypes.SET_RESTAURANT_INFO](restaurantInfo);
       this.$router.push('/ShoppingCart');
-    }
+    },
+    ...mapActions([actionTypes.SET_RESTAURANT_INFO])
   }
 };
 </script>

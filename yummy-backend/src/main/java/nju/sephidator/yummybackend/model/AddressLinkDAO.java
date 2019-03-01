@@ -21,4 +21,5 @@ public class AddressLinkDAO implements Serializable {
 
     private String addressName;
 
+    private Integer status;
 }

@@ -1,6 +1,7 @@
 package nju.sephidator.yummybackend.vo;
 
 import lombok.Data;
+import nju.sephidator.yummybackend.enums.AddressStatus;
 import nju.sephidator.yummybackend.model.AddressLinkDAO;
 import nju.sephidator.yummybackend.model.MemberDAO;
 import nju.sephidator.yummybackend.model.RestaurantDAO;
@@ -32,6 +33,7 @@ public class RestaurantVO {
         AddressLinkDAO addressLinkDAO = new AddressLinkDAO();
         addressLinkDAO.setAddressName(address);
         addressLinkDAO.setUserId(id);
+        addressLinkDAO.setStatus(AddressStatus.DEFAULT.getCode());
         return addressLinkDAO;
     }
 }

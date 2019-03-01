@@ -52,6 +52,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import { OK } from '@/utils/status/HttpStatus';
 
 export default {
   name: 'ManageFood',
@@ -72,10 +73,10 @@ export default {
       isEditingFood: false,
       visible: false,
       selectedFoodInfo: {
-        id: 0,
-        name: 'sadsdad',
-        type: 'dsada',
-        price: 233
+        id: null,
+        name: '',
+        type: '',
+        price: 1
       }
     };
   },
@@ -85,21 +86,69 @@ export default {
   beforeCreate () {
     this.foodInfoForm = this.$form.createForm(this);
   },
+  mounted () {
+    this.$http({
+      url: `${this.baseUrl}/food/getAll/${this.restaurantInfo.id}`,
+      method: 'GET'
+    }).then((response) => {
+      let object = response.data;
+      this.foodList = object.data;
+    });
+  },
   methods: {
     editFood (food) {
       this.isEditingFood = true;
       this.visible = true;
+      this.selectedFoodInfo = { id: food.id, name: food.name, type: food.type, price: food.price };
     },
     deleteFood (food) {
+      this.$http({
+        url: `${this.baseUrl}/food/deleteFood`,
+        method: 'POST',
+        data: {
+          id: food.id,
+          restaurantId: this.restaurantInfo.id,
+          name: food.name,
+          type: food.type,
+          price: food.price
+        }
+      }).then((response) => {
+        if (response.data.code === OK) {
+          this.foodList = response.data.data;
+          this.$message.success(response.data.msg);
+        } else {
+          this.$message.error(response.data.msg);
+        }
+      });
     },
     addFood () {
       this.isEditingFood = false;
       this.visible = true;
+      this.selectedFoodInfo = { id: null, name: '', type: '', price: 1 };
     },
     handleOk () {
       this.foodInfoForm.validateFieldsAndScroll((err, values) => {
         if (!err) {
-          console.log('やったぜ');
+          const url = `${this.baseUrl}/food/${this.isEditingFood ? 'editFood' : 'addFood'}`;
+          this.$http({
+            url: url,
+            method: 'POST',
+            data: {
+              id: this.selectedFoodInfo.id,
+              restaurantId: this.restaurantInfo.id,
+              name: values.name,
+              type: values.type,
+              price: values.price
+            }
+          }).then((response) => {
+            if (response.data.code === OK) {
+              this.foodList = response.data.data;
+              this.visible = false;
+              this.$message.success(response.data.msg);
+            } else {
+              this.$message.error(response.data.msg);
+            }
+          });
         }
       });
     },

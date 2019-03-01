@@ -20,13 +20,13 @@ public class OrderDAO {
 
     private String memberEmail;
 
+    private String memberAddress;
+
     private String restaurantId;
 
-    private BigDecimal amount;
+    private Double amount;
 
-    private Integer orderStatus = OrderStatus.NEW.getCode();
-
-    private Integer payStatus = PayStatus.WAIT.getCode();
+    private Integer orderStatus;
 
     private Date createTime;
 

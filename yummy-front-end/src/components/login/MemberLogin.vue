@@ -58,7 +58,7 @@
 <script>
 import * as actionTypes from '@/utils/store/action-types';
 import { mapGetters, mapActions } from 'vuex';
-import { OK } from '@/utils/htttpstatus/HttpStatus';
+import { OK } from '@/utils/status/HttpStatus';
 
 export default {
   name: 'MemberLogin',

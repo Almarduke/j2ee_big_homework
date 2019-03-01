@@ -3,9 +3,9 @@
     <a-layout-sider width="240" style="margin-top: 20px; background-color: rgba(0,0,0,0)">
       <a-card hoverable style="width: 240px;">
         <img src="../../assets/rice.jpg" alt="" slot="cover"/>
-        <a-card-meta title="Europe Street beat">
-          <p slot="description">饭店的电话</p>
-          <p slot="description">饭店地址</p>
+        <a-card-meta :title="restaurantInfo.name">
+          <p slot="description">{{restaurantInfo.phone}}</p>
+          <p slot="description">{{restaurantInfo.address}}</p>
         </a-card-meta>
       </a-card>
     </a-layout-sider>
@@ -47,7 +47,7 @@
             </a-list>
             <div style="padding: 24px 0 0 24px;" v-if="foodNumberList.length > 0">
               <span style="font-size: 16px">总价：{{this.totalAmount}}元</span>
-              <a-button style="float: right" type="primary" size="large">结算</a-button>
+              <a-button style="float: right" type="primary" @click="submit">结算</a-button>
             </div>
           </a-tab-pane>
         </a-tabs>
@@ -57,14 +57,14 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import { OK } from '@/utils/status/HttpStatus';
+
 export default {
   name: 'ShoppingCart',
   data () {
     return {
-      foodList: [
-        { id: 0, name: '蛋炒饭', price: 3, type: '我觉得可以' },
-        { id: 1, name: '土豆', price: 76, type: '我觉得不行' }
-      ],
+      foodList: [],
       foodInCart: [],
       foodNumberList: []
     };
@@ -77,7 +77,17 @@ export default {
         sum += this.foodInCart[i].price * this.foodNumberList[i];
       }
       return sum;
-    }
+    },
+    ...mapGetters(['restaurantInfo', 'userInfo', 'baseUrl'])
+  },
+  mounted () {
+    this.$http({
+      url: `${this.baseUrl}/food/getAll/${this.restaurantInfo.id}`,
+      method: 'GET'
+    }).then((response) => {
+      let object = response.data;
+      this.foodList = object.data;
+    });
   },
   methods: {
     addFoodToCart (food) {
@@ -102,6 +112,39 @@ export default {
     plus (index) {
       const newNumber = this.foodNumberList[index] += 1;
       this.foodNumberList.splice(index, 1, newNumber);
+    },
+    submit () {
+      this.$http({
+        url: this.baseUrl + '/order/submit',
+        method: 'POST',
+        params: {
+          restaurantId: this.restaurantInfo.id,
+          memberEmail: this.userInfo.userId,
+          totalAmount: this.totalAmount
+        },
+        data: this.getFoodDetails()
+      }).then((response) => {
+        const code = response.data.code;
+        if (code === OK) {
+          this.foodInCart = [];
+          this.foodNumberList = [];
+          this.$message.success(response.data.msg);
+        } else {
+          this.$message.error(response.data.msg);
+        }
+      });
+    },
+    getFoodDetails () {
+      let result = [];
+      for (let i = 0; i < this.foodInCart.length; i++) {
+        result.push({
+          foodId: this.foodInCart[i].id,
+          foodNum: this.foodNumberList[i],
+          price: this.foodInCart[i].price
+        });
+      }
+      console.log(result);
+      return result;
     }
   }
 };

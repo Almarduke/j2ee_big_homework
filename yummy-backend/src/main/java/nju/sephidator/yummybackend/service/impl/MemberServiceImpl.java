@@ -42,7 +42,7 @@ public class MemberServiceImpl implements MemberService {
     public boolean sendCheckCode(String email) {
         String code;
         if (checkCodeJPA.existsById(email)) {
-            code = checkCodeJPA.findById(email).get().getCode();
+            code = checkCodeJPA.getOne(email).getCode();
         } else {
             code = KeyUtil.randomCheckCode();
             CheckCodeDAO checkCodeDAO = new CheckCodeDAO();
