@@ -3,8 +3,10 @@ package nju.sephidator.yummybackend.service.impl;
 import nju.sephidator.yummybackend.model.RestaurantDAO;
 import nju.sephidator.yummybackend.repository.AddressLinkJPA;
 import nju.sephidator.yummybackend.repository.RestaurantJPA;
+import nju.sephidator.yummybackend.service.AddressService;
 import nju.sephidator.yummybackend.service.RestaurantService;
-import nju.sephidator.yummybackend.vo.RestaurantVO;
+import nju.sephidator.yummybackend.vo.RestaurantInfoVO;
+import nju.sephidator.yummybackend.vo.RestaurantSignUpVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +22,11 @@ public class RestaurantServiceImpl implements RestaurantService {
     @Autowired
     AddressLinkJPA addressLinkJPA;
 
+    @Autowired
+    private AddressService addressService;
+
     @Override
-    public synchronized String create(RestaurantVO restaurantVO) {
+    public synchronized String create(RestaurantSignUpVO restaurantVO) {
         String id = generateUniqueId();
         RestaurantDAO restaurantDAO = restaurantVO.getRestaurantDAO(id);
         restaurantJPA.save(restaurantDAO);
@@ -35,9 +40,9 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public List<RestaurantVO> getAll() {
+    public List<RestaurantSignUpVO> getAll() {
         List<RestaurantDAO> restaurantDAOS = restaurantJPA.findAll();
-        List<RestaurantVO> result = new ArrayList<>();
+        List<RestaurantSignUpVO> result = new ArrayList<>();
         for (RestaurantDAO restaurantDAO: restaurantDAOS) {
             result.add(generateRestaurantVO(restaurantDAO));
         }
@@ -45,13 +50,21 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public RestaurantVO getById(String id) {
+    public RestaurantSignUpVO getById(String id) {
         RestaurantDAO restaurantDAO = restaurantJPA.getOne(id);
         return generateRestaurantVO(restaurantDAO);
     }
 
-    private RestaurantVO generateRestaurantVO(RestaurantDAO restaurantDAO) {
-        RestaurantVO restaurant = new RestaurantVO();
+    @Override
+    public RestaurantInfoVO getRestaurantInfo(String id) {
+        RestaurantInfoVO restaurantInfoVO = new RestaurantInfoVO();
+        restaurantInfoVO.setRestaurantInfo(restaurantJPA.getOne(id));
+        restaurantInfoVO.setAddressList(addressService.getUserAddressList(id));
+        return restaurantInfoVO;
+    }
+
+    private RestaurantSignUpVO generateRestaurantVO(RestaurantDAO restaurantDAO) {
+        RestaurantSignUpVO restaurant = new RestaurantSignUpVO();
         restaurant.setId(restaurantDAO.getId());
         restaurant.setName(restaurantDAO.getName());
         restaurant.setPhone(restaurantDAO.getPhone());

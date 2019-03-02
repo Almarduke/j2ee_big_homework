@@ -9,6 +9,8 @@ public class AddressVO {
 
     private boolean isDefault;
 
+    public AddressVO() {}
+
     public AddressVO(String name, boolean isDefault) {
         this.name = name;
         this.isDefault = isDefault;

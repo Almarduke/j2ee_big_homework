@@ -20,6 +20,8 @@ public class FoodVO {
 
     private Double price;
 
+    public FoodVO() {}
+
     public FoodVO(FoodDAO foodDAO) {
         this.id = foodDAO.getId();
         this.restaurantId = foodDAO.getRestaurantId();
