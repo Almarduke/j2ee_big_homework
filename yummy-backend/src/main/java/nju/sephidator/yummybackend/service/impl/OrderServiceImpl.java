@@ -2,9 +2,10 @@ package nju.sephidator.yummybackend.service.impl;
 
 import nju.sephidator.yummybackend.enums.AddressStatus;
 import nju.sephidator.yummybackend.enums.OrderStatus;
-import nju.sephidator.yummybackend.model.OrderDAO;
-import nju.sephidator.yummybackend.model.OrderDetailDAO;
+import nju.sephidator.yummybackend.exceptions.MemberAmountException;
+import nju.sephidator.yummybackend.model.*;
 import nju.sephidator.yummybackend.repository.*;
+import nju.sephidator.yummybackend.service.MemberService;
 import nju.sephidator.yummybackend.service.OrderService;
 import nju.sephidator.yummybackend.utils.KeyUtil;
 import nju.sephidator.yummybackend.utils.TimeUtil;
@@ -39,8 +40,14 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private FoodJPA foodJPA;
 
+    @Autowired
+    private YummyFinanceJPA yummyFinanceJPA;
+
+    @Autowired
+    private MemberService memberService;
+
     @Override
-    public void submit(String restaurantId, String memberEmail, Double totalAmount, List<OrderDetailVO> orderDetailVOList) {
+    public void submit(String restaurantId, String memberEmail, Double totalAmount, Double discount, List<OrderDetailVO> orderDetailVOList) {
         OrderDAO orderDAO = new OrderDAO();
         orderDAO.setId(KeyUtil.generateUniqueKey());
         orderDAO.setMemberEmail(memberEmail);
@@ -49,6 +56,7 @@ public class OrderServiceImpl implements OrderService {
                         .get(0).getAddressName());
         orderDAO.setRestaurantId(restaurantId);
         orderDAO.setAmount(totalAmount);
+        orderDAO.setDiscount(discount);
         orderDAO.setOrderStatus(OrderStatus.TOPAY.getCode());
         orderDAO.setCreateTime(new Date());
         orderDAO.setUpdateTime(new Date());
@@ -88,6 +96,7 @@ public class OrderServiceImpl implements OrderService {
         orderInfo.setMemberName(memberJPA.getOne(orderDAO.getMemberEmail()).getName());
         orderInfo.setMemberPhone(memberJPA.getOne(orderDAO.getMemberEmail()).getPhone());
         orderInfo.setTotalAmount(orderDAO.getAmount());
+        orderInfo.setDiscount(orderDAO.getDiscount());
 
         List<OrderDetailVO> orderDetails = new ArrayList<>();
         for (OrderDetailDAO orderDetailDAO: orderDetailJPA.findByOrderId(orderId)) {
@@ -104,11 +113,79 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderVO> updateOrder(String id, boolean isMemberEditing) {
+    public List<OrderVO> payOrder(String id) {
+        OrderDAO orderDAO = orderJPA.getOne(id);
+        MemberDAO memberDAO = memberJPA.getOne(orderDAO.getMemberEmail());
+        if (memberDAO.getAmount() < orderDAO.getAmount()) {
+            throw new MemberAmountException();
+        }
+
+        Double moneyToRestaurant = orderDAO.getAmount() * 0.4;
+        Double moneyToYummy = orderDAO.getAmount() - moneyToRestaurant - orderDAO.getDiscount();
+
+        memberDAO.setAmount(memberDAO.getAmount() - (moneyToRestaurant + moneyToYummy));
+        memberJPA.save(memberDAO);
+
+        RestaurantDAO restaurantDAO = restaurantJPA.getOne(orderDAO.getRestaurantId());
+        restaurantDAO.setAmount(restaurantDAO.getAmount() + moneyToRestaurant);
+        restaurantJPA.save(restaurantDAO);
+
+        YummyFinanceDAO financeDAO = new YummyFinanceDAO();
+        financeDAO.setIncome(moneyToYummy);
+        financeDAO.setOrderId(orderDAO.getId());
+        financeDAO.setTime(new Date());
+        yummyFinanceJPA.save(financeDAO);
+
+        return updateOrder(id, OrderStatus.PAYED.getCode(), true);
+    }
+
+    @Override
+    public List<OrderVO> handleOrder(String id) {
+        return updateOrder(id, OrderStatus.DISTRIBUTING.getCode(), false);
+    }
+
+    @Override
+    public List<OrderVO> finishOrder(String id) {
+        OrderDAO orderDAO = orderJPA.getOne(id);
+        Double moneyToRestaurant = orderDAO.getAmount() * 0.5;
+
+        RestaurantDAO restaurantDAO = restaurantJPA.getOne(orderDAO.getRestaurantId());
+        restaurantDAO.setAmount(restaurantDAO.getAmount() + moneyToRestaurant);
+        restaurantJPA.save(restaurantDAO);
+
+        YummyFinanceDAO financeDAO = new YummyFinanceDAO();
+        financeDAO.setIncome(-moneyToRestaurant);
+        financeDAO.setOrderId(orderDAO.getId());
+        financeDAO.setTime(new Date());
+        yummyFinanceJPA.save(financeDAO);
+
+        return updateOrder(id, OrderStatus.FINISHED.getCode(), true);
+    }
+
+    @Override
+    public List<OrderVO> cancelOrder(String id) {
+        OrderDAO orderDAO = orderJPA.getOne(id);
+        Double moneyBack = orderDAO.getAmount() * 0.5;
+
+        MemberDAO memberDAO = memberJPA.getOne(orderDAO.getMemberEmail());
+        memberDAO.setAmount(memberDAO.getAmount() + moneyBack);
+        memberJPA.save(memberDAO);
+
+        YummyFinanceDAO financeDAO = new YummyFinanceDAO();
+        financeDAO.setIncome(-moneyBack);
+        financeDAO.setOrderId(orderDAO.getId());
+        financeDAO.setTime(new Date());
+        yummyFinanceJPA.save(financeDAO);
+
+        return updateOrder(id, OrderStatus.CANCELLED.getCode(), true);
+    }
+
+    private List<OrderVO> updateOrder(String id, Integer newStatus, boolean isMemberEditing) {
         OrderDAO orderDAO = orderJPA.getOne(id);
         Integer oldStatus = orderDAO.getOrderStatus();
-        orderDAO.updateStatus();
+        orderDAO.setOrderStatus(newStatus);
         orderJPA.save(orderDAO);
+        memberService.updateMemberLevel(orderDAO.getMemberEmail());
         return isMemberEditing ? findMemberOrders(id, oldStatus) : findRestaurantOrders(id, oldStatus);
     }
 
@@ -119,7 +196,7 @@ public class OrderServiceImpl implements OrderService {
             orderVO.setId(orderDAO.getId());
             orderVO.setRestaurantName(restaurantJPA.getOne(orderDAO.getRestaurantId()).getName());
             orderVO.setTime(TimeUtil.timeFormat(orderDAO.getCreateTime()));
-            orderVO.setAmount(orderDAO.getAmount());
+            orderVO.setActualAmount(orderDAO.getAmount() - orderDAO.getDiscount());
             orderVO.setStatus(OrderStatus.getDescription(orderDAO.getOrderStatus()));
             result.add(orderVO);
         }

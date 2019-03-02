@@ -6,6 +6,7 @@ const getters = {
       userInfo.userId = sessionStorage.getItem('userId');
       userInfo.token = sessionStorage.getItem('token');
       userInfo.userType = sessionStorage.getItem('userType');
+      userInfo.userType = sessionStorage.getItem('userLevel');
     }
     return userInfo;
   },

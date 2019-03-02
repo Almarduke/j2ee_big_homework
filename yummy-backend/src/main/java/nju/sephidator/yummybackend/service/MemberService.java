@@ -16,5 +16,15 @@ public interface MemberService {
 
     boolean passwordCorrect(String email, String password);
 
+    boolean memberAvailable(String email);
+
     MemberInfoVO getMemberInfo(String email);
+
+    MemberInfoVO updateMemberInfo(String email, String newName, String newPhone);
+
+    MemberInfoVO chargeMoney(String email, Double amount);
+
+    void deleteMember(String email);
+
+    void updateMemberLevel(String email);
 }

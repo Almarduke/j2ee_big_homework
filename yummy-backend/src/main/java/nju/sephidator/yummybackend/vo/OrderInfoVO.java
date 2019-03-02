@@ -23,5 +23,7 @@ public class OrderInfoVO {
 
     private Double totalAmount;
 
+    private Double discount;
+
     private List<OrderDetailVO> orderDetails;
 }

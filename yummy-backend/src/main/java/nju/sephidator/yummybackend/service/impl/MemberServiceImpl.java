@@ -1,25 +1,24 @@
 package nju.sephidator.yummybackend.service.impl;
 
-import nju.sephidator.yummybackend.enums.AddressStatus;
-import nju.sephidator.yummybackend.model.AddressLinkDAO;
+import nju.sephidator.yummybackend.enums.OrderStatus;
 import nju.sephidator.yummybackend.model.CheckCodeDAO;
 import nju.sephidator.yummybackend.model.MemberDAO;
+import nju.sephidator.yummybackend.model.OrderDAO;
 import nju.sephidator.yummybackend.repository.AddressLinkJPA;
 import nju.sephidator.yummybackend.repository.CheckCodeJPA;
 import nju.sephidator.yummybackend.repository.MemberJPA;
 import nju.sephidator.yummybackend.service.AddressService;
 import nju.sephidator.yummybackend.service.MemberService;
+import nju.sephidator.yummybackend.service.OrderService;
 import nju.sephidator.yummybackend.utils.KeyUtil;
-import nju.sephidator.yummybackend.vo.AddressVO;
 import nju.sephidator.yummybackend.vo.MemberInfoVO;
 import nju.sephidator.yummybackend.vo.MemberSignUpVO;
+import nju.sephidator.yummybackend.vo.OrderVO;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -38,6 +37,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Autowired
     private AddressService addressService;
+
+    @Autowired
+    private OrderService orderService;
 
     @Override
     public boolean emailExists(String email) {
@@ -92,10 +94,59 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public boolean memberAvailable(String email) {
+        return memberJPA.existsByEmailAndAvailable(email, true);
+    }
+
+    @Override
     public MemberInfoVO getMemberInfo(String email) {
         MemberInfoVO memberInfoVO = new MemberInfoVO();
         memberInfoVO.setMemberInfo(memberJPA.getOne(email));
         memberInfoVO.setAddressList(addressService.getUserAddressList(email));
         return memberInfoVO;
+    }
+
+    @Override
+    public MemberInfoVO updateMemberInfo(String email, String newName, String newPhone) {
+        MemberDAO memberDAO = memberJPA.getOne(email);
+        memberDAO.setName(newName);
+        memberDAO.setPhone(newPhone);
+        memberJPA.save(memberDAO);
+        return getMemberInfo(email);
+    }
+
+    @Override
+    public MemberInfoVO chargeMoney(String email, Double amount) {
+        MemberDAO memberDAO = memberJPA.getOne(email);
+        memberDAO.setAmount(memberDAO.getAmount() + amount);
+        memberJPA.save(memberDAO);
+        return getMemberInfo(email);
+    }
+
+    @Override
+    public void deleteMember(String email) {
+        MemberDAO memberDAO = memberJPA.getOne(email);
+        memberDAO.setAvailable(false);
+        memberJPA.save(memberDAO);
+    }
+
+    @Override
+    public void updateMemberLevel(String email) {
+        Double[] levelAmountList = {0.0, 100.0, 300.0, 600.0, 1000.0, 1500.0};
+        Double memberAmount = 0.0;
+        for (OrderVO orderVO: orderService.findMemberOrders(email, OrderStatus.FINISHED.getCode())) {
+            memberAmount += orderVO.getActualAmount();
+        }
+        Integer memberLevel = 1;
+        for (int i = 0; i < levelAmountList.length; i++) {
+            if (memberAmount >= levelAmountList[i]) {
+                memberLevel = i + 1;
+            } else {
+                break;
+            }
+        }
+        MemberDAO memberDAO = memberJPA.getOne(email);
+        memberDAO.setLevel(memberLevel);
+        memberJPA.save(memberDAO);
     }
 }

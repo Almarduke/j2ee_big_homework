@@ -110,7 +110,8 @@ export default {
               this[actionTypes.LOGIN]({
                 isLogin: true,
                 userId: values.email,
-                userType: response.data.data,
+                userType: response.data.data.type,
+                userLevel: response.data.data.level,
                 token: ''
               });
               this.$router.push('/MainPage');

@@ -6,6 +6,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Date;
 
 @Entity
 @Data
@@ -16,7 +17,9 @@ public class YummyFinanceDAO {
     @GeneratedValue
     private Integer id;
 
-    private Integer orderId;
+    private String orderId;
 
     private Double income;
+
+    private Date time;
 }

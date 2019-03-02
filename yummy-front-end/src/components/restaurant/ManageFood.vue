@@ -4,8 +4,8 @@
       <a-card hoverable style="width: 240px;">
         <img src="../../assets/rice.jpg" alt="" slot="cover"/>
         <a-card-meta :title="restaurantInfo.name">
-          <p slot="description">{{restaurantInfo.phone}}</p>
-          <p slot="description">{{restaurantInfo.address}}</p>
+          <p slot="description">电话：{{restaurantInfo.phone}}</p>
+          <p slot="description">地址：{{restaurantInfo.address}}</p>
         </a-card-meta>
       </a-card>
     </a-layout-sider>

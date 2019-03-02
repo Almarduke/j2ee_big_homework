@@ -23,4 +23,6 @@ public class MemberDAO {
     private Integer level;
 
     private Double amount;
+
+    private boolean available;
 }

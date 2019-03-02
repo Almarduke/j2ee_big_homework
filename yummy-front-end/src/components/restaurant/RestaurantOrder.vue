@@ -5,7 +5,8 @@
         <a-menu mode="inline" :defaultSelectedKeys="[PAYED]" style="height: 100%" @click="handleClick">
           <a-menu-item :key="PAYED">待处理</a-menu-item>
           <a-menu-item :key="DISTRIBUTING">派送中</a-menu-item>
-          <a-menu-item :key="FINISHED">已完成</a-menu-item>
+          <a-menu-item :key="FINISHED">已完结</a-menu-item>
+          <a-menu-item :key="CANCELLED">已取消</a-menu-item>
         </a-menu>
       </a-layout-sider>
       <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
@@ -14,10 +15,10 @@
             <a-list-item-meta :description="`${order.time} ${order.restaurantName}`">
               <a slot="title" >{{order.id}}</a>
             </a-list-item-meta>
-            <div style="margin-right: 20px">{{order.amount}}元</div>
+            <div style="margin-right: 20px">{{order.actualAmount}}元</div>
             <div>
-              <a slot="actions" class="plain-text" @click="showOrderInfo(order.id, index)">详情</a>
-              <a slot="actions" class="plain-text" v-if="finishButtonVisible" @click="updateOrder(order.id, index)">接单</a>
+              <a slot="actions" class="plain-text" @click="showOrderInfo(order.id)">详情</a>
+              <a slot="actions" class="plain-text" v-if="handleButtonVisible" @click="updateOrder(order.id, index, 'handleOrder')">接单</a>
             </div>
           </a-list-item>
         </a-list>
@@ -32,12 +33,12 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { TOPAY, PAYED, DISTRIBUTING, FINISHED } from '@/utils/status/PayStatus';
+import { TOPAY, PAYED, DISTRIBUTING, FINISHED, CANCELLED } from '@/utils/status/PayStatus';
 import OrderInfoPage from '@/components/common/OrderInfoPage';
 import { OK } from '@/utils/status/HttpStatus';
 
 export default {
-  name: 'Order',
+  name: 'RestaurantOrder',
   components: { OrderInfoPage },
   data () {
     return {
@@ -45,8 +46,9 @@ export default {
       PAYED: PAYED,
       DISTRIBUTING: DISTRIBUTING,
       FINISHED: FINISHED,
+      CANCELLED: CANCELLED,
       orderList: [],
-      finishButtonVisible: false,
+      handleButtonVisible: false,
       visible: false,
       selectedOrderId: ''
     };
@@ -59,7 +61,7 @@ export default {
   },
   methods: {
     loadOrders (orderStatus) {
-      this.finishButtonVisible = (orderStatus === PAYED);
+      this.handleButtonVisible = (orderStatus === PAYED);
       this.$http({
         url: this.baseUrl + '/order/getRestaurantOrders',
         method: 'GET',
@@ -80,14 +82,10 @@ export default {
       this.selectedOrderId = orderId;
       this.visible = true;
     },
-    updateOrder (id, index) {
+    updateOrder (id, index, key) {
       this.$http({
-        url: this.baseUrl + '/order/updateOrder',
-        method: 'POST',
-        params: {
-          id: id,
-          isMemberEditing: false
-        }
+        url: `${this.baseUrl}/order/${key}/${id}`,
+        method: 'POST'
       }).then((response) => {
         if (response.data.code === OK) {
           this.orderList.splice(index, 1);

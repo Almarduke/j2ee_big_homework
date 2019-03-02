@@ -98,6 +98,7 @@ export default {
                 isLogin: true,
                 userId: values.id,
                 userType: 'RESTAURANT',
+                userLevel: 0,
                 token: ''
               });
               this[actionTypes.SET_RESTAURANT_INFO](response.data.data);

@@ -21,8 +21,14 @@
     <a-form-item v-bind="formItemLayout" label="用户地址" >
       <span>{{orderInfo.memberAddress}}</span>
     </a-form-item>
-    <a-form-item v-bind="formItemLayout" label="订单总金" >
+    <a-form-item v-bind="formItemLayout" label="订单总额" >
       <span>{{orderInfo.totalAmount}}元</span>
+    </a-form-item>
+    <a-form-item v-bind="formItemLayout" label="折扣金额" >
+      <span>{{orderInfo.discount}}元</span>
+    </a-form-item>
+    <a-form-item v-bind="formItemLayout" label="实际金额" >
+      <span>{{orderInfo.totalAmount - orderInfo.discount}}元</span>
     </a-form-item>
     <a-form-item v-bind="formItemLayout" label="菜品列表">
       <a-list itemLayout="horizontal" :bordered="true">

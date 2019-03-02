@@ -1,5 +1,6 @@
 package nju.sephidator.yummybackend.controller;
 
+import nju.sephidator.yummybackend.exceptions.MemberAmountException;
 import nju.sephidator.yummybackend.service.OrderService;
 import nju.sephidator.yummybackend.utils.ResultVOUtil;
 import nju.sephidator.yummybackend.vo.FoodVO;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @RestController
@@ -22,9 +25,11 @@ public class OrderController {
     public ResultVO<?> submit(@RequestParam String restaurantId,
                               @RequestParam String memberEmail,
                               @RequestParam Double totalAmount,
+                              @RequestParam Double discount,
                               @RequestBody List<OrderDetailVO> orderDetails) {
         try {
-            orderService.submit(restaurantId, memberEmail, totalAmount, orderDetails);
+            discount = new BigDecimal(discount).setScale(2, RoundingMode.HALF_UP).doubleValue();
+            orderService.submit(restaurantId, memberEmail, totalAmount, discount, orderDetails);
             return ResultVOUtil.success("", "提交订单成功");
         } catch (Exception e) {
             return ResultVOUtil.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器错误，提交订单失败");
@@ -60,12 +65,41 @@ public class OrderController {
         }
     }
 
-    @PostMapping(value = "/updateOrder")
-    public ResultVO<?> getOrderInfo(@RequestParam String id, @RequestParam boolean isMemberEditing) {
+    @PostMapping(value = "/payOrder/{id}")
+    public ResultVO<?> payOrder(@PathVariable String id) {
         try {
-            return ResultVOUtil.success(orderService.updateOrder(id, isMemberEditing), "更新订单成功");
+            return ResultVOUtil.success(orderService.payOrder(id), "更新订单成功");
+        } catch (MemberAmountException e) {
+            return ResultVOUtil.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "余额不足，订单支付失败");
+        } catch (Exception e) {
+            return ResultVOUtil.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器错误，订单支付失败");
+        }
+    }
+
+    @PostMapping(value = "/handleOrder/{id}")
+    public ResultVO<?> handleOrder(@PathVariable String id) {
+        try {
+            return ResultVOUtil.success(orderService.handleOrder(id), "更新订单成功");
         } catch (Exception e) {
             return ResultVOUtil.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器错误，更新订单失败");
+        }
+    }
+
+    @PostMapping(value = "/finishOrder/{id}")
+    public ResultVO<?> finishOrder(@PathVariable String id) {
+        try {
+            return ResultVOUtil.success(orderService.finishOrder(id), "订单完结成功");
+        } catch (Exception e) {
+            return ResultVOUtil.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器错误，订单完结失败");
+        }
+    }
+
+    @PostMapping(value = "/cancelOrder/{id}")
+    public ResultVO<?> cancelOrder(@PathVariable String id) {
+        try {
+            return ResultVOUtil.success(orderService.cancelOrder(id), "取消订单成功");
+        } catch (Exception e) {
+            return ResultVOUtil.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器错误，取消订单失败");
         }
     }
 }

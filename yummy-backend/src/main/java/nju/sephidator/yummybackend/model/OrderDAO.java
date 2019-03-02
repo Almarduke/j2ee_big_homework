@@ -26,15 +26,11 @@ public class OrderDAO {
 
     private Double amount;
 
+    private Double discount;
+
     private Integer orderStatus;
 
     private Date createTime;
 
     private Date updateTime;
-
-    public void updateStatus() {
-        if (orderStatus < OrderStatus.FINISHED.getCode()) {
-            orderStatus ++;
-        }
-    }
 }

@@ -120,7 +120,8 @@ export default {
         params: {
           restaurantId: this.restaurantInfo.id,
           memberEmail: this.userInfo.userId,
-          totalAmount: this.totalAmount
+          totalAmount: this.totalAmount,
+          discount: this.totalAmount * this.userInfo.userLevel * 0.01
         },
         data: this.getFoodDetails()
       }).then((response) => {

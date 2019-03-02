@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface OrderService {
 
-    void submit(String restaurantId, String memberEmail, Double totalAmount, List<OrderDetailVO> orderDetailVOList);
+    void submit(String restaurantId, String memberEmail, Double totalAmount, Double discount, List<OrderDetailVO> orderDetailVOList);
 
     List<OrderVO> findMemberOrders(String email, Integer orderStatus);
 
@@ -16,5 +16,11 @@ public interface OrderService {
 
     OrderInfoVO getOrderInfo(String id);
 
-    List<OrderVO> updateOrder(String id, boolean isMemberEditing);
+    List<OrderVO> payOrder(String id);
+
+    List<OrderVO> handleOrder(String id);
+
+    List<OrderVO> finishOrder(String id);
+
+    List<OrderVO> cancelOrder(String id);
 }

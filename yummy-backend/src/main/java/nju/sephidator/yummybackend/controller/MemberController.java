@@ -4,7 +4,7 @@ package nju.sephidator.yummybackend.controller;
 import nju.sephidator.yummybackend.enums.UserType;
 import nju.sephidator.yummybackend.service.MemberService;
 import nju.sephidator.yummybackend.utils.ResultVOUtil;
-import nju.sephidator.yummybackend.vo.MemberInfoVO;
+import nju.sephidator.yummybackend.vo.UserBriefInfoVO;
 import nju.sephidator.yummybackend.vo.MemberSignUpVO;
 import nju.sephidator.yummybackend.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,18 +40,22 @@ public class MemberController {
 
     @PostMapping(value = "/login")
     public ResultVO<?> login(@RequestParam String email, @RequestParam String password) {
-        UserType userType;
+        UserBriefInfoVO userBriefInfoVO = new UserBriefInfoVO();
+        userBriefInfoVO.setId(email);
+        userBriefInfoVO.setLevel(memberService.getMemberInfo(email).getLevel());
 
         if (email.equals("admin@yummy.com")) {
-            userType = UserType.ADMIN;
+            userBriefInfoVO.setType(UserType.ADMIN.getValue());
         } else {
-            userType = UserType.MEMBER;
+            userBriefInfoVO.setType(UserType.MEMBER.getValue());
         }
 
-        if (memberService.passwordCorrect(email, password)) {
-            return ResultVOUtil.success(userType.getValue(), "登陆成功");
-        } else {
+        if (!memberService.memberAvailable(email)) {
+            return ResultVOUtil.error(HttpStatus.UNAUTHORIZED.value(), "用户已注销");
+        } else if (!memberService.passwordCorrect(email, password)) {
             return ResultVOUtil.error(HttpStatus.UNAUTHORIZED.value(), "用户名或密码错误");
+        } else {
+            return ResultVOUtil.success(userBriefInfoVO, "登陆成功");
         }
     }
 
@@ -61,6 +65,34 @@ public class MemberController {
             return ResultVOUtil.success(memberService.getMemberInfo(email), "");
         } catch (Exception e) {
             return ResultVOUtil.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器错误，查询用户信息失败");
+        }
+    }
+
+    @PostMapping(value = "/updateMemberInfo/{email}")
+    public ResultVO<?> updateMemberInfo(@PathVariable String email, @RequestParam String newName, @RequestParam String newPhone) {
+        try {
+            return ResultVOUtil.success(memberService.updateMemberInfo(email, newName, newPhone), "更新用户信息成功");
+        } catch (Exception e) {
+            return ResultVOUtil.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器错误，更新用户信息失败");
+        }
+    }
+
+    @PostMapping(value = "/chargeMoney/{email}")
+    public ResultVO<?> chargeMoney(@PathVariable String email, @RequestParam Double amount) {
+        try {
+            return ResultVOUtil.success(memberService.chargeMoney(email, amount), "更新用户信息成功");
+        } catch (Exception e) {
+            return ResultVOUtil.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器错误，更新用户信息失败");
+        }
+    }
+
+    @PostMapping(value = "/deleteMember/{email}")
+    public ResultVO<?> chargeMoney(@PathVariable String email) {
+        try {
+            memberService.deleteMember(email);
+            return ResultVOUtil.success("", "删除用户成功");
+        } catch (Exception e) {
+            return ResultVOUtil.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器错误，删除用户失败");
         }
     }
 }

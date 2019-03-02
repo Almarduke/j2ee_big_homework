@@ -11,7 +11,7 @@ public class OrderVO {
 
     private String restaurantName;
 
-    private Double amount;
+    private Double actualAmount;
 
     private String status;
 }

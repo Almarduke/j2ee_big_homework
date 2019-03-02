@@ -2,7 +2,7 @@
   <a-layout>
     <a-layout-sider width="240" style="margin-top: 20px; background-color: rgba(0,0,0,0)">
       <a-card hoverable style="width: 240px;">
-        <img src="../../assets/avator.jpg" alt="" slot="cover"/>
+        <img src="../../assets/rice.jpg" alt="" slot="cover"/>
         <a-card-meta :title="restaurantInfo.name">
           <p slot="description">编号：{{restaurantInfo.id}}</p>
           <p slot="description">电话：{{restaurantInfo.phone}}</p>
@@ -48,13 +48,13 @@ import { mapGetters } from 'vuex';
 import { OK } from '@/utils/status/HttpStatus';
 
 export default {
-  name: 'ShoppingCart',
+  name: 'RestaurantInfo',
   data () {
     return {
       restaurantInfo: {},
       restaurantAddressList: [],
       addressList: [],
-      visible: false
+      addAddressVisible: false
     };
   },
   computed: {
