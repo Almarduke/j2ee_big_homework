@@ -4,18 +4,15 @@ import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
 @Data
 @DynamicUpdate
-public class RestaurantDAO {
+public class RestaurantInfoCheckDAO {
 
     @Id
     private String id;
-
-    private String password;
 
     private String phone;
 
@@ -23,5 +20,4 @@ public class RestaurantDAO {
 
     private String address;
 
-    private Double amount;
 }

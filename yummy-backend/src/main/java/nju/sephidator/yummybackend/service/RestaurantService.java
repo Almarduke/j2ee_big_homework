@@ -17,4 +17,8 @@ public interface RestaurantService {
     RestaurantSignUpVO getById(String id);
 
     RestaurantInfoVO getRestaurantInfo(String id);
+
+    void updateRestaurantInfo(String restaurantId, String newName, String newPhone, String newAddress);
+
+    RestaurantInfoVO withdrawMoneyMoney(String email, Double amount);
 }

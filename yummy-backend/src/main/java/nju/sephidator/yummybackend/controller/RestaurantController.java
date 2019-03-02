@@ -38,7 +38,7 @@ public class RestaurantController {
     }
 
     @GetMapping(value = "/getRestaurantInfo/{id}")
-    public ResultVO<?> getMemberInfo(@PathVariable String id) {
+    public ResultVO<?> getRestaurantInfo(@PathVariable String id) {
         try {
             return ResultVOUtil.success(restaurantService.getRestaurantInfo(id), "");
         } catch (Exception e) {
@@ -50,5 +50,15 @@ public class RestaurantController {
     public ResultVO<?> getAll() {
         List<RestaurantSignUpVO> resultList = restaurantService.getAll();
         return ResultVOUtil.success(resultList, "");
+    }
+
+    @PostMapping(value = "/updateRestaurantInfo/{restaurantId}")
+    public ResultVO<?> updateMemberInfo(@PathVariable String restaurantId, @RequestParam String newName, @RequestParam String newPhone, @RequestParam String newAddress) {
+        try {
+            restaurantService.updateRestaurantInfo(restaurantId, newName, newPhone, newAddress);
+            return ResultVOUtil.success("", "更新饭店信息提交成功，等待审核");
+        } catch (Exception e) {
+            return ResultVOUtil.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器错误，更新饭店信息提交失败");
+        }
     }
 }

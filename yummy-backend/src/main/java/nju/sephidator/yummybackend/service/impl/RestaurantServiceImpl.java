@@ -1,10 +1,12 @@
 package nju.sephidator.yummybackend.service.impl;
 
 import nju.sephidator.yummybackend.model.RestaurantDAO;
+import nju.sephidator.yummybackend.model.RestaurantInfoCheckDAO;
 import nju.sephidator.yummybackend.repository.AddressLinkJPA;
+import nju.sephidator.yummybackend.repository.RestaurantInfoCheckJPA;
 import nju.sephidator.yummybackend.repository.RestaurantJPA;
-import nju.sephidator.yummybackend.service.AddressService;
 import nju.sephidator.yummybackend.service.RestaurantService;
+import nju.sephidator.yummybackend.vo.MemberInfoVO;
 import nju.sephidator.yummybackend.vo.RestaurantInfoVO;
 import nju.sephidator.yummybackend.vo.RestaurantSignUpVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,20 +19,19 @@ import java.util.List;
 public class RestaurantServiceImpl implements RestaurantService {
 
     @Autowired
-    RestaurantJPA restaurantJPA;
+    private RestaurantJPA restaurantJPA;
 
     @Autowired
-    AddressLinkJPA addressLinkJPA;
+    private AddressLinkJPA addressLinkJPA;
 
     @Autowired
-    private AddressService addressService;
+    private RestaurantInfoCheckJPA restaurantInfoCheckJPA;
 
     @Override
     public synchronized String create(RestaurantSignUpVO restaurantVO) {
         String id = generateUniqueId();
         RestaurantDAO restaurantDAO = restaurantVO.getRestaurantDAO(id);
         restaurantJPA.save(restaurantDAO);
-        addressLinkJPA.save(restaurantVO.getAddressLinkDAO(id));
         return id;
     }
 
@@ -59,8 +60,23 @@ public class RestaurantServiceImpl implements RestaurantService {
     public RestaurantInfoVO getRestaurantInfo(String id) {
         RestaurantInfoVO restaurantInfoVO = new RestaurantInfoVO();
         restaurantInfoVO.setRestaurantInfo(restaurantJPA.getOne(id));
-        restaurantInfoVO.setAddressList(addressService.getUserAddressList(id));
         return restaurantInfoVO;
+    }
+
+    @Override
+    public void updateRestaurantInfo(String restaurantId, String newName, String newPhone, String newAddress) {
+        RestaurantDAO restaurantDAO = restaurantJPA.getOne(restaurantId);
+        RestaurantInfoCheckDAO newInfo = new RestaurantInfoCheckDAO();
+        newInfo.setId(restaurantDAO.getId());
+        newInfo.setName(newName);
+        newInfo.setPhone(newPhone);
+        newInfo.setAddress(newAddress);
+        restaurantInfoCheckJPA.save(newInfo);
+    }
+
+    @Override
+    public RestaurantInfoVO withdrawMoneyMoney(String email, Double amount) {
+        return null;
     }
 
     private RestaurantSignUpVO generateRestaurantVO(RestaurantDAO restaurantDAO) {

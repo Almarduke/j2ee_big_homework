@@ -25,11 +25,8 @@ public class RestaurantSignUpVO {
         restaurantDAO.setName(name);
         restaurantDAO.setPassword(password);
         restaurantDAO.setPhone(phone);
+        restaurantDAO.setAddress(address);
         restaurantDAO.setAmount(0.0);
         return restaurantDAO;
-    }
-
-    public AddressLinkDAO getAddressLinkDAO(String id) {
-        return new AddressLinkDAO(id, address, AddressStatus.DEFAULT.getCode());
     }
 }

@@ -16,14 +16,15 @@ public class RestaurantInfoVO implements Serializable {
 
     private String name;
 
-    private Double amount;
+    private String address;
 
-    private List<AddressVO> addressList;
+    private Double amount;
 
     public void setRestaurantInfo(RestaurantDAO restaurantDAO) {
         this.id = restaurantDAO.getId();
         this.phone = restaurantDAO.getPhone();
         this.name = restaurantDAO.getName();
+        this.address = restaurantDAO.getAddress();
         this.amount = restaurantDAO.getAmount();
     }
 }
