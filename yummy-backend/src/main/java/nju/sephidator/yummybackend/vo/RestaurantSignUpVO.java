@@ -7,7 +7,7 @@ import nju.sephidator.yummybackend.model.MemberDAO;
 import nju.sephidator.yummybackend.model.RestaurantDAO;
 
 @Data
-public class RestaurantVO {
+public class RestaurantSignUpVO {
 
     private String id;
 

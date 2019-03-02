@@ -3,11 +3,10 @@
     <a-layout-sider width="240" style="margin-top: 20px; background-color: rgba(0,0,0,0)">
       <a-card hoverable style="width: 240px;">
         <img src="../../assets/avator.jpg" alt="" slot="cover"/>
-        <a-card-meta :title="memberInfo.email">
-          <p slot="description">名称：{{memberInfo.name}}</p>
-          <p slot="description">手机：{{memberInfo.phone}}</p>
-          <p slot="description">等级：{{memberInfo.level}}</p>
-          <p slot="description">余额：{{memberInfo.amount}}元</p>
+        <a-card-meta :title="restaurantInfo.name">
+          <p slot="description">编号：{{restaurantInfo.id}}</p>
+          <p slot="description">电话：{{restaurantInfo.phone}}</p>
+          <p slot="description">余额：{{restaurantInfo.amount}}元</p>
         </a-card-meta>
       </a-card>
     </a-layout-sider>
@@ -16,7 +15,7 @@
         <a-tabs defaultActiveKey="1">
           <a-tab-pane tab="地址列表" key="1">
             <a-list itemLayout="horizontal" :bordered="true">
-              <a-list-item v-for="address in memberAddressList" :key="address.name">
+              <a-list-item v-for="address in restaurantAddressList" :key="address.name">
                 <a-list-item-meta :description="defaultInfo(address.default)">
                   <a slot="title" >{{address.name}}</a>
                 </a-list-item-meta>
@@ -52,8 +51,8 @@ export default {
   name: 'ShoppingCart',
   data () {
     return {
-      memberInfo: {},
-      memberAddressList: [],
+      restaurantInfo: {},
+      restaurantAddressList: [],
       addressList: [],
       visible: false
     };
@@ -66,11 +65,11 @@ export default {
   },
   mounted () {
     this.$http({
-      url: `${this.baseUrl}/member/getMemberInfo/${this.userInfo.userId}`,
+      url: `${this.baseUrl}/restaurant/getRestaurantInfo/${this.userInfo.userId}`,
       method: 'GET'
     }).then((response) => {
-      this.memberInfo = response.data.data;
-      this.memberAddressList = response.data.data.addressList;
+      this.restaurantInfo = response.data.data;
+      this.restaurantAddressList = response.data.data.addressList;
     });
     this.$http({
       url: this.baseUrl + '/address/getAll',
@@ -94,7 +93,7 @@ export default {
       }).then((response) => {
         const code = response.data.code;
         if (code === OK) {
-          this.memberAddressList = response.data.data;
+          this.restaurantAddressList = response.data.data;
           this.$message.success(response.data.msg);
         } else {
           this.$message.error(response.data.msg);
@@ -112,7 +111,7 @@ export default {
       }).then((response) => {
         const code = response.data.code;
         if (code === OK) {
-          this.memberAddressList = response.data.data;
+          this.restaurantAddressList = response.data.data;
           this.$message.success(response.data.msg);
         } else {
           this.$message.error(response.data.msg);
@@ -136,7 +135,7 @@ export default {
             const code = response.data.code;
             if (code === OK) {
               this.visible = false;
-              this.memberAddressList = response.data.data;
+              this.restaurantAddressList = response.data.data;
               this.$message.success(response.data.msg);
             } else {
               this.$message.error(response.data.msg);

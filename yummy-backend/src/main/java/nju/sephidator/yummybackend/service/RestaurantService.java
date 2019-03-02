@@ -1,17 +1,20 @@
 package nju.sephidator.yummybackend.service;
 
-import nju.sephidator.yummybackend.model.RestaurantDAO;
-import nju.sephidator.yummybackend.vo.RestaurantVO;
+import nju.sephidator.yummybackend.vo.MemberInfoVO;
+import nju.sephidator.yummybackend.vo.RestaurantInfoVO;
+import nju.sephidator.yummybackend.vo.RestaurantSignUpVO;
 
 import java.util.List;
 
 public interface RestaurantService {
 
-    String create(RestaurantVO restaurantVO);
+    String create(RestaurantSignUpVO restaurantVO);
 
     boolean passwordCorrect(String id, String password);
 
-    List<RestaurantVO> getAll();
+    List<RestaurantSignUpVO> getAll();
 
-    RestaurantVO getById(String id);
+    RestaurantSignUpVO getById(String id);
+
+    RestaurantInfoVO getRestaurantInfo(String id);
 }

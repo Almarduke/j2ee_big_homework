@@ -58,9 +58,7 @@ public class MemberController {
     @GetMapping(value = "/getMemberInfo/{email}")
     public ResultVO<?> getMemberInfo(@PathVariable String email) {
         try {
-            MemberInfoVO result = memberService.getMemberInfo(email);
-            System.out.println("成功了");
-            return ResultVOUtil.success(result, "");
+            return ResultVOUtil.success(memberService.getMemberInfo(email), "");
         } catch (Exception e) {
             return ResultVOUtil.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器错误，查询用户信息失败");
         }

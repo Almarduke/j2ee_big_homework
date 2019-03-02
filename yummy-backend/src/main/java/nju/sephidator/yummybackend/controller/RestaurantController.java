@@ -3,7 +3,7 @@ package nju.sephidator.yummybackend.controller;
 
 import nju.sephidator.yummybackend.service.RestaurantService;
 import nju.sephidator.yummybackend.utils.ResultVOUtil;
-import nju.sephidator.yummybackend.vo.RestaurantVO;
+import nju.sephidator.yummybackend.vo.RestaurantSignUpVO;
 import nju.sephidator.yummybackend.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ public class RestaurantController {
     private RestaurantService restaurantService;
 
     @PostMapping(value = "/signUp")
-    public ResultVO<?> signUp(@RequestBody RestaurantVO restaurant) {
+    public ResultVO<?> signUp(@RequestBody RestaurantSignUpVO restaurant) {
         try {
             String id = restaurantService.create(restaurant);
             return ResultVOUtil.success("创建饭店成功，识别号为：" + id);
@@ -37,9 +37,18 @@ public class RestaurantController {
         }
     }
 
+    @GetMapping(value = "/getRestaurantInfo/{id}")
+    public ResultVO<?> getMemberInfo(@PathVariable String id) {
+        try {
+            return ResultVOUtil.success(restaurantService.getRestaurantInfo(id), "");
+        } catch (Exception e) {
+            return ResultVOUtil.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器错误，查询饭店信息失败");
+        }
+    }
+
     @GetMapping(value = "getAll")
     public ResultVO<?> getAll() {
-        List<RestaurantVO> resultList = restaurantService.getAll();
+        List<RestaurantSignUpVO> resultList = restaurantService.getAll();
         return ResultVOUtil.success(resultList, "");
     }
 }
