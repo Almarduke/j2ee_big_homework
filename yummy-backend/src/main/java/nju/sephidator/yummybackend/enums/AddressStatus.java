@@ -4,9 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum AddressStatus {
-    COMMON(0, "普通"),
-    DEFAULT(1, "默认"),
-    REMOVED(2, "已删除"),
+    DEFAULT(0, "默认"),
+    COMMON(1, "普通"),
     ;
 
     private Integer code;

@@ -9,4 +9,8 @@ public interface AddressLinkJPA extends JpaRepository<AddressLinkDAO, String> {
     List<AddressLinkDAO> findByUserId(String userId);
 
     List<AddressLinkDAO> findByUserIdAndStatus(String userId, Integer status);
+
+    List<AddressLinkDAO> findByUserIdAndAddressName(String userId, String addressName);
+
+    boolean existsByUserIdAndAddressName(String userId, String addressName);
 }

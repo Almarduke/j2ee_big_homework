@@ -3,108 +3,165 @@
     <a-layout-sider width="240" style="margin-top: 20px; background-color: rgba(0,0,0,0)">
       <a-card hoverable style="width: 240px;">
         <img src="../../assets/avator.jpg" alt="" slot="cover"/>
-        <a-card-meta title="Europe Street beat">
-          <p slot="description">饭店的电话</p>
-          <p slot="description">饭店地址</p>
+        <a-card-meta :title="memberInfo.email">
+          <p slot="description">手机：{{memberInfo.phone}}</p>
+          <p slot="description">名称：{{memberInfo.name}}</p>
+          <p slot="description">等级：{{memberInfo.level}}</p>
+          <p slot="description">余额：{{memberInfo.amount}}元</p>
         </a-card-meta>
       </a-card>
     </a-layout-sider>
     <a-layout style="margin-top: 20px; padding: 0 24px 24px">
       <a-layout-content style="height: 700px; padding: 24px; background-color: white">
         <a-tabs defaultActiveKey="1">
-          <a-tab-pane tab="菜品列表" key="1">
+          <a-tab-pane tab="地址列表" key="1">
             <a-list itemLayout="horizontal" :bordered="true">
-              <a-list-item v-for="food in foodList" :key="food.id">
-                <a slot="actions" @click="addFoodToCart(food)">添加</a>
-                <a-list-item-meta :description="food.description">
-                  <a slot="title" >{{food.name}}</a>
+              <a-list-item v-for="address in memberAddressList" :key="address.name">
+                <a-list-item-meta :description="defaultInfo(address.default)">
+                  <a slot="title" >{{address.name}}</a>
                 </a-list-item-meta>
-                <div>{{food.price}}元</div>
-              </a-list-item>
-            </a-list>
-          </a-tab-pane>
-          <a-tab-pane tab="购物车" key="2">
-            <a-list itemLayout="horizontal" :bordered="true">
-              <a-list-item v-for="(food, index) in foodInCart" :key="food.id">
-                <a-list-item-meta :description="food.description">
-                  <a slot="title" >{{food.name}}</a>
-                </a-list-item-meta>
-                <div style="margin-right: 20px">{{food.price}}元</div>
-                <div>
-                  <a slot="actions" @click="minus(food)" class="number-input">-</a>
-                  <a slot="description" class="number-input">{{foodNumberList[index]}}份</a>
-                  <a slot="actions" @click="plus(food)" class="number-input">+</a>
+                <div style="margin-left: 10px" v-if="!address.default">
+                  <a slot="actions" @click="setAddressAsDefault(address.name)" class="plain-text">设为默认</a>
+                  <a slot="actions" @click="deleteAddress(address.name)" class="plain-text delete-button">删除</a>
                 </div>
               </a-list-item>
             </a-list>
-            <div style="padding: 24px 0 0 24px;" v-if="foodNumberList.length > 0">
-              <span style="font-size: 16px">总价：{{this.totalAmount}}元</span>
-              <a-button style="float: right" type="primary" size="large">结算</a-button>
-            </div>
+            <a-button style="float: right; margin: 20px;" type="primary" shape="circle" icon="plus" size="large" @click="addAddress"/>
           </a-tab-pane>
         </a-tabs>
       </a-layout-content>
     </a-layout>
+
+    <a-modal title="添加地址" :visible="visible" @ok="handleOk" @cancel="handleCancel">
+      <a-form :form="addressForm">
+        <a-form-item label="名称">
+          <a-select v-decorator="['addressName', {rules: [{required: true, message: '请输入地址'}]}]">
+            <a-select-option v-for="address in addressList" :key="address">{{address}}</a-select-option>
+          </a-select>
+        </a-form-item>
+      </a-form>
+    </a-modal>
   </a-layout>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import { OK } from '@/utils/status/HttpStatus';
+
 export default {
   name: 'ShoppingCart',
   data () {
     return {
-      foodList: [
-        { id: 0, name: '蛋炒饭', price: 3, description: '我觉得可以' },
-        { id: 1, name: '土豆', price: 76, description: '我觉得不行' }
-      ],
-      foodInCart: [],
-      foodNumberList: []
+      memberInfo: {},
+      memberAddressList: [],
+      addressList: [],
+      visible: false
     };
   },
   computed: {
-    totalAmount () {
-      let sum = 0;
-      let length = Math.min(this.foodInCart.length, this.foodNumberList.length);
-      for (let i = 0; i < length; i++) {
-        sum += this.foodInCart[i].price * this.foodNumberList[i];
-      }
-      return sum;
-    }
+    ...mapGetters(['userInfo', 'baseUrl'])
+  },
+  beforeCreate () {
+    this.addressForm = this.$form.createForm(this);
+  },
+  mounted () {
+    this.$http({
+      url: `${this.baseUrl}/member/getMemberInfo/${this.userInfo.userId}`,
+      method: 'GET'
+    }).then((response) => {
+      this.memberInfo = response.data.data;
+      this.memberAddressList = response.data.data.addressList;
+    });
+    this.$http({
+      url: this.baseUrl + '/address/getAll',
+      method: 'GET'
+    }).then((response) => {
+      this.addressList = response.data.data;
+    });
   },
   methods: {
-    addFoodToCart (food) {
-      const index = this.foodInCart.indexOf(food);
-      if (index < 0) {
-        this.foodInCart.push(food);
-        this.foodNumberList.push(1);
-      } else {
-        const newNumber = this.foodNumberList[index] += 1;
-        this.foodNumberList.splice(index, 1, newNumber);
-      }
+    defaultInfo (isDefault) {
+      return isDefault ? '默认地址' : '其他地址';
     },
-    minus (food) {
-      const index = this.foodInCart.indexOf(food);
-      if (this.foodNumberList[index] === 1) {
-        this.foodInCart.splice(index, 1);
-        this.foodNumberList.splice(index, 1);
-      } else {
-        const newNumber = this.foodNumberList[index] -= 1;
-        this.foodNumberList.splice(index, 1, newNumber);
-      }
+    setAddressAsDefault (addressName) {
+      this.$http({
+        url: this.baseUrl + '/address/setAsDefault',
+        method: 'POST',
+        params: {
+          userId: this.userInfo.userId,
+          addressName: addressName
+        }
+      }).then((response) => {
+        const code = response.data.code;
+        if (code === OK) {
+          this.memberAddressList = response.data.data;
+          this.$message.success(response.data.msg);
+        } else {
+          this.$message.error(response.data.msg);
+        }
+      });
     },
-    plus (food) {
-      const index = this.foodInCart.indexOf(food);
-      const newNumber = this.foodNumberList[index] += 1;
-      this.foodNumberList.splice(index, 1, newNumber);
+    deleteAddress (addressName) {
+      this.$http({
+        url: this.baseUrl + '/address/delete',
+        method: 'POST',
+        params: {
+          userId: this.userInfo.userId,
+          addressName: addressName
+        }
+      }).then((response) => {
+        const code = response.data.code;
+        if (code === OK) {
+          this.memberAddressList = response.data.data;
+          this.$message.success(response.data.msg);
+        } else {
+          this.$message.error(response.data.msg);
+        }
+      });
+    },
+    addAddress () {
+      this.visible = true;
+    },
+    handleOk () {
+      this.addressForm.validateFieldsAndScroll((err, values) => {
+        if (!err) {
+          this.$http({
+            url: this.baseUrl + '/address/addUserAddress',
+            method: 'POST',
+            params: {
+              userId: this.userInfo.userId,
+              addressName: values.addressName
+            }
+          }).then((response) => {
+            const code = response.data.code;
+            if (code === OK) {
+              this.visible = false;
+              this.memberAddressList = response.data.data;
+              this.$message.success(response.data.msg);
+            } else {
+              this.$message.error(response.data.msg);
+            }
+          });
+        }
+      });
+    },
+    handleCancel () {
+      this.visible = false;
     }
   }
 };
 </script>
 
 <style scoped>
-  .number-input {
+  .plain-text {
     margin: 0 5px;
     width: 20px;
-    font-size: 16px;
+    font-size: 14px;
+  }
+  .delete-button {
+    color: red;
+  }
+  .delete-button:hover {
+    opacity: 0.8;
   }
 </style>

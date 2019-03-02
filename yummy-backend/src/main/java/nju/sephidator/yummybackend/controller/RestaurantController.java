@@ -1,11 +1,8 @@
 package nju.sephidator.yummybackend.controller;
 
 
-import nju.sephidator.yummybackend.enums.UserType;
-import nju.sephidator.yummybackend.service.MemberService;
 import nju.sephidator.yummybackend.service.RestaurantService;
 import nju.sephidator.yummybackend.utils.ResultVOUtil;
-import nju.sephidator.yummybackend.vo.MemberVO;
 import nju.sephidator.yummybackend.vo.RestaurantVO;
 import nju.sephidator.yummybackend.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;

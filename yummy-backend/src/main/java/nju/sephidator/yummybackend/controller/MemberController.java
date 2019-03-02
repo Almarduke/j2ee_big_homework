@@ -4,7 +4,8 @@ package nju.sephidator.yummybackend.controller;
 import nju.sephidator.yummybackend.enums.UserType;
 import nju.sephidator.yummybackend.service.MemberService;
 import nju.sephidator.yummybackend.utils.ResultVOUtil;
-import nju.sephidator.yummybackend.vo.MemberVO;
+import nju.sephidator.yummybackend.vo.MemberInfoVO;
+import nju.sephidator.yummybackend.vo.MemberSignUpVO;
 import nju.sephidator.yummybackend.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ public class MemberController {
     private MemberService memberService;
 
     @PostMapping(value = "/signUp")
-    public ResultVO<?> signUp(@RequestBody MemberVO member) {
+    public ResultVO<?> signUp(@RequestBody MemberSignUpVO member) {
         if (memberService.emailExists(member.getEmail())) {
             return ResultVOUtil.error(HttpStatus.FORBIDDEN.value(), "邮箱已经注册");
         } else if (memberService.checkCodeError(member.getEmail(), member.getCheckCode())) {
@@ -38,7 +39,7 @@ public class MemberController {
     }
 
     @PostMapping(value = "/login")
-    public ResultVO<?> signUp(@RequestParam String email, @RequestParam String password) {
+    public ResultVO<?> login(@RequestParam String email, @RequestParam String password) {
         UserType userType;
 
         if (email.equals("admin@yummy.com")) {
@@ -51,6 +52,17 @@ public class MemberController {
             return ResultVOUtil.success(userType.getValue(), "登陆成功");
         } else {
             return ResultVOUtil.error(HttpStatus.UNAUTHORIZED.value(), "用户名或密码错误");
+        }
+    }
+
+    @GetMapping(value = "/getMemberInfo/{email}")
+    public ResultVO<?> getMemberInfo(@PathVariable String email) {
+        try {
+            MemberInfoVO result = memberService.getMemberInfo(email);
+            System.out.println("成功了");
+            return ResultVOUtil.success(result, "");
+        } catch (Exception e) {
+            return ResultVOUtil.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器错误，查询用户信息失败");
         }
     }
 }

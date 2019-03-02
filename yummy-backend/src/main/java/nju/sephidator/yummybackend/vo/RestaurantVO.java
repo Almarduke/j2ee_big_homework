@@ -30,10 +30,6 @@ public class RestaurantVO {
     }
 
     public AddressLinkDAO getAddressLinkDAO(String id) {
-        AddressLinkDAO addressLinkDAO = new AddressLinkDAO();
-        addressLinkDAO.setAddressName(address);
-        addressLinkDAO.setUserId(id);
-        addressLinkDAO.setStatus(AddressStatus.DEFAULT.getCode());
-        return addressLinkDAO;
+        return new AddressLinkDAO(id, address, AddressStatus.DEFAULT.getCode());
     }
 }

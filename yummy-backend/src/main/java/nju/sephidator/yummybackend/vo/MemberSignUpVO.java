@@ -1,11 +1,12 @@
 package nju.sephidator.yummybackend.vo;
 
 import lombok.Data;
+import nju.sephidator.yummybackend.enums.AddressStatus;
 import nju.sephidator.yummybackend.model.AddressLinkDAO;
 import nju.sephidator.yummybackend.model.MemberDAO;
 
 @Data
-public class MemberVO {
+public class MemberSignUpVO {
 
     private String email;
 
@@ -31,9 +32,6 @@ public class MemberVO {
     }
 
     public AddressLinkDAO getAddressLinkDAO() {
-        AddressLinkDAO addressLinkDAO = new AddressLinkDAO();
-        addressLinkDAO.setAddressName(address);
-        addressLinkDAO.setUserId(email);
-        return addressLinkDAO;
+        return new AddressLinkDAO(email, address, AddressStatus.DEFAULT.getCode());
     }
 }

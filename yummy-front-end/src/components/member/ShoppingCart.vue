@@ -143,7 +143,6 @@ export default {
           price: this.foodInCart[i].price
         });
       }
-      console.log(result);
       return result;
     }
   }

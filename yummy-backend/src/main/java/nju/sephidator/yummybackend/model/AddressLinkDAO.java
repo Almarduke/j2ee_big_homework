@@ -22,4 +22,12 @@ public class AddressLinkDAO implements Serializable {
     private String addressName;
 
     private Integer status;
+
+    public AddressLinkDAO() {}
+
+    public AddressLinkDAO(String userId, String addressName, Integer status) {
+        this.userId = userId;
+        this.addressName = addressName;
+        this.status = status;
+    }
 }

@@ -68,7 +68,6 @@ export default {
           orderStatus: orderStatus
         }
       }).then((response) => {
-        console.log(response);
         if (response.data.code === OK) {
           this.orderList = response.data.data;
         }

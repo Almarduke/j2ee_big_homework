@@ -1,16 +1,25 @@
 package nju.sephidator.yummybackend.service.impl;
 
+import nju.sephidator.yummybackend.enums.AddressStatus;
+import nju.sephidator.yummybackend.model.AddressLinkDAO;
 import nju.sephidator.yummybackend.model.CheckCodeDAO;
+import nju.sephidator.yummybackend.model.MemberDAO;
 import nju.sephidator.yummybackend.repository.AddressLinkJPA;
 import nju.sephidator.yummybackend.repository.CheckCodeJPA;
 import nju.sephidator.yummybackend.repository.MemberJPA;
+import nju.sephidator.yummybackend.service.AddressService;
 import nju.sephidator.yummybackend.service.MemberService;
 import nju.sephidator.yummybackend.utils.KeyUtil;
-import nju.sephidator.yummybackend.vo.MemberVO;
+import nju.sephidator.yummybackend.vo.AddressVO;
+import nju.sephidator.yummybackend.vo.MemberInfoVO;
+import nju.sephidator.yummybackend.vo.MemberSignUpVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -27,15 +36,18 @@ public class MemberServiceImpl implements MemberService {
     @Autowired
     private JavaMailSenderImpl mailSender;
 
+    @Autowired
+    private AddressService addressService;
+
     @Override
     public boolean emailExists(String email) {
         return memberJPA.existsById(email);
     }
 
     @Override
-    public void create(MemberVO memberVO) {
-        memberJPA.save(memberVO.getMemberDAO());
-        addressLinkJPA.save(memberVO.getAddressLinkDAO());
+    public void create(MemberSignUpVO memberSignUpVO) {
+        memberJPA.save(memberSignUpVO.getMemberDAO());
+        addressLinkJPA.save(memberSignUpVO.getAddressLinkDAO());
     }
 
     @Override
@@ -77,5 +89,13 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public boolean passwordCorrect(String email, String password) {
         return memberJPA.existsByEmailAndPassword(email, password);
+    }
+
+    @Override
+    public MemberInfoVO getMemberInfo(String email) {
+        MemberInfoVO memberInfoVO = new MemberInfoVO();
+        memberInfoVO.setMemberInfo(memberJPA.getOne(email));
+        memberInfoVO.setAddressList(addressService.getUserAddressList(email));
+        return memberInfoVO;
     }
 }

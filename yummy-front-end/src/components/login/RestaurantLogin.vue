@@ -75,8 +75,7 @@ export default {
       url: this.baseUrl + '/address/getAll',
       method: 'GET'
     }).then((response) => {
-      let object = response.data;
-      this.addressList = object.data;
+      this.addressList = response.data.data;
     });
   },
   methods: {
