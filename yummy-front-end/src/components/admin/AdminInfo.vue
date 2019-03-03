@@ -25,11 +25,17 @@
               </a-list-item>
             </a-list>
           </a-tab-pane>
+          <a-tab-pane tab="会员统计" key="2">
+            <member-statistics></member-statistics>
+          </a-tab-pane>
+          <a-tab-pane tab="财务情况" key="3">
+
+          </a-tab-pane>
         </a-tabs>
-      </a-layout-content>s
+      </a-layout-content>
     </a-layout>
 
-    <a-modal title="饭店审核信息" :visible="visible" @ok="visible=false" @cancel="visible=false">
+    <a-modal title="餐厅审核信息" :visible="visible" @ok="visible=false" @cancel="visible=false">
       <a-form :form="restaurantInfoCheckForm">
         <a-form-item v-bind="formItemLayout" label="编号">
           <span class="info">{{selectedRestaurantInfoCheck.id}}</span>
@@ -51,9 +57,11 @@
 <script>
 import { mapGetters } from 'vuex';
 import { OK } from '@/utils/status/HttpStatus';
+import MemberStatistics from '@/components/admin/UserStatistics';
 
 export default {
   name: 'AdminInfo',
+  components: { MemberStatistics },
   data () {
     return {
       adminInfo: {},

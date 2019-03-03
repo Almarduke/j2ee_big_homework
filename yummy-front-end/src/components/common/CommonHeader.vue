@@ -7,7 +7,7 @@
 
       <a-menu-item key="/ManageFood" v-if="userInfo.userType === 'RESTAURANT'">菜品管理</a-menu-item>
       <a-menu-item key="/RestaurantOrder" v-if="userInfo.userType === 'RESTAURANT'">订单管理</a-menu-item>
-      <a-menu-item key="/RestaurantInfo" v-if="userInfo.userType === 'RESTAURANT'">饭店信息</a-menu-item>
+      <a-menu-item key="/RestaurantInfo" v-if="userInfo.userType === 'RESTAURANT'">餐厅信息</a-menu-item>
 
       <a-menu-item key="/AdminInfo" v-if="userInfo.userType === 'ADMIN'">管理员界面</a-menu-item>
 

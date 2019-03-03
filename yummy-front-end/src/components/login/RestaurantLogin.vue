@@ -26,8 +26,8 @@
           <a-input v-decorator="['phone', {rules: [{required: true, message: '请输入手机号'},
                  {validator: phoneValidator}]}]"/>
         </a-form-item>
-        <a-form-item v-bind="formItemLayout" label="饭店名" >
-          <a-input v-decorator="['name', {rules: [{required: true, message: '请输入饭店名'}]}]"/>
+        <a-form-item v-bind="formItemLayout" label="餐厅名" >
+          <a-input v-decorator="['name', {rules: [{required: true, message: '请输入餐厅名'}]}]"/>
         </a-form-item>
         <a-form-item v-bind="formItemLayout" label="地址">
           <a-select v-decorator="['address', {rules: [{required: true, message: '请输入地址'}]}]">

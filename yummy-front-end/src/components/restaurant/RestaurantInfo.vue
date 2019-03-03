@@ -36,7 +36,7 @@
       </a-layout-content>
     </a-layout>
 
-    <a-modal title="编辑饭店信息" :visible="updateInfoVisible" @ok="updateInfo" @cancel="updateInfoVisible=false">
+    <a-modal title="编辑餐厅信息" :visible="updateInfoVisible" @ok="updateInfo" @cancel="updateInfoVisible=false">
       <a-form :form="restaurantInfoForm" v-if="updateInfoVisible">
         <a-form-item v-bind="formItemLayout" label="名称">
           <a-input v-decorator="['name', {rules: [{required: true, message: '请输入名称'}], initialValue: restaurantInfo.name}]"/>
