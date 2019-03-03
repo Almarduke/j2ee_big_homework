@@ -3,9 +3,8 @@ package nju.sephidator.yummybackend.controller;
 import nju.sephidator.yummybackend.exceptions.MemberAmountException;
 import nju.sephidator.yummybackend.service.OrderService;
 import nju.sephidator.yummybackend.utils.ResultVOUtil;
-import nju.sephidator.yummybackend.vo.FoodVO;
-import nju.sephidator.yummybackend.vo.OrderDetailVO;
-import nju.sephidator.yummybackend.vo.ResultVO;
+import nju.sephidator.yummybackend.vo.order.OrderDetailVO;
+import nju.sephidator.yummybackend.vo.util.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -29,8 +28,8 @@ public class OrderController {
                               @RequestBody List<OrderDetailVO> orderDetails) {
         try {
             discount = new BigDecimal(discount).setScale(2, RoundingMode.HALF_UP).doubleValue();
-            orderService.submit(restaurantId, memberEmail, totalAmount, discount, orderDetails);
-            return ResultVOUtil.success("", "提交订单成功");
+            String message = orderService.submit(restaurantId, memberEmail, totalAmount, discount, orderDetails);
+            return ResultVOUtil.success("", message);
         } catch (Exception e) {
             return ResultVOUtil.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器错误，提交订单失败");
         }

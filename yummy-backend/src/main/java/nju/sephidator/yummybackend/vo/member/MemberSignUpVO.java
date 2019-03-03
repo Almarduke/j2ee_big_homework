@@ -1,4 +1,4 @@
-package nju.sephidator.yummybackend.vo;
+package nju.sephidator.yummybackend.vo.member;
 
 import lombok.Data;
 import nju.sephidator.yummybackend.enums.AddressStatus;

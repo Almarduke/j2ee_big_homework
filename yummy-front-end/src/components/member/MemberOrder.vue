@@ -68,7 +68,7 @@ export default {
     loadOrders (orderStatus) {
       this.payButtonVisible = (orderStatus === TOPAY);
       this.finishButtonVisible = (orderStatus === DISTRIBUTING);
-      this.cancelButtonVisible = (orderStatus === DISTRIBUTING) || (orderStatus === PAYED);
+      this.cancelButtonVisible = (orderStatus === TOPAY) || (orderStatus === PAYED) || (orderStatus === DISTRIBUTING);
       this.$http({
         url: this.baseUrl + '/order/getMemberOrders',
         method: 'GET',

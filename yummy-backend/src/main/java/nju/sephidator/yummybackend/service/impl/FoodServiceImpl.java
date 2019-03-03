@@ -3,7 +3,7 @@ package nju.sephidator.yummybackend.service.impl;
 import nju.sephidator.yummybackend.model.FoodDAO;
 import nju.sephidator.yummybackend.repository.FoodJPA;
 import nju.sephidator.yummybackend.service.FoodService;
-import nju.sephidator.yummybackend.vo.FoodVO;
+import nju.sephidator.yummybackend.vo.food.FoodVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

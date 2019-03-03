@@ -1,6 +1,6 @@
 package nju.sephidator.yummybackend.utils;
 
-import nju.sephidator.yummybackend.vo.ResultVO;
+import nju.sephidator.yummybackend.vo.util.ResultVO;
 import org.springframework.http.HttpStatus;
 
 public class ResultVOUtil {

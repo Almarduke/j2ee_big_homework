@@ -1,14 +1,14 @@
 package nju.sephidator.yummybackend.service;
 
-import nju.sephidator.yummybackend.vo.OrderDetailVO;
-import nju.sephidator.yummybackend.vo.OrderInfoVO;
-import nju.sephidator.yummybackend.vo.OrderVO;
+import nju.sephidator.yummybackend.vo.order.OrderDetailVO;
+import nju.sephidator.yummybackend.vo.order.OrderInfoVO;
+import nju.sephidator.yummybackend.vo.order.OrderVO;
 
 import java.util.List;
 
 public interface OrderService {
 
-    void submit(String restaurantId, String memberEmail, Double totalAmount, Double discount, List<OrderDetailVO> orderDetailVOList);
+    String submit(String restaurantId, String memberEmail, Double totalAmount, Double discount, List<OrderDetailVO> orderDetailVOList);
 
     List<OrderVO> findMemberOrders(String email, Integer orderStatus);
 

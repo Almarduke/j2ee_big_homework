@@ -10,6 +10,8 @@ import ManageFood from '@/components/restaurant/ManageFood';
 import RestaurantOrder from '@/components/restaurant/RestaurantOrder';
 import RestaurantInfo from '@/components/restaurant/RestaurantInfo';
 
+import AdminInfo from '@/components/admin/AdminInfo';
+
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
@@ -56,6 +58,12 @@ const routes = [
         path: '/RestaurantInfo',
         component: RestaurantInfo,
         name: 'RestaurantInfo'
+      },
+
+      {
+        path: '/AdminInfo',
+        component: AdminInfo,
+        name: '/AdminInfo'
       }
     ]
   },

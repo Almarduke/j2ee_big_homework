@@ -2,8 +2,8 @@ package nju.sephidator.yummybackend.controller;
 
 import nju.sephidator.yummybackend.service.FoodService;
 import nju.sephidator.yummybackend.utils.ResultVOUtil;
-import nju.sephidator.yummybackend.vo.FoodVO;
-import nju.sephidator.yummybackend.vo.ResultVO;
+import nju.sephidator.yummybackend.vo.food.FoodVO;
+import nju.sephidator.yummybackend.vo.util.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

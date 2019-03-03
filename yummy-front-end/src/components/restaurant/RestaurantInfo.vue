@@ -55,7 +55,7 @@
       </a-form>
     </a-modal>
 
-    <a-modal title="用户充值" :visible="withdrawVisible" @ok="withdrawMoney" @cancel="withdrawVisible=false">
+    <a-modal title="用户提现" :visible="withdrawVisible" @ok="withdrawMoney" @cancel="withdrawVisible=false">
       <a-form :form="withdrawForm" v-if="withdrawVisible">
         <a-form-item v-bind="formItemLayout" label="提现金额">
           <div>
@@ -163,6 +163,26 @@ export default {
       (value && /\d{11}/.test(value.toString())) ? callback() : callback(message);
     },
     withdrawMoney () {
+      this.withdrawForm.validateFieldsAndScroll((err, values) => {
+        if (!err) {
+          this.$http({
+            url: `${this.baseUrl}/restaurant/withdrawMoney/${this.userInfo.userId}`,
+            method: 'POST',
+            params: {
+              amount: values.amount
+            }
+          }).then((response) => {
+            const code = response.data.code;
+            if (code === OK) {
+              this.withdrawVisible = false;
+              this.restaurantInfo = response.data.data;
+              this.$message.success(response.data.msg);
+            } else {
+              this.$message.error(response.data.msg);
+            }
+          });
+        }
+      });
     }
   }
 };

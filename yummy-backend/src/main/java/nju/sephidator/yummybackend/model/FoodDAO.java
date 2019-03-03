@@ -1,6 +1,7 @@
 package nju.sephidator.yummybackend.model;
 
 import lombok.Data;
+import nju.sephidator.yummybackend.utils.MathUtil;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
@@ -25,4 +26,8 @@ public class FoodDAO {
     private Double price;
 
     private boolean available;
+
+    public void setPrice(Double price) {
+        this.price = MathUtil.scaledDouble(price, 2);
+    }
 }

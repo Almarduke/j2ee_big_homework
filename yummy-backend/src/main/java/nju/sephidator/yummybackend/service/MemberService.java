@@ -1,8 +1,7 @@
 package nju.sephidator.yummybackend.service;
 
-import nju.sephidator.yummybackend.model.MemberDAO;
-import nju.sephidator.yummybackend.vo.MemberInfoVO;
-import nju.sephidator.yummybackend.vo.MemberSignUpVO;
+import nju.sephidator.yummybackend.vo.member.MemberInfoVO;
+import nju.sephidator.yummybackend.vo.member.MemberSignUpVO;
 
 public interface MemberService {
 

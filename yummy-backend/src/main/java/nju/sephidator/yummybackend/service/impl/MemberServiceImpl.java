@@ -3,7 +3,6 @@ package nju.sephidator.yummybackend.service.impl;
 import nju.sephidator.yummybackend.enums.OrderStatus;
 import nju.sephidator.yummybackend.model.CheckCodeDAO;
 import nju.sephidator.yummybackend.model.MemberDAO;
-import nju.sephidator.yummybackend.model.OrderDAO;
 import nju.sephidator.yummybackend.repository.AddressLinkJPA;
 import nju.sephidator.yummybackend.repository.CheckCodeJPA;
 import nju.sephidator.yummybackend.repository.MemberJPA;
@@ -11,10 +10,9 @@ import nju.sephidator.yummybackend.service.AddressService;
 import nju.sephidator.yummybackend.service.MemberService;
 import nju.sephidator.yummybackend.service.OrderService;
 import nju.sephidator.yummybackend.utils.KeyUtil;
-import nju.sephidator.yummybackend.vo.MemberInfoVO;
-import nju.sephidator.yummybackend.vo.MemberSignUpVO;
-import nju.sephidator.yummybackend.vo.OrderVO;
-import org.hibernate.criterion.Order;
+import nju.sephidator.yummybackend.vo.member.MemberInfoVO;
+import nju.sephidator.yummybackend.vo.member.MemberSignUpVO;
+import nju.sephidator.yummybackend.vo.order.OrderVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -137,7 +135,7 @@ public class MemberServiceImpl implements MemberService {
         for (OrderVO orderVO: orderService.findMemberOrders(email, OrderStatus.FINISHED.getCode())) {
             memberAmount += orderVO.getActualAmount();
         }
-        Integer memberLevel = 1;
+        Integer memberLevel = 0;
         for (int i = 0; i < levelAmountList.length; i++) {
             if (memberAmount >= levelAmountList[i]) {
                 memberLevel = i + 1;

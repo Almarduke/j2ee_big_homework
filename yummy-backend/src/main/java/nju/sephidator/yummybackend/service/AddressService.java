@@ -1,6 +1,6 @@
 package nju.sephidator.yummybackend.service;
 
-import nju.sephidator.yummybackend.vo.AddressVO;
+import nju.sephidator.yummybackend.vo.address.AddressVO;
 
 import java.util.List;
 
