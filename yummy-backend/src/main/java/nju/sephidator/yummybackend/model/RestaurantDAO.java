@@ -26,7 +26,13 @@ public class RestaurantDAO {
 
     private Double amount;
 
+    private Double revenue;
+
     public void setAmount(Double amount) {
         this.amount = MathUtil.scaledDouble(amount, 2);
+    }
+
+    public void addToRevenue(Double amount) {
+        this.amount = MathUtil.scaledDouble(revenue + amount, 2);
     }
 }

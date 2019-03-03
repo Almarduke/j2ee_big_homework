@@ -26,10 +26,10 @@
             </a-list>
           </a-tab-pane>
           <a-tab-pane tab="会员统计" key="2">
-            <member-statistics></member-statistics>
+            <user-statistics></user-statistics>
           </a-tab-pane>
           <a-tab-pane tab="财务情况" key="3">
-
+            <finance-statistics></finance-statistics>
           </a-tab-pane>
         </a-tabs>
       </a-layout-content>
@@ -57,11 +57,12 @@
 <script>
 import { mapGetters } from 'vuex';
 import { OK } from '@/utils/status/HttpStatus';
-import MemberStatistics from '@/components/admin/UserStatistics';
+import UserStatistics from '@/components/admin/UserStatistics';
+import FinanceStatistics from '@/components/admin/FinanceStatistics';
 
 export default {
   name: 'AdminInfo',
-  components: { MemberStatistics },
+  components: { UserStatistics, FinanceStatistics },
   data () {
     return {
       adminInfo: {},

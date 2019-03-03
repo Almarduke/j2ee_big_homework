@@ -1,58 +1,50 @@
 <template>
   <div class="container">
-    <div id="MemberStatistics" class="pie-chart"></div>
-    <div id="RestaurantStatistics" class="pie-chart"></div>
+    <div id="FinanceStatistics" class="line-chart"></div>
   </div>
 </template>
 
 <script>
-import { OK } from '@/utils/status/HttpStatus';
-import { mapGetters } from 'vuex';
-
 export default {
-  name: 'UserStatistics',
-  computed: {
-    ...mapGetters(['baseUrl'])
+  name: 'FinanceStatistics',
+  data () {
+    return {
+    };
   },
   mounted () {
-    this.setMemberData();
-    this.setRestaurantData();
+    this.setData();
   },
   methods: {
-    setMemberData () {
-      let myChart = this.$echarts.init(document.getElementById('MemberStatistics'));
-      this.$http({
-        url: `${this.baseUrl}/admin/getMemberStatistics`,
-        method: 'GET'
-      }).then((response) => {
-        const code = response.data.code;
-        if (code === OK) {
-          myChart.setOption(this.getOption(response.data.data, true));
-        } else {
-          this.$message.error(response.data.msg);
-        }
-      });
-    },
-    setRestaurantData () {
-      let myChart = this.$echarts.init(document.getElementById('RestaurantStatistics'));
-      this.$http({
-        url: `${this.baseUrl}/admin/getRestaurantStatistics`,
-        method: 'GET'
-      }).then((response) => {
-        const code = response.data.code;
-        if (code === OK) {
-          myChart.setOption(this.getOption(response.data.data, false));
-        } else {
-          this.$message.error(response.data.msg);
-        }
-      });
+    setData () {
+      let myChart = this.$echarts.init(document.getElementById('FinanceStatistics'));
+      let option = {
+        xAxis: {
+          type: 'category',
+          data: [
+            'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun',
+            'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'
+          ]
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [{
+          data: [
+            820, -932, 901, 934, -1290, 1330, 1320,
+            820, -932, 901, -934, 1290, 1330, -1320
+          ],
+          type: 'line'
+        }]
+      };
+
+      // 使用刚指定的配置项和数据显示图表。
+      myChart.setOption(option);
     },
     getOption (data, isMember) {
       let title;
       let subTitle;
       let tooltipTitle;
       let position;
-      let formatter;
       let color;
       let legendData = data.map((item) => {
         return item.name;
@@ -63,15 +55,17 @@ export default {
         subTitle = '各等级会员人数';
         tooltipTitle = '会员等级';
         position = 'left';
-        formatter = '{a} <br/>{b}: {c}人';
         color = ['#FB7293', '#FFDB5C', '#37A2DA', '#9FE6B8', '#FF9F7F', '#8378EA'];
       } else {
         title = '餐厅统计';
-        subTitle = '不同营业额的餐厅数';
+        subTitle = '各营业额餐厅数';
         tooltipTitle = '餐厅营业额';
         position = 'right';
-        formatter = '{a} <br/>{b}: {c}家';
-        color = ['#A92528', '#273A49', '#5AA1A9', '#E17B5A', '#8FD4B2', '#D5811E'];
+        color = [
+          '#A92528', '#273A49',
+          '#5AA1A9', '#E17B5A',
+          '#8FD4B2', '#D5811E'
+        ];
       }
 
       return {
@@ -88,7 +82,7 @@ export default {
         },
         tooltip: {
           trigger: 'item',
-          formatter: formatter,
+          formatter: '{a} <br/>{b}: {c}人',
           textStyle: {
             fontSize: 16
           }
@@ -115,9 +109,9 @@ export default {
 </script>
 
 <style scoped>
-  .pie-chart {
+  .line-chart {
     height: 600px;
-    width: 600px;
+    width: 1200px;
     display: inline-block;
   }
   .container {
