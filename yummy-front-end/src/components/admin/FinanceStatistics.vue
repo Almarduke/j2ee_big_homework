@@ -5,11 +5,17 @@
 </template>
 
 <script>
+import { OK } from '@/utils/status/HttpStatus';
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'FinanceStatistics',
   data () {
     return {
     };
+  },
+  computed: {
+    ...mapGetters(['baseUrl'])
   },
   mounted () {
     this.setData();
@@ -17,92 +23,39 @@ export default {
   methods: {
     setData () {
       let myChart = this.$echarts.init(document.getElementById('FinanceStatistics'));
-      let option = {
-        xAxis: {
-          type: 'category',
-          data: [
-            'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun',
-            'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'
-          ]
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: [{
-          data: [
-            820, -932, 901, 934, -1290, 1330, 1320,
-            820, -932, 901, -934, 1290, 1330, -1320
-          ],
-          type: 'line'
-        }]
-      };
+      this.$http({
+        url: `${this.baseUrl}/admin/getFinanceStatistics`,
+        method: 'GET'
+      }).then((response) => {
+        const code = response.data.code;
 
-      // 使用刚指定的配置项和数据显示图表。
-      myChart.setOption(option);
-    },
-    getOption (data, isMember) {
-      let title;
-      let subTitle;
-      let tooltipTitle;
-      let position;
-      let color;
-      let legendData = data.map((item) => {
-        return item.name;
+        if (code === OK) {
+          const data = response.data.data;
+          const dateList = data.map((item) => { return item.name; });
+          const valueList = data.map((item) => { return item.value; });
+
+          const option = {
+            tooltip: {
+              trigger: 'axis',
+              formatter: '{b} <br/>收入金额: {c}元'
+            },
+            xAxis: {
+              type: 'category',
+              data: dateList
+            },
+            yAxis: {
+              type: 'value'
+            },
+            series: [{
+              data: valueList,
+              type: 'line'
+            }]
+          };
+          myChart.setOption(option);
+        } else {
+          this.$message.error(response.data.msg);
+        }
       });
-
-      if (isMember) {
-        title = '会员统计';
-        subTitle = '各等级会员人数';
-        tooltipTitle = '会员等级';
-        position = 'left';
-        color = ['#FB7293', '#FFDB5C', '#37A2DA', '#9FE6B8', '#FF9F7F', '#8378EA'];
-      } else {
-        title = '餐厅统计';
-        subTitle = '各营业额餐厅数';
-        tooltipTitle = '餐厅营业额';
-        position = 'right';
-        color = [
-          '#A92528', '#273A49',
-          '#5AA1A9', '#E17B5A',
-          '#8FD4B2', '#D5811E'
-        ];
-      }
-
-      return {
-        textStyle: {
-          fontSize: 14
-        },
-        title: {
-          text: title,
-          subtext: subTitle,
-          x: 'center',
-          textStyle: {
-            fontSize: 18
-          }
-        },
-        tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b}: {c}人',
-          textStyle: {
-            fontSize: 16
-          }
-        },
-        legend: {
-          orient: 'vertical',
-          left: position,
-          data: legendData
-        },
-        series: [
-          {
-            name: tooltipTitle,
-            type: 'pie',
-            radius: '60%',
-            center: ['50%', '50%'],
-            data: data
-          }
-        ],
-        color: color
-      };
     }
   }
 };

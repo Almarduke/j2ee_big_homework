@@ -9,7 +9,8 @@ const state = {
     id: '',
     name: '',
     phone: '',
-    address: ''
+    address: '',
+    amount: ''
   },
   baseUrl: 'http://localhost:8086'
 };

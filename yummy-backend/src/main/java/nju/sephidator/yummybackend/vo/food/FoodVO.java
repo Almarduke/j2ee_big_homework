@@ -20,6 +20,8 @@ public class FoodVO {
 
     private Double price;
 
+    private Integer number;
+
     public FoodVO() {}
 
     public FoodVO(FoodDAO foodDAO) {
@@ -28,6 +30,7 @@ public class FoodVO {
         this.name = foodDAO.getName();
         this.type = foodDAO.getType();
         this.price = foodDAO.getPrice();
+        this.number = foodDAO.getNumber();
     }
 
     public FoodDAO generateFoodDAO(boolean available) {
@@ -37,6 +40,7 @@ public class FoodVO {
         foodDAO.setName(name);
         foodDAO.setType(type);
         foodDAO.setPrice(price);
+        foodDAO.setNumber(number);
         foodDAO.setAvailable(available);
         return foodDAO;
     }

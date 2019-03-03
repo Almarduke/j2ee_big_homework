@@ -46,22 +46,14 @@ public class RestaurantServiceImpl implements RestaurantService {
         List<RestaurantDAO> restaurantDAOS = restaurantJPA.findAll();
         List<RestaurantInfoVO> result = new ArrayList<>();
         for (RestaurantDAO restaurantDAO: restaurantDAOS) {
-            result.add(generateRestaurantInfoVO(restaurantDAO));
+            result.add(new RestaurantInfoVO(restaurantDAO));
         }
         return result;
     }
 
     @Override
-    public RestaurantInfoVO getById(String id) {
-        RestaurantDAO restaurantDAO = restaurantJPA.getOne(id);
-        return generateRestaurantInfoVO(restaurantDAO);
-    }
-
-    @Override
     public RestaurantInfoVO getRestaurantInfo(String id) {
-        RestaurantInfoVO restaurantInfoVO = new RestaurantInfoVO();
-        restaurantInfoVO.setRestaurantInfo(restaurantJPA.getOne(id));
-        return restaurantInfoVO;
+        return new RestaurantInfoVO(restaurantJPA.getOne(id));
     }
 
     @Override
@@ -82,15 +74,6 @@ public class RestaurantServiceImpl implements RestaurantService {
         restaurantDAO.setAmount(restaurantDAO.getAmount() - amount);
         restaurantJPA.save(restaurantDAO);
         return getRestaurantInfo(restaurantId);
-    }
-
-    private RestaurantInfoVO generateRestaurantInfoVO(RestaurantDAO restaurantDAO) {
-        RestaurantInfoVO restaurant = new RestaurantInfoVO();
-        restaurant.setId(restaurantDAO.getId());
-        restaurant.setName(restaurantDAO.getName());
-        restaurant.setPhone(restaurantDAO.getPhone());
-        restaurant.setAddress(restaurantDAO.getAddress());
-        return restaurant;
     }
 
     private synchronized String generateUniqueId() {

@@ -34,8 +34,6 @@ public class OrderDAO {
 
     private Date createTime;
 
-    private Date updateTime;
-
     public void setAmount(Double amount) {
         this.amount = MathUtil.scaledDouble(amount, 2);
     }

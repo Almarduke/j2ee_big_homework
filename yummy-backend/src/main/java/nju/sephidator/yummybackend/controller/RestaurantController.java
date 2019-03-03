@@ -3,6 +3,7 @@ package nju.sephidator.yummybackend.controller;
 
 import nju.sephidator.yummybackend.exceptions.RestaurantAmountException;
 import nju.sephidator.yummybackend.service.RestaurantService;
+import nju.sephidator.yummybackend.service.UpdateService;
 import nju.sephidator.yummybackend.utils.ResultVOUtil;
 import nju.sephidator.yummybackend.vo.restaurant.RestaurantInfoVO;
 import nju.sephidator.yummybackend.vo.restaurant.RestaurantSignUpVO;
@@ -33,7 +34,7 @@ public class RestaurantController {
     @PostMapping(value = "/login")
     public ResultVO<?> login(@RequestParam String id, @RequestParam String password) {
         if (restaurantService.passwordCorrect(id, password)) {
-            return ResultVOUtil.success(restaurantService.getById(id), "登陆成功");
+            return ResultVOUtil.success(restaurantService.getRestaurantInfo(id), "登陆成功");
         } else {
             return ResultVOUtil.error(HttpStatus.UNAUTHORIZED.value(), "用户名或密码错误");
         }

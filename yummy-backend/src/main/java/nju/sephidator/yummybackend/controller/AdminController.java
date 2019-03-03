@@ -57,7 +57,7 @@ public class AdminController {
         try {
             return ResultVOUtil.success(adminService.getFinanceStatistics(), "");
         } catch (Exception e) {
-            return ResultVOUtil.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器错误，查询饭店统计信息失败");
+            return ResultVOUtil.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务器错误，查询财务信息失败");
         }
     }
 }

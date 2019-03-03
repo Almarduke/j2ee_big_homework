@@ -13,8 +13,6 @@ public interface RestaurantService {
 
     List<RestaurantInfoVO> getAll();
 
-    RestaurantInfoVO getById(String id);
-
     RestaurantInfoVO getRestaurantInfo(String id);
 
     void updateRestaurantInfo(String restaurantId, String newName, String newPhone, String newAddress);

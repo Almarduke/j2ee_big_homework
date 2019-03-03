@@ -23,11 +23,14 @@
           <a-tab-pane tab="菜品列表" key="1">
             <a-list itemLayout="horizontal" :bordered="true">
               <a-list-item v-for="food in foodList" :key="food.id">
-                <a slot="actions" @click="addFoodToCart(food)">添加</a>
                 <a-list-item-meta :description="food.type">
                   <a slot="title" >{{food.name}}</a>
                 </a-list-item-meta>
-                <div>{{food.price}}元</div>
+                <div style="margin-right: 20px">{{food.price}}元</div>
+                <div style="margin-right: 20px">{{food.number}}份</div>
+                <div>
+                  <a slot="actions" @click="addFoodToCart(food)">添加</a>
+                </div>
               </a-list-item>
             </a-list>
           </a-tab-pane>
@@ -40,12 +43,12 @@
                 <div style="margin-right: 20px">{{food.price}}元</div>
                 <div>
                   <a slot="actions" @click="minus(index)" class="number-input">-</a>
-                  <a slot="description" class="number-input">{{foodNumberList[index]}}份</a>
-                  <a slot="actions" @click="plus(index)" class="number-input">+</a>
+                  <a slot="description" class="number-input">{{food.number}}份</a>
+                  <a slot="actions" @click="plus(food)" class="number-input">+</a>
                 </div>
               </a-list-item>
             </a-list>
-            <div style="padding: 24px 0 0 24px;" v-if="foodNumberList.length > 0">
+            <div style="padding: 24px 0 0 24px;" v-if="foodInCart.length > 0">
               <span style="font-size: 16px">总价：{{this.totalAmount}}元</span>
               <a-button style="float: right" type="primary" @click="submit">结算</a-button>
             </div>
@@ -65,18 +68,14 @@ export default {
   data () {
     return {
       foodList: [],
-      foodInCart: [],
-      foodNumberList: []
+      foodInCart: []
     };
   },
   computed: {
     totalAmount () {
-      let sum = 0;
-      let length = Math.min(this.foodInCart.length, this.foodNumberList.length);
-      for (let i = 0; i < length; i++) {
-        sum += this.foodInCart[i].price * this.foodNumberList[i];
-      }
-      return sum;
+      return this.foodInCart
+        .map((food) => { return food.price * food.number; })
+        .reduce((total, amount) => { return total + amount; });
     },
     ...mapGetters(['restaurantInfo', 'userInfo', 'baseUrl'])
   },
@@ -91,27 +90,33 @@ export default {
   },
   methods: {
     addFoodToCart (food) {
-      const index = this.foodInCart.indexOf(food);
+      const index = this.indexOfFood(food, this.foodInCart);
       if (index < 0) {
-        this.foodInCart.push(food);
-        this.foodNumberList.push(1);
+        let newFood = JSON.parse(JSON.stringify(food));
+        newFood.number = 1;
+        this.foodInCart.push(newFood);
       } else {
-        const newNumber = this.foodNumberList[index] += 1;
-        this.foodNumberList.splice(index, 1, newNumber);
+        if (this.foodInCart[index].number < food.number) {
+          this.foodInCart[index].number++;
+        } else {
+          this.$message.error('菜品已达到上限，不能再添加');
+        }
       }
     },
     minus (index) {
-      if (this.foodNumberList[index] === 1) {
+      if (this.foodInCart[index].number === 1) {
         this.foodInCart.splice(index, 1);
-        this.foodNumberList.splice(index, 1);
       } else {
-        const newNumber = this.foodNumberList[index] -= 1;
-        this.foodNumberList.splice(index, 1, newNumber);
+        this.foodInCart[index].number--;
       }
     },
-    plus (index) {
-      const newNumber = this.foodNumberList[index] += 1;
-      this.foodNumberList.splice(index, 1, newNumber);
+    plus (food) {
+      const index = this.indexOfFood(food, this.foodList);
+      if (food < this.foodList[index].number) {
+        food.number++;
+      } else {
+        this.$message.error('菜品已达到上限，不能再添加');
+      }
     },
     submit () {
       this.$http({
@@ -125,10 +130,8 @@ export default {
         },
         data: this.getFoodDetails()
       }).then((response) => {
-        const code = response.data.code;
-        if (code === OK) {
+        if (response.data.code === OK) {
           this.foodInCart = [];
-          this.foodNumberList = [];
           this.$message.success(response.data.msg);
         } else {
           this.$message.error(response.data.msg);
@@ -140,11 +143,17 @@ export default {
       for (let i = 0; i < this.foodInCart.length; i++) {
         result.push({
           foodId: this.foodInCart[i].id,
-          foodNum: this.foodNumberList[i],
+          foodNum: this.foodInCart[i].number,
           price: this.foodInCart[i].price
         });
       }
       return result;
+    },
+    indexOfFood (food, cartList) {
+      for (let i = 0; i < cartList.length; i++) {
+        if (food.id === cartList[i].id) { return i; }
+      }
+      return -1;
     }
   }
 };

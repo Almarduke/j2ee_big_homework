@@ -25,6 +25,8 @@ public class FoodDAO {
 
     private Double price;
 
+    private Integer number;
+
     private boolean available;
 
     public void setPrice(Double price) {

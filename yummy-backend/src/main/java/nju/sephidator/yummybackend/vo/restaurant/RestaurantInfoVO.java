@@ -20,7 +20,9 @@ public class RestaurantInfoVO implements Serializable {
 
     private Double amount;
 
-    public void setRestaurantInfo(RestaurantDAO restaurantDAO) {
+    public RestaurantInfoVO() {}
+
+    public RestaurantInfoVO(RestaurantDAO restaurantDAO) {
         this.id = restaurantDAO.getId();
         this.phone = restaurantDAO.getPhone();
         this.name = restaurantDAO.getName();

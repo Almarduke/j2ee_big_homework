@@ -3,17 +3,23 @@ package nju.sephidator.yummybackend.service.impl;
 import nju.sephidator.yummybackend.model.MemberDAO;
 import nju.sephidator.yummybackend.model.RestaurantDAO;
 import nju.sephidator.yummybackend.model.RestaurantInfoCheckDAO;
+import nju.sephidator.yummybackend.model.YummyFinanceDAO;
 import nju.sephidator.yummybackend.repository.MemberJPA;
 import nju.sephidator.yummybackend.repository.RestaurantInfoCheckJPA;
 import nju.sephidator.yummybackend.repository.RestaurantJPA;
+import nju.sephidator.yummybackend.repository.YummyFinanceJPA;
 import nju.sephidator.yummybackend.service.AdminService;
+import nju.sephidator.yummybackend.utils.MathUtil;
+import nju.sephidator.yummybackend.utils.TimeUtil;
 import nju.sephidator.yummybackend.vo.restaurant.RestaurantInfoCheckVO;
 import nju.sephidator.yummybackend.vo.util.StatisticsDetailVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +33,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private MemberJPA memberJPA;
+
+    @Autowired
+    private YummyFinanceJPA yummyFinanceJPA;
 
     @Override
     public List<RestaurantInfoCheckVO> getRestaurantInfoCheckList() {
@@ -86,8 +95,28 @@ public class AdminServiceImpl implements AdminService {
         return result;
     }
 
-    @Override
-    public List<StatisticsDetailVO> getFinanceStatistics() {
-        return null;
+        @Override
+        public List<StatisticsDetailVO> getFinanceStatistics() {
+            Set<String> dateList = new HashSet<>();
+            for (YummyFinanceDAO financeDAO: yummyFinanceJPA.findAll()) {
+                dateList.add(TimeUtil.timeFormat(financeDAO.getTime()));
+            }
+            List<StatisticsDetailVO> result = new ArrayList<>();
+            for (String date: dateList) {
+                StatisticsDetailVO detail = new StatisticsDetailVO();
+                List<YummyFinanceDAO> financeOfDate =
+                        yummyFinanceJPA.findAll().stream()
+                        .filter(x -> TimeUtil.timeFormat(x.getTime())
+                                .equals(date)).collect(Collectors.toList());
+                Double totalRevenue = MathUtil.scaledDouble(financeOfDate.stream()
+                        .map(YummyFinanceDAO::getIncome)
+                        .collect(Collectors.toList()).stream()
+                        .reduce((sum, item)->{ return sum + item; })
+                        .get(), 2);
+                detail.setName(date);
+                detail.setValue(totalRevenue);
+                result.add(detail);
+            }
+            return result;
+        }
     }
-}

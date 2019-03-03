@@ -34,7 +34,7 @@ export default {
     } else if (this.userInfo.userType === 'MEMBER') {
       this.$router.push('/MainPage');
     } else if (this.userInfo.userType === 'RESTAURANT') {
-      this.$router.push('/ManageFood');
+      this.$router.push('/RestaurantInfo');
     } else if (this.userInfo.userType === 'ADMIN') {
       this.$router.push('/AdminInfo');
     }

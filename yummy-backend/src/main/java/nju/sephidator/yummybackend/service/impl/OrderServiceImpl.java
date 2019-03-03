@@ -2,6 +2,7 @@ package nju.sephidator.yummybackend.service.impl;
 
 import nju.sephidator.yummybackend.enums.AddressStatus;
 import nju.sephidator.yummybackend.enums.OrderStatus;
+import nju.sephidator.yummybackend.exceptions.FoodInsufficientException;
 import nju.sephidator.yummybackend.exceptions.MemberAmountException;
 import nju.sephidator.yummybackend.model.*;
 import nju.sephidator.yummybackend.repository.*;
@@ -51,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
     private MemberService memberService;
 
     @Override
-    public String submit(String restaurantId, String memberEmail, Double totalAmount, Double discount, List<OrderDetailVO> orderDetailVOList) {
+    public synchronized String submit(String restaurantId, String memberEmail, Double totalAmount, Double discount, List<OrderDetailVO> orderDetailVOList) {
         OrderDAO orderDAO = new OrderDAO();
         orderDAO.setId(KeyUtil.generateUniqueKey());
         orderDAO.setMemberEmail(memberEmail);
@@ -63,7 +64,6 @@ public class OrderServiceImpl implements OrderService {
         orderDAO.setDiscount(discount);
         orderDAO.setOrderStatus(OrderStatus.TOPAY.getCode());
         orderDAO.setCreateTime(new Date());
-        orderDAO.setUpdateTime(new Date());
         orderJPA.save(orderDAO);
 
         for (OrderDetailVO orderDetailVO: orderDetailVOList) {
@@ -128,6 +128,18 @@ public class OrderServiceImpl implements OrderService {
             throw new MemberAmountException();
         }
 
+        for (OrderDetailDAO orderDetail: orderDetailJPA.findByOrderId(id)) {
+            FoodDAO foodDAO = foodJPA.findDistinctById(orderDetail.getFoodId());
+            if (foodDAO.getNumber() < orderDetail.getFoodNum()) {
+                throw new FoodInsufficientException();
+            }
+        }
+        for (OrderDetailDAO orderDetail: orderDetailJPA.findByOrderId(id)) {
+            FoodDAO foodDAO = foodJPA.findDistinctById(orderDetail.getFoodId());
+            foodDAO.setNumber(foodDAO.getNumber() - orderDetail.getFoodNum());
+            foodJPA.save(foodDAO);
+        }
+
         Double moneyToRestaurant = orderDAO.getAmount() * 0.4;
         Double moneyToYummy = orderDAO.getAmount() - moneyToRestaurant - orderDAO.getDiscount();
 
@@ -186,6 +198,12 @@ public class OrderServiceImpl implements OrderService {
             financeDAO.setOrderId(orderDAO.getId());
             financeDAO.setTime(new Date());
             yummyFinanceJPA.save(financeDAO);
+
+            for (OrderDetailDAO orderDetail: orderDetailJPA.findByOrderId(id)) {
+                FoodDAO foodDAO = foodJPA.findDistinctById(orderDetail.getFoodId());
+                foodDAO.setNumber(foodDAO.getNumber() + orderDetail.getFoodNum());
+                foodJPA.save(foodDAO);
+            }
         }
         return updateOrder(id, OrderStatus.CANCELLED.getCode(), true);
     }
