@@ -20,6 +20,7 @@ const getters = {
       restaurantInfo.name = sessionStorage.getItem('restaurantName');
       restaurantInfo.phone = sessionStorage.getItem('restaurantPhone');
       restaurantInfo.address = sessionStorage.getItem('restaurantAddress');
+      restaurantInfo.amount = sessionStorage.getItem('restaurantAmount');
     }
     return restaurantInfo;
   }

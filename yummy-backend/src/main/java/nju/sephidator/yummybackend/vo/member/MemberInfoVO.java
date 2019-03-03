@@ -1,8 +1,8 @@
-package nju.sephidator.yummybackend.vo;
+package nju.sephidator.yummybackend.vo.member;
 
 import lombok.Data;
-import nju.sephidator.yummybackend.enums.AddressStatus;
 import nju.sephidator.yummybackend.model.MemberDAO;
+import nju.sephidator.yummybackend.vo.address.AddressVO;
 
 import java.io.Serializable;
 import java.util.List;

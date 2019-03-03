@@ -33,10 +33,12 @@ const mutations = {
     sessionStorage.setItem('restaurantName', restaurantInfo.name);
     sessionStorage.setItem('restaurantPhone', restaurantInfo.phone);
     sessionStorage.setItem('restaurantAddress', restaurantInfo.address);
+    sessionStorage.setItem('restaurantAmount', restaurantInfo.amount);
     stateRestaurantInfo.id = restaurantInfo.id;
     stateRestaurantInfo.name = restaurantInfo.name;
     stateRestaurantInfo.phone = restaurantInfo.phone;
     stateRestaurantInfo.address = restaurantInfo.address;
+    stateRestaurantInfo.amount = restaurantInfo.amount;
   }
 };
 export default mutations;

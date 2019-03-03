@@ -2,16 +2,18 @@ package nju.sephidator.yummybackend.service.impl;
 
 import nju.sephidator.yummybackend.enums.AddressStatus;
 import nju.sephidator.yummybackend.enums.OrderStatus;
+import nju.sephidator.yummybackend.exceptions.FoodInsufficientException;
 import nju.sephidator.yummybackend.exceptions.MemberAmountException;
 import nju.sephidator.yummybackend.model.*;
 import nju.sephidator.yummybackend.repository.*;
 import nju.sephidator.yummybackend.service.MemberService;
 import nju.sephidator.yummybackend.service.OrderService;
 import nju.sephidator.yummybackend.utils.KeyUtil;
+import nju.sephidator.yummybackend.utils.MathUtil;
 import nju.sephidator.yummybackend.utils.TimeUtil;
-import nju.sephidator.yummybackend.vo.OrderDetailVO;
-import nju.sephidator.yummybackend.vo.OrderInfoVO;
-import nju.sephidator.yummybackend.vo.OrderVO;
+import nju.sephidator.yummybackend.vo.order.OrderDetailVO;
+import nju.sephidator.yummybackend.vo.order.OrderInfoVO;
+import nju.sephidator.yummybackend.vo.order.OrderVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +34,9 @@ public class OrderServiceImpl implements OrderService {
     private RestaurantJPA restaurantJPA;
 
     @Autowired
+    private AddressJPA addressJPA;
+
+    @Autowired
     private AddressLinkJPA addressLinkJPA;
 
     @Autowired
@@ -47,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
     private MemberService memberService;
 
     @Override
-    public void submit(String restaurantId, String memberEmail, Double totalAmount, Double discount, List<OrderDetailVO> orderDetailVOList) {
+    public synchronized String submit(String restaurantId, String memberEmail, Double totalAmount, Double discount, List<OrderDetailVO> orderDetailVOList) {
         OrderDAO orderDAO = new OrderDAO();
         orderDAO.setId(KeyUtil.generateUniqueKey());
         orderDAO.setMemberEmail(memberEmail);
@@ -59,7 +64,6 @@ public class OrderServiceImpl implements OrderService {
         orderDAO.setDiscount(discount);
         orderDAO.setOrderStatus(OrderStatus.TOPAY.getCode());
         orderDAO.setCreateTime(new Date());
-        orderDAO.setUpdateTime(new Date());
         orderJPA.save(orderDAO);
 
         for (OrderDetailVO orderDetailVO: orderDetailVOList) {
@@ -70,6 +74,10 @@ public class OrderServiceImpl implements OrderService {
             orderDetailDAO.setPrice(orderDetailVO.getPrice());
             orderDetailJPA.save(orderDetailDAO);
         }
+
+        return generateAlertMessage(
+                restaurantJPA.getOne(restaurantId).getAddress(),
+                orderDAO.getMemberAddress());
     }
 
     @Override
@@ -120,6 +128,18 @@ public class OrderServiceImpl implements OrderService {
             throw new MemberAmountException();
         }
 
+        for (OrderDetailDAO orderDetail: orderDetailJPA.findByOrderId(id)) {
+            FoodDAO foodDAO = foodJPA.findDistinctById(orderDetail.getFoodId());
+            if (foodDAO.getNumber() < orderDetail.getFoodNum()) {
+                throw new FoodInsufficientException();
+            }
+        }
+        for (OrderDetailDAO orderDetail: orderDetailJPA.findByOrderId(id)) {
+            FoodDAO foodDAO = foodJPA.findDistinctById(orderDetail.getFoodId());
+            foodDAO.setNumber(foodDAO.getNumber() - orderDetail.getFoodNum());
+            foodJPA.save(foodDAO);
+        }
+
         Double moneyToRestaurant = orderDAO.getAmount() * 0.4;
         Double moneyToYummy = orderDAO.getAmount() - moneyToRestaurant - orderDAO.getDiscount();
 
@@ -165,18 +185,26 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderVO> cancelOrder(String id) {
         OrderDAO orderDAO = orderJPA.getOne(id);
-        Double moneyBack = orderDAO.getAmount() * 0.5;
+        if (!orderDAO.getOrderStatus().equals(OrderStatus.TOPAY.getCode()) ||
+                !orderDAO.getOrderStatus().equals(OrderStatus.CANCELLED.getCode())) {
+            Double moneyBack = orderDAO.getAmount() * 0.5;
 
-        MemberDAO memberDAO = memberJPA.getOne(orderDAO.getMemberEmail());
-        memberDAO.setAmount(memberDAO.getAmount() + moneyBack);
-        memberJPA.save(memberDAO);
+            MemberDAO memberDAO = memberJPA.getOne(orderDAO.getMemberEmail());
+            memberDAO.setAmount(memberDAO.getAmount() + moneyBack);
+            memberJPA.save(memberDAO);
 
-        YummyFinanceDAO financeDAO = new YummyFinanceDAO();
-        financeDAO.setIncome(-moneyBack);
-        financeDAO.setOrderId(orderDAO.getId());
-        financeDAO.setTime(new Date());
-        yummyFinanceJPA.save(financeDAO);
+            YummyFinanceDAO financeDAO = new YummyFinanceDAO();
+            financeDAO.setIncome(-moneyBack);
+            financeDAO.setOrderId(orderDAO.getId());
+            financeDAO.setTime(new Date());
+            yummyFinanceJPA.save(financeDAO);
 
+            for (OrderDetailDAO orderDetail: orderDetailJPA.findByOrderId(id)) {
+                FoodDAO foodDAO = foodJPA.findDistinctById(orderDetail.getFoodId());
+                foodDAO.setNumber(foodDAO.getNumber() + orderDetail.getFoodNum());
+                foodJPA.save(foodDAO);
+            }
+        }
         return updateOrder(id, OrderStatus.CANCELLED.getCode(), true);
     }
 
@@ -201,5 +229,19 @@ public class OrderServiceImpl implements OrderService {
             result.add(orderVO);
         }
         return result;
+    }
+
+    private String generateAlertMessage(String restaurantAddressName, String memberAddressName) {
+        AddressDAO restaurantAddress = addressJPA.getOne(restaurantAddressName);
+        AddressDAO memberAddress = addressJPA.getOne(memberAddressName);
+        Double distance = MathUtil.getDistance(restaurantAddress.getCoordinateX(),
+                restaurantAddress.getCoordinateY(),
+                memberAddress.getCoordinateX(),
+                memberAddress.getCoordinateY());
+        int minutes = 15 + 5 * distance.intValue();
+        return "提交订单成功，" +
+                "饭店距离您大约" + distance + "公里，" +
+                "送餐时间大约" + minutes + "分钟，" +
+                "请在15分钟内完成支付";
     }
 }

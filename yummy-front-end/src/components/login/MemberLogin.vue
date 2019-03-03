@@ -128,11 +128,11 @@ export default {
     },
     phoneValidator (rule, value, callback) {
       let message = '手机号必须是11位数字';
-      (value && /\d{11}/.test(value.toString())) ? callback() : callback(message);
+      (value && /^\d{11}$/.test(value.toString())) ? callback() : callback(message);
     },
     checkCodeValidator (rule, value, callback) {
       let message = '验证码必须是6位数字';
-      (value && /\d{6}/.test(value.toString())) ? callback() : callback(message);
+      (value && /^\d{6}$/.test(value.toString())) ? callback() : callback(message);
     },
     showModal () {
       this.visible = true;

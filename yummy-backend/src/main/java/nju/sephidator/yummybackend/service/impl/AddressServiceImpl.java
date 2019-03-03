@@ -6,7 +6,7 @@ import nju.sephidator.yummybackend.model.AddressLinkDAO;
 import nju.sephidator.yummybackend.repository.AddressJPA;
 import nju.sephidator.yummybackend.repository.AddressLinkJPA;
 import nju.sephidator.yummybackend.service.AddressService;
-import nju.sephidator.yummybackend.vo.AddressVO;
+import nju.sephidator.yummybackend.vo.address.AddressVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,7 @@
 package nju.sephidator.yummybackend.model;
 
 import lombok.Data;
+import nju.sephidator.yummybackend.utils.MathUtil;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
@@ -24,4 +25,14 @@ public class RestaurantDAO {
     private String address;
 
     private Double amount;
+
+    private Double revenue;
+
+    public void setAmount(Double amount) {
+        this.amount = MathUtil.scaledDouble(amount, 2);
+    }
+
+    public void addToRevenue(Double amount) {
+        this.amount = MathUtil.scaledDouble(revenue + amount, 2);
+    }
 }

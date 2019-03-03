@@ -1,4 +1,4 @@
-package nju.sephidator.yummybackend.vo;
+package nju.sephidator.yummybackend.vo.order;
 
 import lombok.Data;
 

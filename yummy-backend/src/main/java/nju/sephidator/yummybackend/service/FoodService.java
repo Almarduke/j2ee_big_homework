@@ -1,6 +1,6 @@
 package nju.sephidator.yummybackend.service;
 
-import nju.sephidator.yummybackend.vo.FoodVO;
+import nju.sephidator.yummybackend.vo.food.FoodVO;
 
 import java.util.List;
 

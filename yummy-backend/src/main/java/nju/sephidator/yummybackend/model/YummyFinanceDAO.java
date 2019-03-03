@@ -1,6 +1,7 @@
 package nju.sephidator.yummybackend.model;
 
 import lombok.Data;
+import nju.sephidator.yummybackend.utils.MathUtil;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
@@ -22,4 +23,8 @@ public class YummyFinanceDAO {
     private Double income;
 
     private Date time;
+
+    public void setIncome(Double income) {
+        this.income = MathUtil.scaledDouble(income, 2);
+    }
 }

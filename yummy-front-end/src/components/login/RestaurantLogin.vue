@@ -26,8 +26,8 @@
           <a-input v-decorator="['phone', {rules: [{required: true, message: '请输入手机号'},
                  {validator: phoneValidator}]}]"/>
         </a-form-item>
-        <a-form-item v-bind="formItemLayout" label="饭店名" >
-          <a-input v-decorator="['name', {rules: [{required: true, message: '请输入饭店名'}]}]"/>
+        <a-form-item v-bind="formItemLayout" label="餐厅名" >
+          <a-input v-decorator="['name', {rules: [{required: true, message: '请输入餐厅名'}]}]"/>
         </a-form-item>
         <a-form-item v-bind="formItemLayout" label="地址">
           <a-select v-decorator="['address', {rules: [{required: true, message: '请输入地址'}]}]">
@@ -102,7 +102,7 @@ export default {
                 token: ''
               });
               this[actionTypes.SET_RESTAURANT_INFO](response.data.data);
-              this.$router.push('/ManageFood');
+              this.$router.push('/RestaurantInfo');
             } else {
               this.$message.error(response.data.msg);
             }
@@ -112,7 +112,7 @@ export default {
     },
     idValidator (rule, value, callback) {
       let message = '识别码是7位字母和数字';
-      (value && /[0-9a-zA-Z]{7}/) ? callback() : callback(message);
+      (value && /^[0-9a-zA-Z]{7}$/) ? callback() : callback(message);
     },
     passwordValidator (rule, value, callback) {
       let message = '密码长度必须在6位以上';
@@ -120,7 +120,7 @@ export default {
     },
     phoneValidator (rule, value, callback) {
       let message = '手机号必须是11位数字';
-      (value && /\d{11}/.test(value.toString())) ? callback() : callback(message);
+      (value && /^\d{11}$/.test(value.toString())) ? callback() : callback(message);
     },
     showModal () {
       this.visible = true;

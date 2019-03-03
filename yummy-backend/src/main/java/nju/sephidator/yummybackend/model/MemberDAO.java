@@ -1,6 +1,7 @@
 package nju.sephidator.yummybackend.model;
 
 import lombok.Data;
+import nju.sephidator.yummybackend.utils.MathUtil;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
@@ -25,4 +26,8 @@ public class MemberDAO {
     private Double amount;
 
     private boolean available;
+
+    public void setAmount(Double amount) {
+        this.amount = MathUtil.scaledDouble(amount, 2);
+    }
 }
