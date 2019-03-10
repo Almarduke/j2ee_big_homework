@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -82,14 +83,18 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderVO> findMemberOrders(String email, Integer orderStatus) {
-        return generateVOFromOrderDAO(orderJPA
+        List<OrderVO> result = generateVOFromOrderDAO(orderJPA
                 .findByMemberEmailAndOrderStatus(email, orderStatus));
+        Collections.reverse(result);
+        return result;
     }
 
     @Override
     public List<OrderVO> findRestaurantOrders(String restaurantId, Integer orderStatus) {
-        return generateVOFromOrderDAO(orderJPA
+        List<OrderVO> result = generateVOFromOrderDAO(orderJPA
                 .findByRestaurantIdAndOrderStatus(restaurantId, orderStatus));
+        Collections.reverse(result);
+        return result;
     }
 
     @Override
