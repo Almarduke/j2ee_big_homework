@@ -12,7 +12,7 @@
         <div style="float: right;" >
           <a-button class="little-button" shape="circle" icon="edit" @click="updateInfoVisible=true"/>
           <a-button class="little-button" shape="circle" icon="dollar" @click="chargeMoneyVisible=true"/>
-          <a-popconfirm title="注销此用户吗？你无法再登陆" @confirm="deleteMember" okText="确认" cancelText="取消">
+          <a-popconfirm title="注销此用户吗？你无法再登录" @confirm="deleteMember" okText="确认" cancelText="取消">
             <a-button class="little-button" shape="circle" icon="delete" type="danger"/>
           </a-popconfirm>
         </div>

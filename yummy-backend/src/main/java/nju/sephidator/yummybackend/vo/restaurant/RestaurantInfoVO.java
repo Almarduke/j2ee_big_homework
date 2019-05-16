@@ -1,11 +1,9 @@
 package nju.sephidator.yummybackend.vo.restaurant;
 
 import lombok.Data;
-import nju.sephidator.yummybackend.model.MemberDAO;
-import nju.sephidator.yummybackend.model.RestaurantDAO;
+import nju.sephidator.yummybackend.model.Restaurant;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Data
 public class RestaurantInfoVO implements Serializable {
@@ -22,11 +20,11 @@ public class RestaurantInfoVO implements Serializable {
 
     public RestaurantInfoVO() {}
 
-    public RestaurantInfoVO(RestaurantDAO restaurantDAO) {
-        this.id = restaurantDAO.getId();
-        this.phone = restaurantDAO.getPhone();
-        this.name = restaurantDAO.getName();
-        this.address = restaurantDAO.getAddress();
-        this.amount = restaurantDAO.getAmount();
+    public RestaurantInfoVO(Restaurant restaurant) {
+        this.id = restaurant.getId();
+        this.phone = restaurant.getPhone();
+        this.name = restaurant.getName();
+        this.address = restaurant.getAddress();
+        this.amount = restaurant.getAmount();
     }
 }

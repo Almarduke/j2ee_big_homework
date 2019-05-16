@@ -1,8 +1,8 @@
 package nju.sephidator.yummybackend.service.impl;
 
 import nju.sephidator.yummybackend.enums.AddressStatus;
-import nju.sephidator.yummybackend.model.AddressDAO;
-import nju.sephidator.yummybackend.model.AddressLinkDAO;
+import nju.sephidator.yummybackend.model.Address;
+import nju.sephidator.yummybackend.model.AddressLink;
 import nju.sephidator.yummybackend.repository.AddressJPA;
 import nju.sephidator.yummybackend.repository.AddressLinkJPA;
 import nju.sephidator.yummybackend.service.AddressService;
@@ -25,25 +25,25 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public List<String> getAll() {
-        return addressJPA.findAll().stream().map(AddressDAO::getName).collect(Collectors.toList());
+        return addressJPA.findAll().stream().map(Address::getName).collect(Collectors.toList());
     }
 
     @Override
     public List<AddressVO> addUserAddressVO(String userId, String addressName) {
-        AddressLinkDAO addressLinkDAO = new AddressLinkDAO
+        AddressLink addressLink = new AddressLink
                 (userId, addressName, AddressStatus.COMMON.getCode());
-        addressLinkJPA.save(addressLinkDAO);
+        addressLinkJPA.save(addressLink);
         return getUserAddressList(userId);
     }
 
     @Override
     public List<AddressVO> setAsDefault(String userId, String addressName) {
-        for (AddressLinkDAO addressLinkDAO:
+        for (AddressLink addressLink :
                 addressLinkJPA.findByUserId(userId)) {
-            addressLinkDAO.setStatus(AddressStatus.COMMON.getCode());
-            addressLinkJPA.save(addressLinkDAO);
+            addressLink.setStatus(AddressStatus.COMMON.getCode());
+            addressLinkJPA.save(addressLink);
         }
-        AddressLinkDAO defaultAddress = addressLinkJPA.findByUserIdAndAddressName(userId, addressName).get(0);
+        AddressLink defaultAddress = addressLinkJPA.findByUserIdAndAddressName(userId, addressName).get(0);
         defaultAddress.setStatus(AddressStatus.DEFAULT.getCode());
         addressLinkJPA.save(defaultAddress);
         return getUserAddressList(userId);
@@ -51,7 +51,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public List<AddressVO> delete(String userId, String addressName) {
-        AddressLinkDAO addressToDelete = addressLinkJPA.findByUserIdAndAddressName(userId, addressName).get(0);
+        AddressLink addressToDelete = addressLinkJPA.findByUserIdAndAddressName(userId, addressName).get(0);
         addressLinkJPA.delete(addressToDelete);
         return getUserAddressList(userId);
     }
@@ -59,13 +59,13 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public List<AddressVO> getUserAddressList (String id) {
         List<AddressVO> addressList = new ArrayList<>();
-        for (AddressLinkDAO addressLinkDAO:
+        for (AddressLink addressLink :
                 addressLinkJPA.findByUserIdAndStatus(id, AddressStatus.DEFAULT.getCode())) {
-            addressList.add(new AddressVO(addressLinkDAO.getAddressName(), true));
+            addressList.add(new AddressVO(addressLink.getAddressName(), true));
         }
-        for (AddressLinkDAO addressLinkDAO:
+        for (AddressLink addressLink :
                 addressLinkJPA.findByUserIdAndStatus(id, AddressStatus.COMMON.getCode())) {
-            addressList.add(new AddressVO(addressLinkDAO.getAddressName(), false));
+            addressList.add(new AddressVO(addressLink.getAddressName(), false));
         }
         return addressList;
     }

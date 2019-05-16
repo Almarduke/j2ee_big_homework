@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <div id="MemberStatistics" class="pie-chart"></div>
-    <div id="RestaurantStatistics" class="pie-chart"></div>
+    <div ref="MemberStatistics" class="pie-chart"></div>
+    <div ref="RestaurantStatistics" class="pie-chart"></div>
   </div>
 </template>
 
@@ -20,7 +20,7 @@ export default {
   },
   methods: {
     setMemberData () {
-      let myChart = this.$echarts.init(document.getElementById('MemberStatistics'));
+      let myChart = this.$echarts.init(this.$refs.MemberStatistics);
       this.$http({
         url: `${this.baseUrl}/admin/getMemberStatistics`,
         method: 'GET'
@@ -34,7 +34,7 @@ export default {
       });
     },
     setRestaurantData () {
-      let myChart = this.$echarts.init(document.getElementById('RestaurantStatistics'));
+      let myChart = this.$echarts.init(this.$refs.RestaurantStatistics);
       this.$http({
         url: `${this.baseUrl}/admin/getRestaurantStatistics`,
         method: 'GET'

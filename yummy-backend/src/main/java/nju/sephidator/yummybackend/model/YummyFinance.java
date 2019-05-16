@@ -12,7 +12,7 @@ import java.util.Date;
 @Entity
 @Data
 @DynamicUpdate
-public class YummyFinanceDAO {
+public class YummyFinance {
 
     @Id
     @GeneratedValue

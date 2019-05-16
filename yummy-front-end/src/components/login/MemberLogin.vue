@@ -11,7 +11,7 @@
       </a-form-item>
       <a-form-item :wrapper-col="{ offset: 5 }">
         <a-button class="submit-button" @click="showModal">注册</a-button>
-        <a-button type="primary" class="submit-button" html-type="submit" >登陆</a-button>
+        <a-button type="primary" class="submit-button" html-type="submit" >登录</a-button>
       </a-form-item>
     </a-form>
 

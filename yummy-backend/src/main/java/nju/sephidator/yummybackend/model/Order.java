@@ -15,7 +15,7 @@ import java.util.Date;
 @Entity
 @Data
 @DynamicUpdate
-public class OrderDAO {
+public class Order {
 
     @Id
     private String id;

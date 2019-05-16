@@ -54,31 +54,31 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public synchronized String submit(String restaurantId, String memberEmail, Double totalAmount, Double discount, List<OrderDetailVO> orderDetailVOList) {
-        OrderDAO orderDAO = new OrderDAO();
-        orderDAO.setId(KeyUtil.generateUniqueKey());
-        orderDAO.setMemberEmail(memberEmail);
-        orderDAO.setMemberAddress(addressLinkJPA.findByUserIdAndStatus
+        Order order = new Order();
+        order.setId(KeyUtil.generateUniqueKey());
+        order.setMemberEmail(memberEmail);
+        order.setMemberAddress(addressLinkJPA.findByUserIdAndStatus
                         (memberEmail, AddressStatus.DEFAULT.getCode())
                         .get(0).getAddressName());
-        orderDAO.setRestaurantId(restaurantId);
-        orderDAO.setAmount(totalAmount);
-        orderDAO.setDiscount(discount);
-        orderDAO.setOrderStatus(OrderStatus.TOPAY.getCode());
-        orderDAO.setCreateTime(new Date());
-        orderJPA.save(orderDAO);
+        order.setRestaurantId(restaurantId);
+        order.setAmount(totalAmount);
+        order.setDiscount(discount);
+        order.setOrderStatus(OrderStatus.TOPAY.getCode());
+        order.setCreateTime(new Date());
+        orderJPA.save(order);
 
         for (OrderDetailVO orderDetailVO: orderDetailVOList) {
-            OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
-            orderDetailDAO.setOrderId(orderDAO.getId());
-            orderDetailDAO.setFoodId(orderDetailVO.getFoodId());
-            orderDetailDAO.setFoodNum(orderDetailVO.getFoodNum());
-            orderDetailDAO.setPrice(orderDetailVO.getPrice());
-            orderDetailJPA.save(orderDetailDAO);
+            OrderDetail orderDetail = new OrderDetail();
+            orderDetail.setOrderId(order.getId());
+            orderDetail.setFoodId(orderDetailVO.getFoodId());
+            orderDetail.setFoodNum(orderDetailVO.getFoodNum());
+            orderDetail.setPrice(orderDetailVO.getPrice());
+            orderDetailJPA.save(orderDetail);
         }
 
         return generateAlertMessage(
                 restaurantJPA.getOne(restaurantId).getAddress(),
-                orderDAO.getMemberAddress());
+                order.getMemberAddress());
     }
 
     @Override
@@ -100,24 +100,24 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderInfoVO getOrderInfo(String orderId) {
         OrderInfoVO orderInfo = new OrderInfoVO();
-        OrderDAO orderDAO = orderJPA.getOne(orderId);
+        Order order = orderJPA.getOne(orderId);
         orderInfo.setId(orderId);
-        orderInfo.setCreateTime(TimeUtil.timeFormat(orderDAO.getCreateTime()));
-        orderInfo.setOrderStatus(OrderStatus.getDescription(orderDAO.getOrderStatus()));
-        orderInfo.setRestaurantName(restaurantJPA.getOne(orderDAO.getRestaurantId()).getName());
-        orderInfo.setMemberAddress(orderDAO.getMemberAddress());
-        orderInfo.setMemberName(memberJPA.getOne(orderDAO.getMemberEmail()).getName());
-        orderInfo.setMemberPhone(memberJPA.getOne(orderDAO.getMemberEmail()).getPhone());
-        orderInfo.setTotalAmount(orderDAO.getAmount());
-        orderInfo.setDiscount(orderDAO.getDiscount());
+        orderInfo.setCreateTime(TimeUtil.timeFormat(order.getCreateTime()));
+        orderInfo.setOrderStatus(OrderStatus.getDescription(order.getOrderStatus()));
+        orderInfo.setRestaurantName(restaurantJPA.getOne(order.getRestaurantId()).getName());
+        orderInfo.setMemberAddress(order.getMemberAddress());
+        orderInfo.setMemberName(memberJPA.getOne(order.getMemberEmail()).getName());
+        orderInfo.setMemberPhone(memberJPA.getOne(order.getMemberEmail()).getPhone());
+        orderInfo.setTotalAmount(order.getAmount());
+        orderInfo.setDiscount(order.getDiscount());
 
         List<OrderDetailVO> orderDetails = new ArrayList<>();
-        for (OrderDetailDAO orderDetailDAO: orderDetailJPA.findByOrderId(orderId)) {
+        for (OrderDetail orderDetail : orderDetailJPA.findByOrderId(orderId)) {
             OrderDetailVO orderDetailVO = new OrderDetailVO();
-            orderDetailDAO.setOrderId(orderId);
-            orderDetailVO.setFoodName(foodJPA.findDistinctById(orderDetailDAO.getFoodId()).getName());
-            orderDetailVO.setFoodNum(orderDetailDAO.getFoodNum());
-            orderDetailVO.setPrice(orderDetailDAO.getPrice());
+            orderDetail.setOrderId(orderId);
+            orderDetailVO.setFoodName(foodJPA.findDistinctById(orderDetail.getFoodId()).getName());
+            orderDetailVO.setFoodNum(orderDetail.getFoodNum());
+            orderDetailVO.setPrice(orderDetail.getPrice());
             orderDetails.add(orderDetailVO);
         }
         orderInfo.setOrderDetails(orderDetails);
@@ -127,37 +127,37 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderVO> payOrder(String id) {
-        OrderDAO orderDAO = orderJPA.getOne(id);
-        MemberDAO memberDAO = memberJPA.getOne(orderDAO.getMemberEmail());
-        if (memberDAO.getAmount() < orderDAO.getAmount()) {
+        Order order = orderJPA.getOne(id);
+        Member member = memberJPA.getOne(order.getMemberEmail());
+        if (member.getAmount() < order.getAmount()) {
             throw new MemberAmountException();
         }
 
-        for (OrderDetailDAO orderDetail: orderDetailJPA.findByOrderId(id)) {
-            FoodDAO foodDAO = foodJPA.findDistinctById(orderDetail.getFoodId());
-            if (foodDAO.getNumber() < orderDetail.getFoodNum()) {
+        for (OrderDetail orderDetail: orderDetailJPA.findByOrderId(id)) {
+            Food food = foodJPA.findDistinctById(orderDetail.getFoodId());
+            if (food.getNumber() < orderDetail.getFoodNum()) {
                 throw new FoodInsufficientException();
             }
         }
-        for (OrderDetailDAO orderDetail: orderDetailJPA.findByOrderId(id)) {
-            FoodDAO foodDAO = foodJPA.findDistinctById(orderDetail.getFoodId());
-            foodDAO.setNumber(foodDAO.getNumber() - orderDetail.getFoodNum());
-            foodJPA.save(foodDAO);
+        for (OrderDetail orderDetail: orderDetailJPA.findByOrderId(id)) {
+            Food food = foodJPA.findDistinctById(orderDetail.getFoodId());
+            food.setNumber(food.getNumber() - orderDetail.getFoodNum());
+            foodJPA.save(food);
         }
 
-        Double moneyToRestaurant = orderDAO.getAmount() * 0.4;
-        Double moneyToYummy = orderDAO.getAmount() - moneyToRestaurant - orderDAO.getDiscount();
+        Double moneyToRestaurant = order.getAmount() * 0.4;
+        Double moneyToYummy = order.getAmount() - moneyToRestaurant - order.getDiscount();
 
-        memberDAO.setAmount(memberDAO.getAmount() - (moneyToRestaurant + moneyToYummy));
-        memberJPA.save(memberDAO);
+        member.setAmount(member.getAmount() - (moneyToRestaurant + moneyToYummy));
+        memberJPA.save(member);
 
-        RestaurantDAO restaurantDAO = restaurantJPA.getOne(orderDAO.getRestaurantId());
-        restaurantDAO.setAmount(restaurantDAO.getAmount() + moneyToRestaurant);
-        restaurantJPA.save(restaurantDAO);
+        Restaurant restaurant = restaurantJPA.getOne(order.getRestaurantId());
+        restaurant.setAmount(restaurant.getAmount() + moneyToRestaurant);
+        restaurantJPA.save(restaurant);
 
-        YummyFinanceDAO financeDAO = new YummyFinanceDAO();
+        YummyFinance financeDAO = new YummyFinance();
         financeDAO.setIncome(moneyToYummy);
-        financeDAO.setOrderId(orderDAO.getId());
+        financeDAO.setOrderId(order.getId());
         financeDAO.setTime(new Date());
         yummyFinanceJPA.save(financeDAO);
 
@@ -171,16 +171,16 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderVO> finishOrder(String id) {
-        OrderDAO orderDAO = orderJPA.getOne(id);
-        Double moneyToRestaurant = orderDAO.getAmount() * 0.5;
+        Order order = orderJPA.getOne(id);
+        Double moneyToRestaurant = order.getAmount() * 0.5;
 
-        RestaurantDAO restaurantDAO = restaurantJPA.getOne(orderDAO.getRestaurantId());
-        restaurantDAO.setAmount(restaurantDAO.getAmount() + moneyToRestaurant);
-        restaurantJPA.save(restaurantDAO);
+        Restaurant restaurant = restaurantJPA.getOne(order.getRestaurantId());
+        restaurant.setAmount(restaurant.getAmount() + moneyToRestaurant);
+        restaurantJPA.save(restaurant);
 
-        YummyFinanceDAO financeDAO = new YummyFinanceDAO();
+        YummyFinance financeDAO = new YummyFinance();
         financeDAO.setIncome(-moneyToRestaurant);
-        financeDAO.setOrderId(orderDAO.getId());
+        financeDAO.setOrderId(order.getId());
         financeDAO.setTime(new Date());
         yummyFinanceJPA.save(financeDAO);
 
@@ -189,56 +189,56 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderVO> cancelOrder(String id) {
-        OrderDAO orderDAO = orderJPA.getOne(id);
-        if (!orderDAO.getOrderStatus().equals(OrderStatus.TOPAY.getCode()) ||
-                !orderDAO.getOrderStatus().equals(OrderStatus.CANCELLED.getCode())) {
-            Double moneyBack = orderDAO.getAmount() * 0.5;
+        Order order = orderJPA.getOne(id);
+        if (!order.getOrderStatus().equals(OrderStatus.TOPAY.getCode()) ||
+                !order.getOrderStatus().equals(OrderStatus.CANCELLED.getCode())) {
+            Double moneyBack = order.getAmount() * 0.5;
 
-            MemberDAO memberDAO = memberJPA.getOne(orderDAO.getMemberEmail());
-            memberDAO.setAmount(memberDAO.getAmount() + moneyBack);
-            memberJPA.save(memberDAO);
+            Member member = memberJPA.getOne(order.getMemberEmail());
+            member.setAmount(member.getAmount() + moneyBack);
+            memberJPA.save(member);
 
-            YummyFinanceDAO financeDAO = new YummyFinanceDAO();
+            YummyFinance financeDAO = new YummyFinance();
             financeDAO.setIncome(-moneyBack);
-            financeDAO.setOrderId(orderDAO.getId());
+            financeDAO.setOrderId(order.getId());
             financeDAO.setTime(new Date());
             yummyFinanceJPA.save(financeDAO);
 
-            for (OrderDetailDAO orderDetail: orderDetailJPA.findByOrderId(id)) {
-                FoodDAO foodDAO = foodJPA.findDistinctById(orderDetail.getFoodId());
-                foodDAO.setNumber(foodDAO.getNumber() + orderDetail.getFoodNum());
-                foodJPA.save(foodDAO);
+            for (OrderDetail orderDetail: orderDetailJPA.findByOrderId(id)) {
+                Food food = foodJPA.findDistinctById(orderDetail.getFoodId());
+                food.setNumber(food.getNumber() + orderDetail.getFoodNum());
+                foodJPA.save(food);
             }
         }
         return updateOrder(id, OrderStatus.CANCELLED.getCode(), true);
     }
 
     private List<OrderVO> updateOrder(String id, Integer newStatus, boolean isMemberEditing) {
-        OrderDAO orderDAO = orderJPA.getOne(id);
-        Integer oldStatus = orderDAO.getOrderStatus();
-        orderDAO.setOrderStatus(newStatus);
-        orderJPA.save(orderDAO);
-        memberService.updateMemberLevel(orderDAO.getMemberEmail());
+        Order order = orderJPA.getOne(id);
+        Integer oldStatus = order.getOrderStatus();
+        order.setOrderStatus(newStatus);
+        orderJPA.save(order);
+        memberService.updateMemberLevel(order.getMemberEmail());
         return isMemberEditing ? findMemberOrders(id, oldStatus) : findRestaurantOrders(id, oldStatus);
     }
 
-    private List<OrderVO> generateVOFromOrderDAO(List<OrderDAO> orderDAOList) {
+    private List<OrderVO> generateVOFromOrderDAO(List<Order> orderList) {
         List<OrderVO> result = new ArrayList<>();
-        for (OrderDAO orderDAO: orderDAOList) {
+        for (Order order : orderList) {
             OrderVO orderVO = new OrderVO();
-            orderVO.setId(orderDAO.getId());
-            orderVO.setRestaurantName(restaurantJPA.getOne(orderDAO.getRestaurantId()).getName());
-            orderVO.setTime(TimeUtil.timeFormat(orderDAO.getCreateTime()));
-            orderVO.setActualAmount(orderDAO.getAmount() - orderDAO.getDiscount());
-            orderVO.setStatus(OrderStatus.getDescription(orderDAO.getOrderStatus()));
+            orderVO.setId(order.getId());
+            orderVO.setRestaurantName(restaurantJPA.getOne(order.getRestaurantId()).getName());
+            orderVO.setTime(TimeUtil.timeFormat(order.getCreateTime()));
+            orderVO.setActualAmount(order.getAmount() - order.getDiscount());
+            orderVO.setStatus(OrderStatus.getDescription(order.getOrderStatus()));
             result.add(orderVO);
         }
         return result;
     }
 
     private String generateAlertMessage(String restaurantAddressName, String memberAddressName) {
-        AddressDAO restaurantAddress = addressJPA.getOne(restaurantAddressName);
-        AddressDAO memberAddress = addressJPA.getOne(memberAddressName);
+        Address restaurantAddress = addressJPA.getOne(restaurantAddressName);
+        Address memberAddress = addressJPA.getOne(memberAddressName);
         Double distance = MathUtil.getDistance(restaurantAddress.getCoordinateX(),
                 restaurantAddress.getCoordinateY(),
                 memberAddress.getCoordinateX(),

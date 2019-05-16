@@ -2,8 +2,8 @@ package nju.sephidator.yummybackend.vo.member;
 
 import lombok.Data;
 import nju.sephidator.yummybackend.enums.AddressStatus;
-import nju.sephidator.yummybackend.model.AddressLinkDAO;
-import nju.sephidator.yummybackend.model.MemberDAO;
+import nju.sephidator.yummybackend.model.AddressLink;
+import nju.sephidator.yummybackend.model.Member;
 
 @Data
 public class MemberSignUpVO {
@@ -20,18 +20,19 @@ public class MemberSignUpVO {
 
     private String checkCode;
 
-    public MemberDAO getMemberDAO() {
-        MemberDAO memberDAO = new MemberDAO();
-        memberDAO.setEmail(email);
-        memberDAO.setPassword(password);
-        memberDAO.setPhone(phone);
-        memberDAO.setName(name);
-        memberDAO.setAmount(0.0);
-        memberDAO.setLevel(1);
-        return memberDAO;
+    public Member getMemberDAO() {
+        Member member = new Member();
+        member.setEmail(email);
+        member.setPassword(password);
+        member.setPhone(phone);
+        member.setName(name);
+        member.setAmount(0.0);
+        member.setLevel(1);
+        member.setAvailable(true);
+        return member;
     }
 
-    public AddressLinkDAO getAddressLinkDAO() {
-        return new AddressLinkDAO(email, address, AddressStatus.DEFAULT.getCode());
+    public AddressLink getAddressLinkDAO() {
+        return new AddressLink(email, address, AddressStatus.DEFAULT.getCode());
     }
 }

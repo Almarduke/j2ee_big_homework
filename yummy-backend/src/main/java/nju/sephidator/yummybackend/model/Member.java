@@ -10,7 +10,7 @@ import javax.persistence.Id;
 @Entity
 @Data
 @DynamicUpdate
-public class MemberDAO {
+public class Member {
 
     @Id
     private String email;

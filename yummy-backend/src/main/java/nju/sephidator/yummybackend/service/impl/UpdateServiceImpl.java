@@ -1,7 +1,7 @@
 package nju.sephidator.yummybackend.service.impl;
 
 import nju.sephidator.yummybackend.enums.OrderStatus;
-import nju.sephidator.yummybackend.model.OrderDAO;
+import nju.sephidator.yummybackend.model.Order;
 import nju.sephidator.yummybackend.repository.OrderJPA;
 import nju.sephidator.yummybackend.service.OrderService;
 import nju.sephidator.yummybackend.service.UpdateService;
@@ -21,19 +21,19 @@ public class UpdateServiceImpl implements UpdateService {
 
     @Override
     public void updateMemberOrders(String email) {
-        for (OrderDAO orderDAO:
+        for (Order order :
                 orderJPA.findByMemberEmailAndOrderStatus
-                        (email, OrderStatus.TOPAY.getCode())) {
-            updateOrder(orderDAO);
+                        ("sephidator@gmail.com", 0)) {
+            updateOrder(order);
         }
     }
 
     @Override
     public void updateRestaurantOrders(String restaurantId) {
-        for (OrderDAO orderDAO:
+        for (Order order :
                 orderJPA.findByMemberEmailAndOrderStatus
                         (restaurantId, OrderStatus.TOPAY.getCode())) {
-            updateOrder(orderDAO);
+            updateOrder(order);
         }
     }
 
@@ -42,16 +42,16 @@ public class UpdateServiceImpl implements UpdateService {
         updateOrder(orderJPA.getOne(orderId));
     }
 
-    private void updateOrder(OrderDAO orderDAO) {
+    private void updateOrder(Order order) {
         long currentTime = new Date().getTime();
         long TWO_HOUR = 1000 * 60 * 60 * 2;
-        long FIFTEEN_MINUTE = 1000 * 60 * 15;
-        if (orderDAO.getOrderStatus().equals(OrderStatus.TOPAY.getCode())
-                && orderDAO.getCreateTime().getTime() < currentTime - FIFTEEN_MINUTE) {
-            orderService.cancelOrder(orderDAO.getId());
-        } else if (orderDAO.getOrderStatus().equals(OrderStatus.DISTRIBUTING.getCode())
-                && orderDAO.getCreateTime().getTime() < currentTime - TWO_HOUR) {
-            orderService.finishOrder(orderDAO.getId());
+        long FIFTEEN_MINUTE = 1000 * 60 * 1;
+        if (order.getOrderStatus().equals(OrderStatus.TOPAY.getCode())
+                && order.getCreateTime().getTime() < currentTime - FIFTEEN_MINUTE) {
+            orderService.cancelOrder(order.getId());
+        } else if (order.getOrderStatus().equals(OrderStatus.DISTRIBUTING.getCode())
+                && order.getCreateTime().getTime() < currentTime - TWO_HOUR) {
+            orderService.finishOrder(order.getId());
         }
     }
 }

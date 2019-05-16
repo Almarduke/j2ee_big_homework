@@ -1,10 +1,7 @@
 package nju.sephidator.yummybackend.vo.restaurant;
 
 import lombok.Data;
-import nju.sephidator.yummybackend.enums.AddressStatus;
-import nju.sephidator.yummybackend.model.AddressLinkDAO;
-import nju.sephidator.yummybackend.model.MemberDAO;
-import nju.sephidator.yummybackend.model.RestaurantDAO;
+import nju.sephidator.yummybackend.model.Restaurant;
 
 @Data
 public class RestaurantSignUpVO {
@@ -19,14 +16,15 @@ public class RestaurantSignUpVO {
 
     private String address;
 
-    public RestaurantDAO getRestaurantDAO(String id) {
-        RestaurantDAO restaurantDAO = new RestaurantDAO();
-        restaurantDAO.setId(id);
-        restaurantDAO.setName(name);
-        restaurantDAO.setPassword(password);
-        restaurantDAO.setPhone(phone);
-        restaurantDAO.setAddress(address);
-        restaurantDAO.setAmount(0.0);
-        return restaurantDAO;
+    public Restaurant getRestaurantDAO(String id) {
+        Restaurant restaurant = new Restaurant();
+        restaurant.setId(id);
+        restaurant.setName(name);
+        restaurant.setPassword(password);
+        restaurant.setPhone(phone);
+        restaurant.setAddress(address);
+        restaurant.setAmount(0.0);
+        restaurant.setRevenue(0.0);
+        return restaurant;
     }
 }

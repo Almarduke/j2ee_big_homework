@@ -11,7 +11,7 @@ import javax.persistence.Id;
 @Entity
 @Data
 @DynamicUpdate
-public class OrderDetailDAO {
+public class OrderDetail {
 
     @Id
     @GeneratedValue

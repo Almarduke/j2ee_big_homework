@@ -1,8 +1,8 @@
 package nju.sephidator.yummybackend.service.impl;
 
 import nju.sephidator.yummybackend.exceptions.RestaurantAmountException;
-import nju.sephidator.yummybackend.model.RestaurantDAO;
-import nju.sephidator.yummybackend.model.RestaurantInfoCheckDAO;
+import nju.sephidator.yummybackend.model.Restaurant;
+import nju.sephidator.yummybackend.model.RestaurantInfoCheck;
 import nju.sephidator.yummybackend.repository.AddressLinkJPA;
 import nju.sephidator.yummybackend.repository.RestaurantInfoCheckJPA;
 import nju.sephidator.yummybackend.repository.RestaurantJPA;
@@ -31,8 +31,8 @@ public class RestaurantServiceImpl implements RestaurantService {
     @Override
     public synchronized String create(RestaurantSignUpVO restaurantSignUpVO) {
         String id = generateUniqueId();
-        RestaurantDAO restaurantDAO = restaurantSignUpVO.getRestaurantDAO(id);
-        restaurantJPA.save(restaurantDAO);
+        Restaurant restaurant = restaurantSignUpVO.getRestaurantDAO(id);
+        restaurantJPA.save(restaurant);
         return id;
     }
 
@@ -43,10 +43,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public List<RestaurantInfoVO> getAll() {
-        List<RestaurantDAO> restaurantDAOS = restaurantJPA.findAll();
+        List<Restaurant> restaurants = restaurantJPA.findAll();
         List<RestaurantInfoVO> result = new ArrayList<>();
-        for (RestaurantDAO restaurantDAO: restaurantDAOS) {
-            result.add(new RestaurantInfoVO(restaurantDAO));
+        for (Restaurant restaurant : restaurants) {
+            result.add(new RestaurantInfoVO(restaurant));
         }
         return result;
     }
@@ -58,9 +58,9 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public void updateRestaurantInfo(String restaurantId, String newName, String newPhone, String newAddress) {
-        RestaurantDAO restaurantDAO = restaurantJPA.getOne(restaurantId);
-        RestaurantInfoCheckDAO newInfo = new RestaurantInfoCheckDAO();
-        newInfo.setId(restaurantDAO.getId());
+        Restaurant restaurant = restaurantJPA.getOne(restaurantId);
+        RestaurantInfoCheck newInfo = new RestaurantInfoCheck();
+        newInfo.setId(restaurant.getId());
         newInfo.setName(newName);
         newInfo.setPhone(newPhone);
         newInfo.setAddress(newAddress);
@@ -69,10 +69,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public RestaurantInfoVO withdrawMoney(String restaurantId, Double amount) {
-        RestaurantDAO restaurantDAO = restaurantJPA.getOne(restaurantId);
-        if (restaurantDAO.getAmount() < amount) { throw new RestaurantAmountException(); }
-        restaurantDAO.setAmount(restaurantDAO.getAmount() - amount);
-        restaurantJPA.save(restaurantDAO);
+        Restaurant restaurant = restaurantJPA.getOne(restaurantId);
+        if (restaurant.getAmount() < amount) { throw new RestaurantAmountException(); }
+        restaurant.setAmount(restaurant.getAmount() - amount);
+        restaurantJPA.save(restaurant);
         return getRestaurantInfo(restaurantId);
     }
 

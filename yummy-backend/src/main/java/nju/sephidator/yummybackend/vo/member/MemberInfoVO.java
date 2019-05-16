@@ -1,7 +1,7 @@
 package nju.sephidator.yummybackend.vo.member;
 
 import lombok.Data;
-import nju.sephidator.yummybackend.model.MemberDAO;
+import nju.sephidator.yummybackend.model.Member;
 import nju.sephidator.yummybackend.vo.address.AddressVO;
 
 import java.io.Serializable;
@@ -22,11 +22,11 @@ public class MemberInfoVO implements Serializable {
 
     private List<AddressVO> addressList;
 
-    public void setMemberInfo(MemberDAO memberDAO) {
-        this.email = memberDAO.getEmail();
-        this.phone = memberDAO.getPhone();
-        this.name = memberDAO.getName();
-        this.level = memberDAO.getLevel();
-        this.amount = memberDAO.getAmount();
+    public void setMemberInfo(Member member) {
+        this.email = member.getEmail();
+        this.phone = member.getPhone();
+        this.name = member.getName();
+        this.level = member.getLevel();
+        this.amount = member.getAmount();
     }
 }

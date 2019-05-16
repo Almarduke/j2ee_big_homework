@@ -1,7 +1,6 @@
 package nju.sephidator.yummybackend.vo.order;
 
 import lombok.Data;
-import nju.sephidator.yummybackend.model.OrderDetailDAO;
 
 @Data
 public class OrderDetailVO {

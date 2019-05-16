@@ -11,7 +11,7 @@ import javax.persistence.Id;
 @Entity
 @Data
 @DynamicUpdate
-public class RestaurantDAO {
+public class Restaurant {
 
     @Id
     private String id;

@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div id="FinanceStatistics" class="line-chart"></div>
+    <div ref="FinanceStatistics" class="line-chart"></div>
   </div>
 </template>
 
@@ -22,7 +22,7 @@ export default {
   },
   methods: {
     setData () {
-      let myChart = this.$echarts.init(document.getElementById('FinanceStatistics'));
+      let myChart = this.$echarts.init(this.$refs.FinanceStatistics);
       this.$http({
         url: `${this.baseUrl}/admin/getFinanceStatistics`,
         method: 'GET'

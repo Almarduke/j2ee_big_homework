@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Entity
 @Data
 @DynamicUpdate
-public class AddressLinkDAO implements Serializable {
+public class AddressLink implements Serializable {
 
     @Id
     @GeneratedValue
@@ -23,10 +23,10 @@ public class AddressLinkDAO implements Serializable {
 
     private Integer status;
 
-    public AddressLinkDAO() {
+    public AddressLink() {
     }
 
-    public AddressLinkDAO(String userId, String addressName, Integer status) {
+    public AddressLink(String userId, String addressName, Integer status) {
         this.userId = userId;
         this.addressName = addressName;
         this.status = status;

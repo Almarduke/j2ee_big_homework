@@ -1,8 +1,8 @@
 package nju.sephidator.yummybackend.service.impl;
 
 import nju.sephidator.yummybackend.enums.OrderStatus;
-import nju.sephidator.yummybackend.model.CheckCodeDAO;
-import nju.sephidator.yummybackend.model.MemberDAO;
+import nju.sephidator.yummybackend.model.CheckCode;
+import nju.sephidator.yummybackend.model.Member;
 import nju.sephidator.yummybackend.repository.AddressLinkJPA;
 import nju.sephidator.yummybackend.repository.CheckCodeJPA;
 import nju.sephidator.yummybackend.repository.MemberJPA;
@@ -57,10 +57,10 @@ public class MemberServiceImpl implements MemberService {
             code = checkCodeJPA.getOne(email).getCode();
         } else {
             code = KeyUtil.randomCheckCode();
-            CheckCodeDAO checkCodeDAO = new CheckCodeDAO();
-            checkCodeDAO.setEmail(email);
-            checkCodeDAO.setCode(code);
-            checkCodeJPA.save(checkCodeDAO);
+            CheckCode checkCode = new CheckCode();
+            checkCode.setEmail(email);
+            checkCode.setCode(code);
+            checkCodeJPA.save(checkCode);
         }
 
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
@@ -106,26 +106,26 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberInfoVO updateMemberInfo(String email, String newName, String newPhone) {
-        MemberDAO memberDAO = memberJPA.getOne(email);
-        memberDAO.setName(newName);
-        memberDAO.setPhone(newPhone);
-        memberJPA.save(memberDAO);
+        Member member = memberJPA.getOne(email);
+        member.setName(newName);
+        member.setPhone(newPhone);
+        memberJPA.save(member);
         return getMemberInfo(email);
     }
 
     @Override
     public MemberInfoVO chargeMoney(String email, Double amount) {
-        MemberDAO memberDAO = memberJPA.getOne(email);
-        memberDAO.setAmount(memberDAO.getAmount() + amount);
-        memberJPA.save(memberDAO);
+        Member member = memberJPA.getOne(email);
+        member.setAmount(member.getAmount() + amount);
+        memberJPA.save(member);
         return getMemberInfo(email);
     }
 
     @Override
     public void deleteMember(String email) {
-        MemberDAO memberDAO = memberJPA.getOne(email);
-        memberDAO.setAvailable(false);
-        memberJPA.save(memberDAO);
+        Member member = memberJPA.getOne(email);
+        member.setAvailable(false);
+        memberJPA.save(member);
     }
 
     @Override
@@ -138,13 +138,13 @@ public class MemberServiceImpl implements MemberService {
         Integer memberLevel = 0;
         for (int i = 0; i < levelAmountList.length; i++) {
             if (memberAmount >= levelAmountList[i]) {
-                memberLevel = i + 1;
+                memberLevel = i;
             } else {
                 break;
             }
         }
-        MemberDAO memberDAO = memberJPA.getOne(email);
-        memberDAO.setLevel(memberLevel);
-        memberJPA.save(memberDAO);
+        Member member = memberJPA.getOne(email);
+        member.setLevel(memberLevel);
+        memberJPA.save(member);
     }
 }

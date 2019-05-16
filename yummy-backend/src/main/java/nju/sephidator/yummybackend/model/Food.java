@@ -11,7 +11,7 @@ import javax.persistence.Id;
 @Entity
 @Data
 @DynamicUpdate
-public class FoodDAO {
+public class Food {
 
     @Id
     @GeneratedValue

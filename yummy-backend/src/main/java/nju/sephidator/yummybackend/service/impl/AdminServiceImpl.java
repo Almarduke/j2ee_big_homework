@@ -1,9 +1,9 @@
 package nju.sephidator.yummybackend.service.impl;
 
-import nju.sephidator.yummybackend.model.MemberDAO;
-import nju.sephidator.yummybackend.model.RestaurantDAO;
-import nju.sephidator.yummybackend.model.RestaurantInfoCheckDAO;
-import nju.sephidator.yummybackend.model.YummyFinanceDAO;
+import nju.sephidator.yummybackend.model.Member;
+import nju.sephidator.yummybackend.model.Restaurant;
+import nju.sephidator.yummybackend.model.RestaurantInfoCheck;
+import nju.sephidator.yummybackend.model.YummyFinance;
 import nju.sephidator.yummybackend.repository.MemberJPA;
 import nju.sephidator.yummybackend.repository.RestaurantInfoCheckJPA;
 import nju.sephidator.yummybackend.repository.RestaurantJPA;
@@ -16,10 +16,7 @@ import nju.sephidator.yummybackend.vo.util.StatisticsDetailVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,30 +36,30 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<RestaurantInfoCheckVO> getRestaurantInfoCheckList() {
-        List<RestaurantInfoCheckDAO> restaurantInfoCheckDAOList =
+        List<RestaurantInfoCheck> restaurantInfoCheckList =
                 restaurantInfoCheckJPA.findAll();
-        return restaurantInfoCheckDAOList.stream()
+        return restaurantInfoCheckList.stream()
                 .map(RestaurantInfoCheckVO::new)
                 .collect(Collectors.toList());
     }
 
     @Override
     public void approveRestaurantInfoCheck(String restaurantId) {
-        RestaurantInfoCheckDAO restaurantInfoCheckDAO =
+        RestaurantInfoCheck restaurantInfoCheck =
                 restaurantInfoCheckJPA.getOne(restaurantId);
-        RestaurantDAO restaurantDAO = restaurantJPA.getOne(restaurantId);
-        restaurantDAO.setName(restaurantInfoCheckDAO.getName());
-        restaurantDAO.setPhone(restaurantInfoCheckDAO.getPhone());
-        restaurantDAO.setAddress(restaurantInfoCheckDAO.getAddress());
-        restaurantJPA.save(restaurantDAO);
+        Restaurant restaurant = restaurantJPA.getOne(restaurantId);
+        restaurant.setName(restaurantInfoCheck.getName());
+        restaurant.setPhone(restaurantInfoCheck.getPhone());
+        restaurant.setAddress(restaurantInfoCheck.getAddress());
+        restaurantJPA.save(restaurant);
         restaurantInfoCheckJPA.deleteById(restaurantId);
     }
 
     @Override
     public List<StatisticsDetailVO> getMemberStatistics() {
-        List<MemberDAO> memberList = memberJPA.findAll();
+        List<Member> memberList = memberJPA.findAll();
         List<StatisticsDetailVO> result = new ArrayList<>();
-        int[] levelList = {0, 1, 2, 3, 4, 5};
+        int[] levelList = {1, 2, 3, 4, 5, 6};
         for (int level: levelList) {
             StatisticsDetailVO detail = new StatisticsDetailVO();
             detail.setName("等级" + level);
@@ -74,7 +71,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<StatisticsDetailVO> getRestaurantStatistics() {
-        List<RestaurantDAO> restaurantList = restaurantJPA.findAll();
+        List<Restaurant> restaurantList = restaurantJPA.findAll();
         List<StatisticsDetailVO> result = new ArrayList<>();
         int[] revenueLevel = {0, 100, 200, 300, 400, 500};
         for (int i = 0; i < revenueLevel.length - 1; i++) {
@@ -97,19 +94,21 @@ public class AdminServiceImpl implements AdminService {
 
         @Override
         public List<StatisticsDetailVO> getFinanceStatistics() {
-            Set<String> dateList = new HashSet<>();
-            for (YummyFinanceDAO financeDAO: yummyFinanceJPA.findAll()) {
-                dateList.add(TimeUtil.timeFormat(financeDAO.getTime()));
+            Set<String> dateSet = new HashSet<>();
+            for (YummyFinance financeDAO: yummyFinanceJPA.findAll()) {
+                dateSet.add(TimeUtil.timeFormat(financeDAO.getTime()));
             }
+            List<String> dateList = new ArrayList<>(dateSet);
+            Collections.sort(dateList);
             List<StatisticsDetailVO> result = new ArrayList<>();
             for (String date: dateList) {
                 StatisticsDetailVO detail = new StatisticsDetailVO();
-                List<YummyFinanceDAO> financeOfDate =
+                List<YummyFinance> financeOfDate =
                         yummyFinanceJPA.findAll().stream()
                         .filter(x -> TimeUtil.timeFormat(x.getTime())
                                 .equals(date)).collect(Collectors.toList());
                 Double totalRevenue = MathUtil.scaledDouble(financeOfDate.stream()
-                        .map(YummyFinanceDAO::getIncome)
+                        .map(YummyFinance::getIncome)
                         .collect(Collectors.toList()).stream()
                         .reduce((sum, item)->{ return sum + item; })
                         .get(), 2);

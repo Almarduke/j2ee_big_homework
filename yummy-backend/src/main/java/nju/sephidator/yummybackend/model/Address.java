@@ -10,7 +10,7 @@ import javax.persistence.Id;
 @Entity
 @Data
 @DynamicUpdate
-public class AddressDAO {
+public class Address {
 
     @Id
     @GeneratedValue

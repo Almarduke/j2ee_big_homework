@@ -9,15 +9,10 @@ import javax.persistence.Id;
 @Entity
 @Data
 @DynamicUpdate
-public class RestaurantInfoCheckDAO {
+public class CheckCode {
 
     @Id
-    private String id;
+    private String email;
 
-    private String phone;
-
-    private String name;
-
-    private String address;
-
+    private String code;
 }

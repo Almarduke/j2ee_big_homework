@@ -112,7 +112,7 @@ export default {
     },
     plus (food) {
       const index = this.indexOfFood(food, this.foodList);
-      if (food < this.foodList[index].number) {
+      if (food.number < this.foodList[index].number) {
         food.number++;
       } else {
         this.$message.error('菜品已达到上限，不能再添加');
