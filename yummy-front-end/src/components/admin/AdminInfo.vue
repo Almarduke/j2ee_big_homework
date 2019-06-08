@@ -10,7 +10,7 @@
       </a-card>
     </a-layout-sider>
     <a-layout style="margin-top: 20px; padding: 0 24px 24px">
-      <a-layout-content style="height: 700px; padding: 24px; background-color: white">
+      <a-layout-content style="height: 800px; padding: 24px; background-color: white">
         <a-tabs defaultActiveKey="1">
           <a-tab-pane tab="审批信息" key="1">
             <a-list itemLayout="horizontal" :bordered="true">

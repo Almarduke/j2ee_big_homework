@@ -13,6 +13,9 @@ const getters = {
   baseUrl (state) {
     return state.baseUrl;
   },
+  colorBoard (state) {
+    return state.colorBoard;
+  },
   restaurantInfo (state) {
     let restaurantInfo = state.restaurantInfo;
     if (restaurantInfo.id === '') {

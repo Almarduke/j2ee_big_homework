@@ -68,7 +68,7 @@ export default {
     display: inline-block;
   }
   .container {
-    height: 640px;
+    height: 750px;
     width: 1200px;
     min-width: 1200px;
     padding: 20px 0;

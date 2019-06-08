@@ -20,7 +20,7 @@
     </a-layout-sider>
 
     <a-layout style="margin-top: 20px; padding: 0 24px 24px">
-      <a-layout-content style="height: 700px; padding: 24px; background-color: white">
+      <a-layout-content style="height: 800px; padding: 24px; background-color: white">
         <a-tabs defaultActiveKey="1">
           <a-tab-pane tab="地址列表" key="1">
             <a-list itemLayout="horizontal" :bordered="true">
@@ -35,6 +35,15 @@
               </a-list-item>
             </a-list>
             <a-button style="float: right; margin: 20px;" type="primary" shape="circle" icon="plus" size="large" @click="addAddressVisible=true"/>
+          </a-tab-pane>
+          <a-tab-pane tab="各饭店消费情况" key="2">
+            <consumption-chart></consumption-chart>
+          </a-tab-pane>
+          <a-tab-pane tab="各饭店满意度" key="3">
+            <satisfaction-chart></satisfaction-chart>
+          </a-tab-pane>
+          <a-tab-pane tab="菜品消费情况" key="4">
+            <dish-chart></dish-chart>
           </a-tab-pane>
         </a-tabs>
       </a-layout-content>
@@ -79,9 +88,13 @@
 import * as actionTypes from '@/utils/store/action-types';
 import { mapGetters, mapActions } from 'vuex';
 import { OK } from '@/utils/status/HttpStatus';
+import ConsumptionChart from '@/components/member/ConsumptionChart';
+import SatisfactionChart from '@/components/member/SatisfactionChart';
+import DishChart from '@/components/member/DishChart';
 
 export default {
   name: 'MemberInfo',
+  components: { ConsumptionChart, SatisfactionChart, DishChart },
   data () {
     return {
       memberInfo: {},

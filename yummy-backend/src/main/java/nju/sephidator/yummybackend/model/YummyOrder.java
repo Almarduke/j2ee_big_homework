@@ -1,21 +1,17 @@
 package nju.sephidator.yummybackend.model;
 
 import lombok.Data;
-import nju.sephidator.yummybackend.enums.OrderStatus;
-import nju.sephidator.yummybackend.enums.PayStatus;
 import nju.sephidator.yummybackend.utils.MathUtil;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Date;
 
 @Entity
 @Data
 @DynamicUpdate
-public class Order {
+public class YummyOrder {
 
     @Id
     private String id;
