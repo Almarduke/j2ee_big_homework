@@ -9,7 +9,7 @@
 import { mapGetters } from 'vuex';
 
 export default {
-  name: 'SatisfactionChart',
+  name: 'CustomerChart',
   computed: {
     ...mapGetters(['baseUrl', 'colorBoard'])
   },
@@ -38,28 +38,29 @@ export default {
     },
     getOption () {
       const data = [
-        [244, 12, 4.5, 'Australia'],
-        [132, 32, 5, 'Canada'],
-        [73, 80, 3, 'China'],
-        [467, 74, 4.3, 'Cuba'],
-        [359, 20, 3, 'Finland'],
-        [294, 77, 2, 'France'],
-        [314, 32, 4.2, 'Germany'],
-        [266, 29, 3.4, 'Iceland'],
-        [177, 33, 1.4, 'India'],
-        [250, 42, 3.6, 'Japan'],
-        [873, 67, 4.7, 'North Korea'],
-        [532, 21, 4.4, 'South Korea'],
-        [24, 23, 3.4, 'New Zealand'],
-        [46, 53, 5, 'Norway'],
-        [100, 58, 3, 'Poland'],
-        [234, 69, 2.8, 'Russia'],
-        [106, 67, 5, 'Turkey'],
-        [93, 75, 2.3, 'United Kingdom'],
-        [37, 75, 2, 'United States']
+        ['玄武区', 12, 13, '大杯可乐'],
+        ['鼓楼区', 24, 64, '烤鱿鱼'],
+        ['江宁区', 46, 28, '大碗宽面'],
+        ['浦口区', 37, 70, '火锅'],
+        ['栖霞区', 32, 62, '鱼香肉丝'],
+        ['秦淮区', 19, 24, '炸薯条'],
+        ['玄武区', 25, 47, '柠檬蛋糕'],
+        ['栖霞区', 15, 32, '大碗宽面'],
+        ['浦口区', 18, 80, '烤鱿鱼'],
+        ['鼓楼区', 42, 120, '寿司'],
+        ['栖霞区', 52, 150, '牛排'],
+        ['秦淮区', 33, 40, '咖喱饭'],
+        ['玄武区', 46, 110, '烤鱿鱼'],
+        ['栖霞区', 63, 52, '开水白菜'],
+        ['江宁区', 62, 20, '皮蛋瘦肉粥'],
+        ['秦淮区', 69, 42, '开水白菜'],
+        ['浦口区', 67, 180, '鱼翅羹'],
+        ['鼓楼区', 75, 18, '皮蛋瘦肉粥'],
+        ['江宁区', 25, 120, '火锅']
       ];
 
       return {
+        opacity: 0.3,
         toolbox: {
           right: 20,
           feature: {
@@ -69,36 +70,28 @@ export default {
           }
         },
         xAxis: {
-          name: '消费金额（元）',
+          name: '顾客所在区域',
           TextStyle: {
             color: '#fff',
             fontSize: 14
           },
-          splitLine: {
-            lineStyle: {
-              type: 'dashed'
-            }
-          }
+          data: [
+            '玄武区', '鼓楼区', '江宁区', '栖霞区',
+            '秦淮区', '浦口区'
+          ]
         },
         yAxis: {
-          name: '配送时间（分钟）',
+          name: '顾客平均年龄',
           TextStyle: {
             color: '#fff',
             fontSize: 14
-          },
-          splitLine: {
-            lineStyle: {
-              type: 'dashed'
-            }
-          },
-          scale: true
+          }
         },
         series: [{
-          name: '1990',
           data: data,
           type: 'scatter',
           symbolSize: (data) => {
-            return data[2] / 5 * 100;
+            return data[2] / 200 * 160;
           },
           itemStyle: {
             normal: {
@@ -113,7 +106,7 @@ export default {
           label: {
             show: true,
             position: 'inside',
-            formatter: '{@[3]}: {@[2]}星'
+            formatter: '消费水平: {@[2]}元\n喜爱的食物: {@[3]}'
           }
         }],
         tooltip: {
@@ -124,10 +117,10 @@ export default {
           formatter: function (obj) {
             const value = obj.value;
             return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">' +
-                value[3] + '</div>' +
-                '消费总额：' + value[0] + '元<br>' +
-                '配送时间：' + value[1] + '分钟<br>' +
-                '用户满意度：' + value[2] + '星';
+                '顾客区域：' + value[0] + '</div>' +
+                '平均年龄：' + value[1] + '岁<br>' +
+                '消费水平：' + value[2] + '元<br>' +
+                '喜爱的食物：' + value[3];
           }
         }
       };

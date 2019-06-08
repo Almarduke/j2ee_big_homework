@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div ref="MarketingChart" class="bubble-chart"></div>
+    <div ref="DishSelling" class="bubble-chart"></div>
   </div>
 </template>
 
@@ -9,7 +9,7 @@
 import { mapGetters } from 'vuex';
 
 export default {
-  name: 'MarketingChart',
+  name: 'DishSelling',
   computed: {
     ...mapGetters(['baseUrl', 'colorBoard'])
   },
@@ -33,7 +33,7 @@ export default {
       //     this.$message.error(response.data.msg);
       //   }
       // });
-      let myChart = this.$echarts.init(this.$refs.MarketingChart);
+      let myChart = this.$echarts.init(this.$refs.DishSelling);
       myChart.setOption(this.getOption());
     },
     getOption () {
@@ -54,8 +54,7 @@ export default {
         },
         legend: {
           data: [
-            '当日营业额',
-            '营业额增长率'
+            '上上周营业额', '上周营业额', '本周营业额', '营业额增长率'
           ]
         },
         xAxis: [
@@ -65,16 +64,15 @@ export default {
               alignWithLabel: true
             },
             data: [
-              '2019-06-01', '2019-06-02', '2019-06-03', '2019-06-04',
-              '2019-06-05', '2019-06-06', '2019-06-07', '2019-06-08',
-              '2019-06-09', '2019-06-10', '2019-06-11', '2019-06-12'
+              '烤鱿鱼', '大碗宽面', '开水白菜', '火锅',
+              '寿司', '牛排', '皮蛋瘦肉粥'
             ]
           }
         ],
         yAxis: [
           {
             type: 'value',
-            name: '当日营业额',
+            name: '营业额',
             min: 0,
             max: 1000,
             position: 'left',
@@ -95,37 +93,42 @@ export default {
               lineStyle: {
                 type: 'dotted'
               }
+            },
+            axisLine: {
+              lineStyle: {
+                color: '#888',
+                type: 'dashed'
+              }
             }
           }
         ],
         series: [
           {
-            name: '当日营业额(元)',
+            name: '上上周营业额',
             type: 'bar',
-            data: [192, 374, 579, 734, 683, 498, 514, 698, 822, 702, 698, 768],
-            barWidth: 40,
+            data: [192, 374, 579, 734, 683, 498, 514],
             itemStyle: {
-              normal: {
-                color: (data) => {
-                  if (data.value <= 200) {
-                    return '#273A49';
-                  } else if (data.value <= 400) {
-                    return '#5AA1A9';
-                  } else if (data.value <= 600) {
-                    return '#AAAAAA';
-                  } else if (data.value <= 800) {
-                    return '#C17B5A';
-                  } else {
-                    return '#A92528';
-                  }
-                },
-                width: 20,
-                opacity: 0.9
-              }
+              color: '#5AA1A9'
             }
           },
           {
-            name: '营业额增长率(%)',
+            name: '上周营业额',
+            type: 'bar',
+            data: [374, 683, 498, 514, 702, 698, 768],
+            itemStyle: {
+              color: '#273A49'
+            }
+          },
+          {
+            name: '本周营业额',
+            type: 'bar',
+            data: [192, 374, 579, 498, 514, 822, 768],
+            itemStyle: {
+              color: '#A92528'
+            }
+          },
+          {
+            name: '营业额增长率',
             type: 'line',
             itemStyle: {
               color: '#FFCC00',

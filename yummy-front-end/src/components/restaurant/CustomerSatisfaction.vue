@@ -9,7 +9,7 @@
 import { mapGetters } from 'vuex';
 
 export default {
-  name: 'SatisfactionChart',
+  name: 'CustomerSatisfaction',
   computed: {
     ...mapGetters(['baseUrl', 'colorBoard'])
   },
@@ -38,25 +38,25 @@ export default {
     },
     getOption () {
       const data = [
-        [244, 12, 4.5, 'Australia'],
-        [132, 32, 5, 'Canada'],
-        [73, 80, 3, 'China'],
-        [467, 74, 4.3, 'Cuba'],
-        [359, 20, 3, 'Finland'],
-        [294, 77, 2, 'France'],
-        [314, 32, 4.2, 'Germany'],
-        [266, 29, 3.4, 'Iceland'],
-        [177, 33, 1.4, 'India'],
-        [250, 42, 3.6, 'Japan'],
-        [873, 67, 4.7, 'North Korea'],
-        [532, 21, 4.4, 'South Korea'],
-        [24, 23, 3.4, 'New Zealand'],
-        [46, 53, 5, 'Norway'],
-        [100, 58, 3, 'Poland'],
-        [234, 69, 2.8, 'Russia'],
-        [106, 67, 5, 'Turkey'],
-        [93, 75, 2.3, 'United Kingdom'],
-        [37, 75, 2, 'United States']
+        [244, 12, 4.5],
+        [132, 32, 5],
+        [73, 80, 3],
+        [467, 74, 4.3],
+        [359, 20, 3],
+        [294, 77, 2],
+        [314, 32, 4.2],
+        [266, 29, 3.4],
+        [177, 33, 1.4],
+        [250, 42, 3.6],
+        [873, 67, 4.7],
+        [532, 21, 4.4],
+        [24, 23, 3.4],
+        [46, 53, 5],
+        [100, 58, 3],
+        [234, 69, 2.8],
+        [106, 67, 5],
+        [93, 75, 2.3],
+        [37, 75, 2]
       ];
 
       return {
@@ -69,7 +69,7 @@ export default {
           }
         },
         xAxis: {
-          name: '消费金额（元）',
+          name: '消费水平',
           TextStyle: {
             color: '#fff',
             fontSize: 14
@@ -81,7 +81,7 @@ export default {
           }
         },
         yAxis: {
-          name: '配送时间（分钟）',
+          name: '消费次数',
           TextStyle: {
             color: '#fff',
             fontSize: 14
@@ -113,7 +113,7 @@ export default {
           label: {
             show: true,
             position: 'inside',
-            formatter: '{@[3]}: {@[2]}星'
+            formatter: '顾客平均满意度:\n{@[2]}星'
           }
         }],
         tooltip: {
@@ -125,9 +125,9 @@ export default {
             const value = obj.value;
             return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">' +
                 value[3] + '</div>' +
-                '消费总额：' + value[0] + '元<br>' +
-                '配送时间：' + value[1] + '分钟<br>' +
-                '用户满意度：' + value[2] + '星';
+                '消费水平：' + value[0] + '元<br>' +
+                '消费次数：' + value[1] + '次<br>' +
+                '顾客满意度：' + value[2] + '星';
           }
         }
       };

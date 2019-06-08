@@ -16,7 +16,7 @@
       </a-card>
     </a-layout-sider>
     <a-layout style="margin-top: 20px; padding: 0 24px 24px">
-      <a-layout-content style="height: 700px; padding: 24px; background-color: white">
+      <a-layout-content style="height: 800px; padding: 24px; background-color: white">
         <a-tabs defaultActiveKey="1">
           <a-tab-pane tab="菜品列表" key="1">
             <a-list itemLayout="horizontal" :bordered="true">
@@ -33,6 +33,21 @@
               </a-list-item>
             </a-list>
             <a-button style="float: right; margin: 20px;" type="primary" shape="circle" icon="plus" size="large" @click="addFood"/>
+          </a-tab-pane>
+          <a-tab-pane tab="饭店经营情况" key="2">
+            <marketing-chart></marketing-chart>
+          </a-tab-pane>
+          <a-tab-pane tab="消费者特征" key="3">
+            <customer-chart></customer-chart>
+          </a-tab-pane>
+          <a-tab-pane tab="消费者满意度" key="4">
+            <customer-satisfaction></customer-satisfaction>
+          </a-tab-pane>
+          <a-tab-pane tab="菜品销售统计" key="5">
+            <dish-selling></dish-selling>
+          </a-tab-pane>
+          <a-tab-pane tab="订单统计" key="6">
+            <order-chart></order-chart>
           </a-tab-pane>
         </a-tabs>
       </a-layout-content>
@@ -92,9 +107,15 @@
 <script>
 import { mapGetters } from 'vuex';
 import { OK } from '@/utils/status/HttpStatus';
+import MarketingChart from '@/components/restaurant/MarketingChart';
+import CustomerChart from '@/components/restaurant/CustomerChart';
+import CustomerSatisfaction from '@/components/restaurant/CustomerSatisfaction';
+import DishSelling from '@/components/restaurant/DishSelling';
+import OrderChart from '@/components/restaurant/OrderChart';
 
 export default {
   name: 'ManageFood',
+  components: { CustomerChart, MarketingChart, CustomerSatisfaction, DishSelling, OrderChart },
   data () {
     return {
       formItemLayout: {
@@ -234,7 +255,6 @@ export default {
     withdrawMoney () {
       this.withdrawForm.validateFieldsAndScroll((err, values) => {
         if (!err) {
-          console.log(values);
           this.$http({
             url: `${this.baseUrl}/restaurant/withdrawMoney/${this.restaurantInfo.id}`,
             method: 'POST',

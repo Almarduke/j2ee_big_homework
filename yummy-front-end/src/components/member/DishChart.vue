@@ -72,6 +72,14 @@ export default {
       ];
 
       return {
+        toolbox: {
+          right: 60,
+          feature: {
+            saveAsImage: {
+              show: true
+            }
+          }
+        },
         xAxis: {
           name: '消费金额',
           TextStyle: {
@@ -111,6 +119,11 @@ export default {
               shadowColor: 'rgba(36, 36, 36, 0.5)',
               shadowOffsetY: 5
             }
+          },
+          label: {
+            show: true,
+            position: 'inside',
+            formatter: '{@[2]}'
           }
         }],
         tooltip: {

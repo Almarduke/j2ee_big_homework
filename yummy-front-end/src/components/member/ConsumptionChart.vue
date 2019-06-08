@@ -72,6 +72,14 @@ export default {
       ];
 
       return {
+        toolbox: {
+          right: 60,
+          feature: {
+            saveAsImage: {
+              show: true
+            }
+          }
+        },
         xAxis: {
           name: '平均消费',
           TextStyle: {
@@ -112,6 +120,14 @@ export default {
               shadowBlur: 10,
               shadowColor: 'rgba(36, 36, 36, 0.5)',
               shadowOffsetY: 5
+            }
+          },
+          label: {
+            show: true,
+            position: 'inside',
+            formatter: (params) => {
+              const data = params.data;
+              return `${data[3]}:\n${Math.floor(data[0] * data[1])}元`;
             }
           }
         }],

@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div ref="MarketingChart" class="bubble-chart"></div>
+    <div ref="OrderChart" class="bubble-chart"></div>
   </div>
 </template>
 
@@ -9,7 +9,7 @@
 import { mapGetters } from 'vuex';
 
 export default {
-  name: 'MarketingChart',
+  name: 'OrderChart',
   computed: {
     ...mapGetters(['baseUrl', 'colorBoard'])
   },
@@ -33,7 +33,7 @@ export default {
       //     this.$message.error(response.data.msg);
       //   }
       // });
-      let myChart = this.$echarts.init(this.$refs.MarketingChart);
+      let myChart = this.$echarts.init(this.$refs.OrderChart);
       myChart.setOption(this.getOption());
     },
     getOption () {
@@ -54,8 +54,7 @@ export default {
         },
         legend: {
           data: [
-            '当日营业额',
-            '营业额增长率'
+            '订单数', '付款订单数', '完成订单数', '付款率', '成交率'
           ]
         },
         xAxis: [
@@ -74,7 +73,7 @@ export default {
         yAxis: [
           {
             type: 'value',
-            name: '当日营业额',
+            name: '营业额',
             min: 0,
             max: 1000,
             position: 'left',
@@ -95,47 +94,65 @@ export default {
               lineStyle: {
                 type: 'dotted'
               }
+            },
+            axisLine: {
+              lineStyle: {
+                color: '#888',
+                type: 'dashed'
+              }
             }
           }
         ],
         series: [
           {
-            name: '当日营业额(元)',
+            name: '订单总数',
             type: 'bar',
-            data: [192, 374, 579, 734, 683, 498, 514, 698, 822, 702, 698, 768],
-            barWidth: 40,
+            data: [192, 374, 579, 734, 683, 498, 514, 374, 579, 734, 683, 498],
             itemStyle: {
-              normal: {
-                color: (data) => {
-                  if (data.value <= 200) {
-                    return '#273A49';
-                  } else if (data.value <= 400) {
-                    return '#5AA1A9';
-                  } else if (data.value <= 600) {
-                    return '#AAAAAA';
-                  } else if (data.value <= 800) {
-                    return '#C17B5A';
-                  } else {
-                    return '#A92528';
-                  }
-                },
-                width: 20,
-                opacity: 0.9
-              }
+              color: '#FF7000'
             }
           },
           {
-            name: '营业额增长率(%)',
+            name: '付款订单数',
+            type: 'bar',
+            data: [374, 683, 498, 514, 702, 698, 768, 374, 683, 498, 514, 702],
+            itemStyle: {
+              color: '#FFCC00'
+            }
+          },
+          {
+            name: '完成订单数',
+            type: 'bar',
+            data: [192, 374, 579, 498, 514, 822, 768, 579, 498, 514, 822, 768],
+            itemStyle: {
+              color: '#9ACD32'
+            }
+          },
+          {
+            name: '付款率',
             type: 'line',
             itemStyle: {
-              color: '#FFCC00',
+              color: '#4D80E6',
               opacity: 1
             },
             lineStyle: {
               width: 5
             },
             yAxisIndex: 1,
-            data: [-12, 40, 34, -10, -7, -8, 20, -4, 25, -9, 7, 9]
+            data: [87, 79, 80, 72, 86, 75, 80, 80, 92, 95, 87, 93]
+          },
+          {
+            name: '成交率',
+            type: 'line',
+            itemStyle: {
+              color: '#0000CD',
+              opacity: 1
+            },
+            lineStyle: {
+              width: 5
+            },
+            yAxisIndex: 1,
+            data: [90, 88, 82, 84, 78, 81, 90, 85, 92, 87, 79, 83]
           }
         ]
       };
