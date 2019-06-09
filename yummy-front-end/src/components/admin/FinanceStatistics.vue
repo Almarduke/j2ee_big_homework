@@ -33,11 +33,50 @@ export default {
       //     this.$message.error(response.data.msg);
       //   }
       // });
+      let data = [
+        { day: '2019-05-26', deal: 14, income: 12, profit: 11 },
+        { day: '2019-05-27', deal: 18, income: 17, profit: 15 },
+        { day: '2019-05-28', deal: 16, income: 14, profit: 13 },
+        { day: '2019-05-29', deal: 22, income: 19, profit: 17 },
+        { day: '2019-05-30', deal: 20, income: 19, profit: 18 },
+        { day: '2019-05-31', deal: 25, income: 22, profit: 20 },
+        { day: '2019-06-01', deal: 14, income: 12, profit: 11 },
+        { day: '2019-06-02', deal: 22, income: 19, profit: 17 },
+        { day: '2019-06-03', deal: 18, income: 16, profit: 16 },
+        { day: '2019-06-04', deal: 25, income: 22, profit: 20 },
+        { day: '2019-06-05', deal: 15, income: 14, profit: 13 },
+        { day: '2019-06-06', deal: 17, income: 15, profit: 14 },
+        { day: '2019-06-07', deal: 19, income: 18, profit: 15 },
+        { day: '2019-06-08', deal: 24, income: 21, profit: 20 },
+        { day: '2019-06-09', deal: 22, income: 20, profit: 18 }
+      ];
       let myChart = this.$echarts.init(this.$refs.FinanceStatistics);
-      myChart.setOption(this.getOption());
+      myChart.setOption(this.getOption(data));
     },
-    getOption () {
+    getOption (data) {
+      let dayList = data.map((record) => {
+        return record.day;
+      });
+      let dealList = data.map((record) => {
+        return record.deal;
+      });
+      let incomeList = data.map((record) => {
+        return record.income;
+      });
+      let profitList = data.map((record) => {
+        return record.profit;
+      });
+      let shareRate = data.map((record) => {
+        return (record.income / record.deal * 100).toFixed(1);
+      });
+      let grossRate = data.map((record) => {
+        return (record.profit / record.income * 100).toFixed(1);
+      });
       return {
+        title: {
+          left: 'center',
+          text: '平台每日收入情况'
+        },
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -53,6 +92,7 @@ export default {
           }
         },
         legend: {
+          left: '60%',
           data: [
             '日交易额', '平台收入', '净利润', '分成比例', '毛利率'
           ]
@@ -63,11 +103,7 @@ export default {
             axisTick: {
               alignWithLabel: true
             },
-            data: [
-              '2019-06-01', '2019-06-02', '2019-06-03', '2019-06-04',
-              '2019-06-05', '2019-06-06', '2019-06-07', '2019-06-08',
-              '2019-06-09', '2019-06-10', '2019-06-11', '2019-06-12'
-            ]
+            data: dayList
           }
         ],
         yAxis: [
@@ -75,7 +111,7 @@ export default {
             type: 'value',
             name: '营业额',
             min: 0,
-            max: 1000,
+            max: 30,
             position: 'left',
             axisLabel: {
               formatter: '{value} 元'
@@ -83,8 +119,8 @@ export default {
           },
           {
             type: 'value',
-            name: '营业额增长率',
-            min: -100,
+            name: '转化率',
+            min: 0,
             max: 100,
             position: 'right',
             axisLabel: {
@@ -107,52 +143,52 @@ export default {
           {
             name: '日交易额',
             type: 'bar',
-            data: [192, 374, 579, 734, 683, 498, 514, 374, 579, 734, 683, 498],
+            data: dealList,
             itemStyle: {
-              color: '#FF7000'
+              color: '#B399FF'
             }
           },
           {
             name: '平台收入',
             type: 'bar',
-            data: [374, 683, 498, 514, 702, 698, 768, 374, 683, 498, 514, 702],
+            data: incomeList,
             itemStyle: {
-              color: '#FFCC00'
+              color: '#5686BF'
             }
           },
           {
             name: '净利润',
             type: 'bar',
-            data: [192, 374, 579, 498, 514, 822, 768, 579, 498, 514, 822, 768],
+            data: profitList,
             itemStyle: {
-              color: '#9ACD32'
+              color: '#FF8099'
             }
           },
           {
             name: '分成比例',
             type: 'line',
             itemStyle: {
-              color: '#4D80E6',
+              color: '#FFCC00',
               opacity: 1
             },
             lineStyle: {
               width: 5
             },
             yAxisIndex: 1,
-            data: [87, 79, 80, 72, 86, 75, 80, 80, 92, 95, 87, 93]
+            data: shareRate
           },
           {
             name: '毛利率',
             type: 'line',
             itemStyle: {
-              color: '#0000CD',
+              color: '#008000',
               opacity: 1
             },
             lineStyle: {
               width: 5
             },
             yAxisIndex: 1,
-            data: [90, 88, 82, 84, 78, 81, 90, 85, 92, 87, 79, 83]
+            data: grossRate
           }
         ]
       };

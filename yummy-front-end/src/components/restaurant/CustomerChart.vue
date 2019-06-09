@@ -60,6 +60,11 @@ export default {
       ];
 
       return {
+        title: {
+          left: 'center',
+          text: '消费者画像',
+          subtext: '基于客户年龄和区域'
+        },
         opacity: 0.3,
         toolbox: {
           right: 20,
@@ -91,7 +96,7 @@ export default {
           data: data,
           type: 'scatter',
           symbolSize: (data) => {
-            return data[2] / 200 * 160;
+            return Math.max(data[2] / 200 * 160, 60);
           },
           itemStyle: {
             normal: {

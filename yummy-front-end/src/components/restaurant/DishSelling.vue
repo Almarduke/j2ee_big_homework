@@ -83,6 +83,11 @@ export default {
       ];
 
       return {
+        title: {
+          left: 'center',
+          text: '各菜品销售情况',
+          subtext: '波士顿矩阵'
+        },
         toolbox: {
           right: 20,
           feature: {
@@ -92,6 +97,7 @@ export default {
           }
         },
         legend: {
+          left: '70%',
           data: [
             '上上周数据', '上周数据', '本周数据'
           ]
