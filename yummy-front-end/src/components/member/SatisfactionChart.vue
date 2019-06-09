@@ -33,32 +33,25 @@ export default {
       //     this.$message.error(response.data.msg);
       //   }
       // });
-      let myChart = this.$echarts.init(this.$refs.SatisfactionChart);
-      myChart.setOption(this.getOption());
-    },
-    getOption () {
       const data = [
-        [244, 12, 4.5, 'Australia'],
-        [132, 32, 5, 'Canada'],
-        [73, 80, 3, 'China'],
-        [467, 74, 4.3, 'Cuba'],
-        [359, 20, 3, 'Finland'],
-        [294, 77, 2, 'France'],
-        [314, 32, 4.2, 'Germany'],
-        [266, 29, 3.4, 'Iceland'],
-        [177, 33, 1.4, 'India'],
-        [250, 42, 3.6, 'Japan'],
-        [873, 67, 4.7, 'North Korea'],
-        [532, 21, 4.4, 'South Korea'],
-        [24, 23, 3.4, 'New Zealand'],
-        [46, 53, 5, 'Norway'],
-        [100, 58, 3, 'Poland'],
-        [234, 69, 2.8, 'Russia'],
-        [106, 67, 5, 'Turkey'],
-        [93, 75, 2.3, 'United Kingdom'],
-        [37, 75, 2, 'United States']
+        [56, 23, 4.7, '金拱门'],
+        [30, 20, 4.5, '黄焖鸡米饭'],
+        [15, 45, 4.3, '兰州拉面'],
+        [12, 30, 3.9, '四川燃面'],
+        [18, 24, 4.0, '鸡鸣汤包'],
+        [14, 14, 4.1, '罗森'],
+        [80, 45, 4.2, '北京烤鸭'],
+        [28, 35, 3.7, '麻辣香锅'],
+        [70, 32, 4.1, '张记圆'],
+        [31, 30, 4.4, '永和大王'],
+        [48, 35, 4.9, '汉堡王'],
+        [66, 48, 4.6, '新石器烤肉'],
+        [85, 53, 5.0, '海底捞']
       ];
-
+      let myChart = this.$echarts.init(this.$refs.SatisfactionChart);
+      myChart.setOption(this.getOption(data));
+    },
+    getOption (data) {
       return {
         toolbox: {
           right: 20,
@@ -69,7 +62,10 @@ export default {
           }
         },
         xAxis: {
-          name: '消费金额（元）',
+          name: '消费水平',
+          axisLabel: {
+            formatter: '{value}元'
+          },
           TextStyle: {
             color: '#fff',
             fontSize: 14
@@ -81,7 +77,10 @@ export default {
           }
         },
         yAxis: {
-          name: '配送时间（分钟）',
+          name: '配送时间',
+          axisLabel: {
+            formatter: '{value}分钟'
+          },
           TextStyle: {
             color: '#fff',
             fontSize: 14
@@ -98,7 +97,7 @@ export default {
           data: data,
           type: 'scatter',
           symbolSize: (data) => {
-            return data[2] / 5 * 100;
+            return (data[2] - 3) * 60;
           },
           itemStyle: {
             normal: {

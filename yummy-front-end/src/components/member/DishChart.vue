@@ -5,7 +5,7 @@
         <a-menu mode="inline" :defaultSelectedKeys="['week']" style="height: 100%" @click="handleClick">
           <a-menu-item key="week" >1周内</a-menu-item>
           <a-menu-item key="month">1个月内</a-menu-item>
-          <a-menu-item key="seaon">3个月内</a-menu-item>
+          <a-menu-item key="season">3个月内</a-menu-item>
         </a-menu>
       </a-layout-sider>
 
@@ -45,32 +45,85 @@ export default {
       //     this.$message.error(response.data.msg);
       //   }
       // });
+      let data = [];
+      switch (key) {
+        case 'week':
+          data = [
+            [35, 2, '安格斯厚牛堡'],
+            [12, 2, '薯条'],
+            [9, 2, '大杯可乐'],
+            [30, 1, '黄焖鸡米饭'],
+            [15, 1, '牛肉炒刀削'],
+            [15, 1, '牛肉炒拉面'],
+            [12, 3, '招牌燃面'],
+            [7, 4, '大口饭团']
+          ];
+          break;
+        case 'month':
+          data = [
+            [35, 4, '安格斯厚牛堡'],
+            [12, 4, '薯条'],
+            [9, 6, '大杯可乐'],
+            [33, 2, '安格斯芝士堡'],
+            [13, 2, '椒盐金翅'],
+            [4, 1, '甜筒'],
+            [30, 3, '黄焖排骨'],
+            [30, 7, '黄焖鸡米饭'],
+            [15, 5, '牛肉炒刀削'],
+            [15, 3, '牛肉炒拉面'],
+            [12, 3, '招牌燃面'],
+            [11, 3, '蒜泥白肉'],
+            [7, 10, '大口饭团'],
+            [17, 8, '速食便当'],
+            [40, 2, '北京烤鸭'],
+            [28, 2, '炭烤八抓鱼'],
+            [28, 4, '麻辣香锅'],
+            [10, 10, '羊肉串'],
+            [8, 9, '牛肉串'],
+            [10, 8, '啤酒'],
+            [20, 4, '烤鱿鱼'],
+            [31, 5, '卤肉饭套餐']
+          ];
+          break;
+        case 'season':
+          data = [
+            [35, 6, '安格斯厚牛堡'],
+            [12, 6, '薯条'],
+            [14, 2, '原味板烧鸡腿堡'],
+            [9, 9, '大杯可乐'],
+            [33, 4, '安格斯芝士堡'],
+            [13, 4, '椒盐金翅'],
+            [4, 4, '甜筒'],
+            [30, 7, '黄焖排骨'],
+            [30, 10, '黄焖鸡米饭'],
+            [15, 5, '牛肉炒刀削'],
+            [15, 3, '牛肉炒拉面'],
+            [21, 3, '孜然盖浇面'],
+            [12, 5, '招牌燃面'],
+            [11, 3, '蒜泥白肉'],
+            [16, 2, '肥肠抄手'],
+            [7, 13, '大口饭团'],
+            [17, 9, '速食便当'],
+            [42, 4, '北京烤鸭'],
+            [32, 8, '炭烤八抓鱼'],
+            [28, 8, '麻辣香锅'],
+            [10, 15, '羊肉串'],
+            [8, 12, '牛肉串'],
+            [10, 8, '啤酒'],
+            [20, 5, '烤鱿鱼'],
+            [31, 5, '卤肉饭套餐'],
+            [48, 3, '皇堡套餐'],
+            [38, 3, '烤牛肉'],
+            [25, 2, '芝士年糕'],
+            [20, 2, '猪脑'],
+            [34, 3, '虾滑'],
+            [30, 2, '五花肉']
+          ];
+      }
       let myChart = this.$echarts.init(this.$refs.ConsumptionChart);
-      myChart.setOption(this.getOption());
+      myChart.setOption(this.getOption(data));
     },
-    getOption () {
-      const data = [
-        [244, 12, 'Australia'],
-        [132, 32, 'Canada'],
-        [73, 80, 'China'],
-        [467, 74, 'Cuba'],
-        [359, 20, 'Finland'],
-        [294, 77, 'France'],
-        [314, 32, 'Germany'],
-        [266, 29, 'Iceland'],
-        [177, 33, 'India'],
-        [250, 42, 'Japan'],
-        [873, 67, 'North Korea'],
-        [532, 21, 'South Korea'],
-        [24, 23, 'New Zealand'],
-        [46, 53, 'Norway'],
-        [100, 58, 'Poland'],
-        [234, 69, 'Russia'],
-        [106, 67, 'Turkey'],
-        [93, 75, 'United Kingdom'],
-        [37, 75, 'United States']
-      ];
-
+    getOption (data) {
       return {
         toolbox: {
           right: 60,
@@ -81,7 +134,7 @@ export default {
           }
         },
         xAxis: {
-          name: '消费金额',
+          name: '菜品价格',
           TextStyle: {
             color: '#fff',
             fontSize: 14
@@ -90,10 +143,15 @@ export default {
             lineStyle: {
               type: 'dashed'
             }
+          },
+          axisLabel: {
+            formatter: '{value}元'
           }
         },
         yAxis: {
           name: '消费次数',
+          min: 0,
+          minInterval: 1,
           TextStyle: {
             color: '#fff',
             fontSize: 14
@@ -103,13 +161,15 @@ export default {
               type: 'dashed'
             }
           },
-          scale: true
+          scale: true,
+          axisLabel: {
+            formatter: '{value}次'
+          }
         },
         series: [{
-          name: '1990',
           data: data,
           type: 'scatter',
-          symbolSize: 20,
+          symbolSize: 40,
           itemStyle: {
             normal: {
               color: (data) => {

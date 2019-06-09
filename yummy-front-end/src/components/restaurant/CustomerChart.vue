@@ -91,7 +91,7 @@ export default {
           data: data,
           type: 'scatter',
           symbolSize: (data) => {
-            return data[2] / 200 * 160;
+            return Math.max(data[2] / 200 * 160, 60);
           },
           itemStyle: {
             normal: {
