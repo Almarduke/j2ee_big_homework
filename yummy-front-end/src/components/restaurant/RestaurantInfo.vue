@@ -49,6 +49,9 @@
           <a-tab-pane tab="订单统计" key="6">
             <order-chart></order-chart>
           </a-tab-pane>
+          <a-tab-pane tab="配送效率统计" key="7">
+            <delivery-time></delivery-time>
+          </a-tab-pane>
         </a-tabs>
       </a-layout-content>
     </a-layout>
@@ -112,10 +115,11 @@ import CustomerChart from '@/components/restaurant/CustomerChart';
 import CustomerSatisfaction from '@/components/restaurant/CustomerSatisfaction';
 import DishSelling from '@/components/restaurant/DishSelling';
 import OrderChart from '@/components/restaurant/OrderChart';
+import DeliveryTime from '@/components/restaurant/DeliveryTime';
 
 export default {
   name: 'ManageFood',
-  components: { CustomerChart, MarketingChart, CustomerSatisfaction, DishSelling, OrderChart },
+  components: { CustomerChart, MarketingChart, CustomerSatisfaction, DishSelling, OrderChart, DeliveryTime },
   data () {
     return {
       formItemLayout: {

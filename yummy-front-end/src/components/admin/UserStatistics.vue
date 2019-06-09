@@ -6,13 +6,13 @@
 </template>
 
 <script>
-import { OK } from '@/utils/status/HttpStatus';
+// import { OK } from '@/utils/status/HttpStatus';
 import { mapGetters } from 'vuex';
 
 export default {
   name: 'UserStatistics',
   computed: {
-    ...mapGetters(['baseUrl'])
+    ...mapGetters(['baseUrl', 'colorBoard'])
   },
   mounted () {
     this.setMemberData();
@@ -20,32 +20,53 @@ export default {
   },
   methods: {
     setMemberData () {
-      let myChart = this.$echarts.init(this.$refs.MemberStatistics);
-      this.$http({
-        url: `${this.baseUrl}/admin/getMemberStatistics`,
-        method: 'GET'
-      }).then((response) => {
-        const code = response.data.code;
-        if (code === OK) {
-          myChart.setOption(this.getOption(response.data.data, true));
-        } else {
-          this.$message.error(response.data.msg);
-        }
-      });
+      // let myChart = this.$echarts.init(this.$refs.MemberStatistics);
+      // this.$http({
+      //   url: `${this.baseUrl}/admin/getMemberStatistics`,
+      //   method: 'GET'
+      // }).then((response) => {
+      //   const code = response.data.code;
+      //   if (code === OK) {
+      //     myChart.setOption(this.getOption(response.data.data, true));
+      //   } else {
+      //     this.$message.error(response.data.msg);
+      //   }
+      // });
+      const myChart = this.$echarts.init(this.$refs.MemberStatistics);
+      const data = [
+        { name: '华东', value: 53827 },
+        { name: '华南', value: 44231 },
+        { name: '华北', value: 32970 },
+        { name: '中部', value: 33684 },
+        { name: '东北', value: 23923 },
+        { name: '西部', value: 17929 }
+      ];
+      myChart.setOption(this.getOption(data, true));
     },
     setRestaurantData () {
-      let myChart = this.$echarts.init(this.$refs.RestaurantStatistics);
-      this.$http({
-        url: `${this.baseUrl}/admin/getRestaurantStatistics`,
-        method: 'GET'
-      }).then((response) => {
-        const code = response.data.code;
-        if (code === OK) {
-          myChart.setOption(this.getOption(response.data.data, false));
-        } else {
-          this.$message.error(response.data.msg);
-        }
-      });
+      // let myChart = this.$echarts.init(this.$refs.RestaurantStatistics);
+      // this.$http({
+      //   url: `${this.baseUrl}/admin/getRestaurantStatistics`,
+      //   method: 'GET'
+      // }).then((response) => {
+      //   const code = response.data.code;
+      //   if (code === OK) {
+      //     myChart.setOption(this.getOption(response.data.data, false));
+      //   } else {
+      //     this.$message.error(response.data.msg);
+      //   }
+      // });
+
+      const myChart = this.$echarts.init(this.$refs.RestaurantStatistics);
+      const data = [
+        { name: '华东', value: 3827 },
+        { name: '华南', value: 4231 },
+        { name: '华北', value: 2970 },
+        { name: '中部', value: 3681 },
+        { name: '东北', value: 3925 },
+        { name: '西部', value: 2928 }
+      ];
+      myChart.setOption(this.getOption(data, false));
     },
     getOption (data, isMember) {
       let title;
@@ -60,15 +81,15 @@ export default {
 
       if (isMember) {
         title = '会员统计';
-        subTitle = '各等级会员人数';
-        tooltipTitle = '会员等级';
+        subTitle = '各地区会员人数';
+        tooltipTitle = '会员所在地区';
         position = 'left';
         formatter = '{a} <br/>{b}: {c}人';
         color = ['#FB7293', '#FFDB5C', '#37A2DA', '#9FE6B8', '#FF9F7F', '#8378EA'];
       } else {
         title = '餐厅统计';
-        subTitle = '不同营业额的餐厅数';
-        tooltipTitle = '餐厅营业额';
+        subTitle = '不同地区的餐厅数';
+        tooltipTitle = '餐厅所在地区';
         position = 'right';
         formatter = '{a} <br/>{b}: {c}家';
         color = ['#A92528', '#273A49', '#5AA1A9', '#E17B5A', '#8FD4B2', '#D5811E'];

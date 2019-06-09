@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div ref="OrderChart" class="bubble-chart"></div>
+    <div ref="RestaurantMarketing" class="bubble-chart"></div>
   </div>
 </template>
 
@@ -9,7 +9,7 @@
 import { mapGetters } from 'vuex';
 
 export default {
-  name: 'OrderChart',
+  name: 'RestaurantMarketing',
   computed: {
     ...mapGetters(['baseUrl', 'colorBoard'])
   },
@@ -33,11 +33,15 @@ export default {
       //     this.$message.error(response.data.msg);
       //   }
       // });
-      let myChart = this.$echarts.init(this.$refs.OrderChart);
+      let myChart = this.$echarts.init(this.$refs.RestaurantMarketing);
       myChart.setOption(this.getOption());
     },
     getOption () {
       return {
+        title: {
+          left: 'center',
+          text: '各地区饭店销售总额'
+        },
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -53,106 +57,60 @@ export default {
           }
         },
         legend: {
+          left: '70%',
           data: [
-            '订单总数', '付款订单数', '完成订单数', '付款率', '成交率'
+            '上上周数据', '上周数据', '本周数据'
           ]
         },
         xAxis: [
           {
             type: 'category',
+            name: '饭店所在区域',
             axisTick: {
               alignWithLabel: true
             },
             data: [
-              '2019-06-01', '2019-06-02', '2019-06-03', '2019-06-04',
-              '2019-06-05', '2019-06-06', '2019-06-07', '2019-06-08',
-              '2019-06-09', '2019-06-10', '2019-06-11', '2019-06-12'
+              '华东', '华南', '华北', '中部',
+              '西部', '东北'
             ]
           }
         ],
         yAxis: [
           {
             type: 'value',
-            name: '营业额',
+            name: '销售总额',
             min: 0,
             max: 1000,
             position: 'left',
             axisLabel: {
-              formatter: '{value} 元'
-            }
-          },
-          {
-            type: 'value',
-            name: '营业额增长率',
-            min: -100,
-            max: 100,
-            position: 'right',
-            axisLabel: {
-              formatter: '{value} %'
-            },
-            splitLine: {
-              lineStyle: {
-                type: 'dotted'
-              }
-            },
-            axisLine: {
-              lineStyle: {
-                color: '#888',
-                type: 'dashed'
-              }
+              formatter: '{value} 分钟'
             }
           }
         ],
         series: [
           {
-            name: '订单总数',
+            name: '上上周数据',
             type: 'bar',
-            data: [192, 374, 579, 734, 683, 498, 514, 374, 579, 734, 683, 498],
+            data: [192, 374, 579, 683, 498, 514],
             itemStyle: {
-              color: '#FF7000'
+              color: '#5AA1A9'
             }
           },
           {
-            name: '付款订单数',
+            name: '上周数据',
             type: 'bar',
-            data: [374, 683, 498, 514, 702, 698, 768, 374, 683, 498, 514, 702],
+            data: [374, 683, 498, 514, 698, 768],
             itemStyle: {
-              color: '#FFCC00'
+              color: '#273A49'
             }
           },
           {
-            name: '完成订单数',
+            name: '本周数据',
             type: 'bar',
-            data: [192, 374, 579, 498, 514, 822, 768, 579, 498, 514, 822, 768],
+            data: [192, 374, 579, 498, 514, 822],
             itemStyle: {
-              color: '#9ACD32'
+              color: '#A92528'
             }
-          },
-          {
-            name: '付款率',
-            type: 'line',
-            itemStyle: {
-              color: '#4D80E6',
-              opacity: 1
-            },
-            lineStyle: {
-              width: 5
-            },
-            yAxisIndex: 1,
-            data: [87, 79, 80, 72, 86, 75, 80, 80, 92, 95, 87, 93]
-          },
-          {
-            name: '成交率',
-            type: 'line',
-            itemStyle: {
-              color: '#0000CD',
-              opacity: 1
-            },
-            lineStyle: {
-              width: 5
-            },
-            yAxisIndex: 1,
-            data: [90, 88, 82, 84, 78, 81, 90, 85, 92, 87, 79, 83]
           }
         ]
       };

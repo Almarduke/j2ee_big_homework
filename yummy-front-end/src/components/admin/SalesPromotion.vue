@@ -106,16 +106,19 @@ export default {
             formatter: '{value} 元'
           }
         },
-        yAxis: {
-          name: '销售数量',
-          TextStyle: {
-            color: '#fff',
-            fontSize: 14
-          },
-          axisLabel: {
-            formatter: '{value}'
-          }
-        },
+        yAxis: [
+          {
+            name: '营业额增长率',
+            position: 'right',
+            axisLabel: {
+              formatter: '{value} %'
+            },
+            splitLine: {
+              lineStyle: {
+                type: 'dotted'
+              }
+            }
+          }],
         series: [
           {
             data: data1,

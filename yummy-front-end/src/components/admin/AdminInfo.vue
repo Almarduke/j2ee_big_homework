@@ -31,6 +31,18 @@
           <a-tab-pane tab="财务情况" key="3">
             <finance-statistics></finance-statistics>
           </a-tab-pane>
+          <a-tab-pane tab="消费者活跃度" key="4">
+            <customer-activity></customer-activity>
+          </a-tab-pane>
+          <a-tab-pane tab="饭店经营情况" key="5">
+            <restaurant-marketing></restaurant-marketing>
+          </a-tab-pane>
+          <a-tab-pane tab="各地区满意度" key="6">
+            <district-satisfaction></district-satisfaction>
+          </a-tab-pane>
+          <a-tab-pane tab="促销激励情况" key="7">
+            <sales-promotion></sales-promotion>
+          </a-tab-pane>
         </a-tabs>
       </a-layout-content>
     </a-layout>
@@ -59,10 +71,14 @@ import { mapGetters } from 'vuex';
 import { OK } from '@/utils/status/HttpStatus';
 import UserStatistics from '@/components/admin/UserStatistics';
 import FinanceStatistics from '@/components/admin/FinanceStatistics';
+import CustomerActivity from '@/components/admin/CustomerActivity';
+import RestaurantMarketing from '@/components/admin/RestaurantMarketing';
+import DistrictSatisfaction from '@/components/admin/DistrictSatisfaction';
+import SalesPromotion from '@/components/admin/SalesPromotion';
 
 export default {
   name: 'AdminInfo',
-  components: { UserStatistics, FinanceStatistics },
+  components: { UserStatistics, FinanceStatistics, CustomerActivity, RestaurantMarketing, DistrictSatisfaction, SalesPromotion },
   data () {
     return {
       adminInfo: {},
