@@ -53,6 +53,11 @@ export default {
     },
     getOption (data) {
       return {
+        title: {
+          left: 'center',
+          text: '饭店评价分布',
+          subtext: '基于本用户的评价和购买信息'
+        },
         toolbox: {
           right: 20,
           feature: {

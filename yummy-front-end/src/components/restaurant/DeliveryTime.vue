@@ -59,6 +59,11 @@ export default {
         return record.thisWeek;
       });
       return {
+        title: {
+          left: 'center',
+          text: '配送效率统计',
+          subtext: '近期各时间段配送时长'
+        },
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -74,6 +79,7 @@ export default {
           }
         },
         legend: {
+          left: '65%',
           data: [
             '上上周数据', '上周数据', '本周数据'
           ]

@@ -125,6 +125,11 @@ export default {
     },
     getOption (data) {
       return {
+        title: {
+          left: 'center',
+          text: '消费过的菜品信息',
+          subtext: '基于本用户数据'
+        },
         toolbox: {
           right: 60,
           feature: {

@@ -54,7 +54,6 @@ export default {
       myChart.setOption(this.getOption(data));
     },
     getOption (data) {
-      console.log(data);
       let dayList = data.map((record) => {
         return record.day;
       });
@@ -75,6 +74,11 @@ export default {
       });
 
       return {
+        title: {
+          left: 'center',
+          text: '订单统计',
+          subtext: '订单情况和转化率'
+        },
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -90,6 +94,7 @@ export default {
           }
         },
         legend: {
+          left: '60%',
           data: [
             '订单总数', '付款订单数', '完成订单数', '付款率', '成交率'
           ]

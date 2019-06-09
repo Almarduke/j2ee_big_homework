@@ -33,10 +33,31 @@ export default {
       //     this.$message.error(response.data.msg);
       //   }
       // });
+      let data = [
+        { area: '华东', weekBeforeLast: 493, lastWeek: 502, thisWeek: 517 },
+        { area: '华南', weekBeforeLast: 498, lastWeek: 492, thisWeek: 504 },
+        { area: '华北', weekBeforeLast: 510, lastWeek: 502, thisWeek: 508 },
+        { area: '中部', weekBeforeLast: 482, lastWeek: 477, thisWeek: 480 },
+        { area: '西部', weekBeforeLast: 450, lastWeek: 452, thisWeek: 448 },
+        { area: '东北', weekBeforeLast: 478, lastWeek: 484, thisWeek: 483 }
+      ];
       let myChart = this.$echarts.init(this.$refs.RestaurantMarketing);
-      myChart.setOption(this.getOption());
+      myChart.setOption(this.getOption(data));
     },
-    getOption () {
+    getOption (data) {
+      let areaList = data.map((record) => {
+        return record.area;
+      });
+
+      let recordTwoWeeksBefore = data.map((record) => {
+        return record.weekBeforeLast;
+      });
+      let recordOfLastWeek = data.map((record) => {
+        return record.lastWeek;
+      });
+      let recordOfThisWeek = data.map((record) => {
+        return record.thisWeek;
+      });
       return {
         title: {
           left: 'center',
@@ -59,55 +80,51 @@ export default {
         legend: {
           left: '70%',
           data: [
-            '上上周数据', '上周数据', '本周数据'
+            '上上周销售额', '上周销售额', '本周销售额'
           ]
         },
         xAxis: [
           {
             type: 'category',
-            name: '饭店所在区域',
+            name: '地区',
             axisTick: {
               alignWithLabel: true
             },
-            data: [
-              '华东', '华南', '华北', '中部',
-              '西部', '东北'
-            ]
+            data: areaList
           }
         ],
         yAxis: [
           {
             type: 'value',
             name: '销售总额',
-            min: 0,
-            max: 1000,
+            min: 400,
             position: 'left',
             axisLabel: {
-              formatter: '{value} 分钟'
+              formatter: '{value}万元'
             }
           }
         ],
         series: [
           {
-            name: '上上周数据',
+            name: '上上周销售额',
             type: 'bar',
-            data: [192, 374, 579, 683, 498, 514],
+            data: recordTwoWeeksBefore,
             itemStyle: {
               color: '#5AA1A9'
             }
           },
           {
-            name: '上周数据',
+            name: '上周销售额',
             type: 'bar',
-            data: [374, 683, 498, 514, 698, 768],
+            data: recordOfLastWeek,
             itemStyle: {
               color: '#273A49'
             }
           },
           {
-            name: '本周数据',
+            name: '本周销售额',
             type: 'bar',
-            data: [192, 374, 579, 498, 514, 822],
+            data: recordOfThisWeek,
             itemStyle: {
               color: '#A92528'
             }

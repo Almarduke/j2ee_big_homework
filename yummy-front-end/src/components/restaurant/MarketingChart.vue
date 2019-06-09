@@ -57,6 +57,11 @@ export default {
         return index === 0 ? 0 : ((record.value / array[index - 1].value - 1) * 100).toFixed(1);
       });
       return {
+        title: {
+          left: 'center',
+          text: '饭店每日经营情况',
+          subtext: '基于营业额和增长率'
+        },
         tooltip: {
           trigger: 'axis',
           axisPointer: {

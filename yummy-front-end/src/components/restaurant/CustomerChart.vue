@@ -60,6 +60,11 @@ export default {
       ];
 
       return {
+        title: {
+          left: 'center',
+          text: '消费者画像',
+          subtext: '基于客户年龄和区域'
+        },
         opacity: 0.3,
         toolbox: {
           right: 20,

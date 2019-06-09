@@ -58,6 +58,11 @@ export default {
       ];
 
       return {
+        title: {
+          left: 'center',
+          text: '顾客满意度数据',
+          subtext: '基于配送时间和消费金额'
+        },
         toolbox: {
           right: 20,
           feature: {
@@ -67,7 +72,7 @@ export default {
           }
         },
         xAxis: {
-          name: '消费水平',
+          name: '消费金额',
           TextStyle: {
             color: '#fff',
             fontSize: 14

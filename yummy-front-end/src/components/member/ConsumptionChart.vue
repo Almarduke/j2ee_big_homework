@@ -98,6 +98,11 @@ export default {
     },
     getOption (data, maxNum) {
       return {
+        title: {
+          left: 'center',
+          text: '消费过的饭店信息',
+          subtext: '基于本用户数据'
+        },
         toolbox: {
           right: 60,
           feature: {
