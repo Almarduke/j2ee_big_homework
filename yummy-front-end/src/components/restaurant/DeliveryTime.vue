@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div ref="DishSelling" class="bubble-chart"></div>
+    <div ref="DeliveryTime" class="bubble-chart"></div>
   </div>
 </template>
 
@@ -33,10 +33,31 @@ export default {
       //     this.$message.error(response.data.msg);
       //   }
       // });
-      let myChart = this.$echarts.init(this.$refs.DishSelling);
-      myChart.setOption(this.getOption());
+      let data = [
+        { time: '早上', weekBeforeLast: 32, lastWeek: 30, thisWeek: 28 },
+        { time: '中午', weekBeforeLast: 48, lastWeek: 40, thisWeek: 42 },
+        { time: '下午', weekBeforeLast: 28, lastWeek: 30, thisWeek: 25 },
+        { time: '傍晚', weekBeforeLast: 45, lastWeek: 43, thisWeek: 39 },
+        { time: '夜晚', weekBeforeLast: 36, lastWeek: 35, thisWeek: 33 },
+        { time: '凌晨', weekBeforeLast: 25, lastWeek: 28, thisWeek: 26 }
+      ];
+      let myChart = this.$echarts.init(this.$refs.DeliveryTime);
+      myChart.setOption(this.getOption(data));
     },
-    getOption () {
+    getOption (data) {
+      let timeList = data.map((record) => {
+        return record.time;
+      });
+
+      let recordTwoWeeksBefore = data.map((record) => {
+        return record.weekBeforeLast;
+      });
+      let recordOfLastWeek = data.map((record) => {
+        return record.lastWeek;
+      });
+      let recordOfThisWeek = data.map((record) => {
+        return record.thisWeek;
+      });
       return {
         tooltip: {
           trigger: 'axis',
@@ -64,9 +85,7 @@ export default {
             axisTick: {
               alignWithLabel: true
             },
-            data: [
-              '早上', '中午', '下午', '傍晚', '夜晚', '深夜'
-            ]
+            data: timeList
           }
         ],
         yAxis: [
@@ -74,7 +93,7 @@ export default {
             type: 'value',
             name: '平均配送时长',
             min: 0,
-            max: 1000,
+            max: 60,
             position: 'left',
             axisLabel: {
               formatter: '{value} 分钟'
@@ -85,7 +104,7 @@ export default {
           {
             name: '上上周数据',
             type: 'bar',
-            data: [192, 374, 579, 683, 498, 514],
+            data: recordTwoWeeksBefore,
             itemStyle: {
               color: '#5AA1A9'
             }
@@ -93,7 +112,7 @@ export default {
           {
             name: '上周数据',
             type: 'bar',
-            data: [374, 683, 498, 514, 698, 768],
+            data: recordOfLastWeek,
             itemStyle: {
               color: '#273A49'
             }
@@ -101,7 +120,7 @@ export default {
           {
             name: '本周数据',
             type: 'bar',
-            data: [192, 374, 579, 498, 514, 822],
+            data: recordOfThisWeek,
             itemStyle: {
               color: '#A92528'
             }

@@ -194,7 +194,7 @@ export default {
           formatter: function (obj) {
             const value = obj.value;
             return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">' +
-                '菜品类型：' + value[2] + '</div>' +
+                value[2] + '</div>' +
                 '消费金额：' + value[0] + '<br>' +
                 '消费次数：' + value[1];
           }

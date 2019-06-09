@@ -33,10 +33,29 @@ export default {
       //     this.$message.error(response.data.msg);
       //   }
       // });
+      let data = [
+        { day: '2019-05-26', value: 2030 }, { day: '2019-05-27', value: 2394 },
+        { day: '2019-05-28', value: 2576 }, { day: '2019-05-29', value: 2431 },
+        { day: '2019-05-30', value: 2295 }, { day: '2019-05-31', value: 2154 },
+        { day: '2019-06-01', value: 2341 }, { day: '2019-06-02', value: 2598 },
+        { day: '2019-06-03', value: 2713 }, { day: '2019-06-04', value: 2547 },
+        { day: '2019-06-05', value: 2433 }, { day: '2019-06-06', value: 2350 },
+        { day: '2019-06-07', value: 2589 }, { day: '2019-06-08', value: 2314 },
+        { day: '2019-06-09', value: 2475 }
+      ];
       let myChart = this.$echarts.init(this.$refs.MarketingChart);
-      myChart.setOption(this.getOption());
+      myChart.setOption(this.getOption(data));
     },
-    getOption () {
+    getOption (data) {
+      let dayList = data.map((record) => {
+        return record.day;
+      });
+      let revenueList = data.map((record) => {
+        return record.value;
+      });
+      let growthRateList = data.map((record, index, array) => {
+        return index === 0 ? 0 : ((record.value / array[index - 1].value - 1) * 100).toFixed(1);
+      });
       return {
         tooltip: {
           trigger: 'axis',
@@ -64,19 +83,14 @@ export default {
             axisTick: {
               alignWithLabel: true
             },
-            data: [
-              '2019-06-01', '2019-06-02', '2019-06-03', '2019-06-04',
-              '2019-06-05', '2019-06-06', '2019-06-07', '2019-06-08',
-              '2019-06-09', '2019-06-10', '2019-06-11', '2019-06-12'
-            ]
+            data: dayList
           }
         ],
         yAxis: [
           {
             type: 'value',
             name: '当日营业额',
-            min: 0,
-            max: 1000,
+            min: 1500,
             position: 'left',
             axisLabel: {
               formatter: '{value} 元'
@@ -85,8 +99,8 @@ export default {
           {
             type: 'value',
             name: '营业额增长率',
-            min: -100,
-            max: 100,
+            min: -50,
+            max: 50,
             position: 'right',
             axisLabel: {
               formatter: '{value} %'
@@ -102,18 +116,18 @@ export default {
           {
             name: '当日营业额(元)',
             type: 'bar',
-            data: [192, 374, 579, 734, 683, 498, 514, 698, 822, 702, 698, 768],
+            data: revenueList,
             barWidth: 40,
             itemStyle: {
               normal: {
                 color: (data) => {
-                  if (data.value <= 200) {
+                  if (data.value <= 2100) {
                     return '#273A49';
-                  } else if (data.value <= 400) {
+                  } else if (data.value <= 2300) {
                     return '#5AA1A9';
-                  } else if (data.value <= 600) {
+                  } else if (data.value <= 2500) {
                     return '#AAAAAA';
-                  } else if (data.value <= 800) {
+                  } else if (data.value <= 2700) {
                     return '#C17B5A';
                   } else {
                     return '#A92528';
@@ -127,6 +141,7 @@ export default {
           {
             name: '营业额增长率(%)',
             type: 'line',
+            data: growthRateList,
             itemStyle: {
               color: '#FFCC00',
               opacity: 1
@@ -134,8 +149,7 @@ export default {
             lineStyle: {
               width: 5
             },
-            yAxisIndex: 1,
-            data: [-12, 40, 34, -10, -7, -8, 20, -4, 25, -9, 7, 9]
+            yAxisIndex: 1
           }
         ]
       };
